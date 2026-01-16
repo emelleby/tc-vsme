@@ -19,6 +19,7 @@ import { Route as TalksSlugRouteImport } from './routes/talks.$slug'
 import { Route as SpeakersSlugRouteImport } from './routes/speakers.$slug'
 import { Route as DemoI18nRouteImport } from './routes/demo.i18n'
 import { Route as ApiRemyChatRouteImport } from './routes/api.remy-chat'
+import { Route as DemoLayoutDemoIndexRouteImport } from './routes/_demoLayout/demo/index'
 import { Route as AppLayoutAppIndexRouteImport } from './routes/_appLayout/app/index'
 import { Route as DemoLayoutDemoTanstackQueryRouteImport } from './routes/_demoLayout/demo/tanstack-query'
 import { Route as DemoLayoutDemoTableRouteImport } from './routes/_demoLayout/demo/table'
@@ -96,6 +97,11 @@ const ApiRemyChatRoute = ApiRemyChatRouteImport.update({
   id: '/api/remy-chat',
   path: '/api/remy-chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DemoLayoutDemoIndexRoute = DemoLayoutDemoIndexRouteImport.update({
+  id: '/demo/',
+  path: '/demo/',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
 const AppLayoutAppIndexRoute = AppLayoutAppIndexRouteImport.update({
   id: '/app/',
@@ -280,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/demo/table': typeof DemoLayoutDemoTableRoute
   '/demo/tanstack-query': typeof DemoLayoutDemoTanstackQueryRoute
   '/app': typeof AppLayoutAppIndexRoute
+  '/demo': typeof DemoLayoutDemoIndexRoute
   '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
@@ -319,6 +326,7 @@ export interface FileRoutesByTo {
   '/demo/table': typeof DemoLayoutDemoTableRoute
   '/demo/tanstack-query': typeof DemoLayoutDemoTanstackQueryRoute
   '/app': typeof AppLayoutAppIndexRoute
+  '/demo': typeof DemoLayoutDemoIndexRoute
   '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
@@ -361,6 +369,7 @@ export interface FileRoutesById {
   '/_demoLayout/demo/table': typeof DemoLayoutDemoTableRoute
   '/_demoLayout/demo/tanstack-query': typeof DemoLayoutDemoTanstackQueryRoute
   '/_appLayout/app/': typeof AppLayoutAppIndexRoute
+  '/_demoLayout/demo/': typeof DemoLayoutDemoIndexRoute
   '/_demoLayout/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/_demoLayout/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/_demoLayout/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
@@ -402,6 +411,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/app'
+    | '/demo'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -441,6 +451,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/app'
+    | '/demo'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -482,6 +493,7 @@ export interface FileRouteTypes {
     | '/_demoLayout/demo/table'
     | '/_demoLayout/demo/tanstack-query'
     | '/_appLayout/app/'
+    | '/_demoLayout/demo/'
     | '/_demoLayout/demo/api/names'
     | '/_demoLayout/demo/api/tq-todos'
     | '/_demoLayout/demo/form/address'
@@ -586,6 +598,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/remy-chat'
       preLoaderRoute: typeof ApiRemyChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_demoLayout/demo/': {
+      id: '/_demoLayout/demo/'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoLayoutDemoIndexRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
     '/_appLayout/app/': {
       id: '/_appLayout/app/'
@@ -817,6 +836,7 @@ interface DemoLayoutRouteRouteChildren {
   DemoLayoutDemoStorybookRoute: typeof DemoLayoutDemoStorybookRoute
   DemoLayoutDemoTableRoute: typeof DemoLayoutDemoTableRoute
   DemoLayoutDemoTanstackQueryRoute: typeof DemoLayoutDemoTanstackQueryRoute
+  DemoLayoutDemoIndexRoute: typeof DemoLayoutDemoIndexRoute
   DemoLayoutDemoApiNamesRoute: typeof DemoLayoutDemoApiNamesRoute
   DemoLayoutDemoApiTqTodosRoute: typeof DemoLayoutDemoApiTqTodosRoute
   DemoLayoutDemoFormAddressRoute: typeof DemoLayoutDemoFormAddressRoute
@@ -847,6 +867,7 @@ const DemoLayoutRouteRouteChildren: DemoLayoutRouteRouteChildren = {
   DemoLayoutDemoStorybookRoute: DemoLayoutDemoStorybookRoute,
   DemoLayoutDemoTableRoute: DemoLayoutDemoTableRoute,
   DemoLayoutDemoTanstackQueryRoute: DemoLayoutDemoTanstackQueryRoute,
+  DemoLayoutDemoIndexRoute: DemoLayoutDemoIndexRoute,
   DemoLayoutDemoApiNamesRoute: DemoLayoutDemoApiNamesRoute,
   DemoLayoutDemoApiTqTodosRoute: DemoLayoutDemoApiTqTodosRoute,
   DemoLayoutDemoFormAddressRoute: DemoLayoutDemoFormAddressRoute,
