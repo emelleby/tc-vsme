@@ -9,42 +9,54 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DemoLayoutRouteRouteImport } from './routes/_demoLayout/route'
+import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TalksIndexRouteImport } from './routes/talks.index'
 import { Route as SpeakersIndexRouteImport } from './routes/speakers.index'
 import { Route as ScheduleIndexRouteImport } from './routes/schedule.index'
 import { Route as TalksSlugRouteImport } from './routes/talks.$slug'
 import { Route as SpeakersSlugRouteImport } from './routes/speakers.$slug'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoTableRouteImport } from './routes/demo/table'
-import { Route as DemoStorybookRouteImport } from './routes/demo/storybook'
-import { Route as DemoStoreRouteImport } from './routes/demo/store'
 import { Route as DemoI18nRouteImport } from './routes/demo.i18n'
-import { Route as DemoConvexRouteImport } from './routes/demo/convex'
-import { Route as DemoClerkRouteImport } from './routes/demo/clerk'
-import { Route as DemoAiStructuredRouteImport } from './routes/demo/ai-structured'
-import { Route as DemoAiImageRouteImport } from './routes/demo/ai-image'
-import { Route as DemoAiChatRouteImport } from './routes/demo/ai-chat'
 import { Route as ApiRemyChatRouteImport } from './routes/api.remy-chat'
-import { Route as DemoGuitarsIndexRouteImport } from './routes/demo/guitars/index'
-import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
-import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
-import { Route as DemoSentryTestingRouteImport } from './routes/demo/sentry.testing'
-import { Route as DemoGuitarsGuitarIdRouteImport } from './routes/demo/guitars/$guitarId'
-import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
-import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
-import { Route as DemoApiTqTodosRouteImport } from './routes/demo/api.tq-todos'
-import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
-import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
-import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
-import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
-import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
-import { Route as DemoApiAiTtsRouteImport } from './routes/demo/api.ai.tts'
-import { Route as DemoApiAiTranscriptionRouteImport } from './routes/demo/api.ai.transcription'
-import { Route as DemoApiAiStructuredRouteImport } from './routes/demo/api.ai.structured'
-import { Route as DemoApiAiImageRouteImport } from './routes/demo/api.ai.image'
-import { Route as DemoApiAiChatRouteImport } from './routes/demo/api.ai.chat'
+import { Route as AppLayoutAppIndexRouteImport } from './routes/_appLayout/app/index'
+import { Route as DemoLayoutDemoTanstackQueryRouteImport } from './routes/_demoLayout/demo/tanstack-query'
+import { Route as DemoLayoutDemoTableRouteImport } from './routes/_demoLayout/demo/table'
+import { Route as DemoLayoutDemoStorybookRouteImport } from './routes/_demoLayout/demo/storybook'
+import { Route as DemoLayoutDemoStoreRouteImport } from './routes/_demoLayout/demo/store'
+import { Route as DemoLayoutDemoConvexRouteImport } from './routes/_demoLayout/demo/convex'
+import { Route as DemoLayoutDemoClerkRouteImport } from './routes/_demoLayout/demo/clerk'
+import { Route as DemoLayoutDemoAiStructuredRouteImport } from './routes/_demoLayout/demo/ai-structured'
+import { Route as DemoLayoutDemoAiImageRouteImport } from './routes/_demoLayout/demo/ai-image'
+import { Route as DemoLayoutDemoAiChatRouteImport } from './routes/_demoLayout/demo/ai-chat'
+import { Route as AppLayoutAppOrderRouteImport } from './routes/_appLayout/app/order'
+import { Route as DemoLayoutDemoGuitarsIndexRouteImport } from './routes/_demoLayout/demo/guitars/index'
+import { Route as DemoLayoutDemoStartServerFuncsRouteImport } from './routes/_demoLayout/demo/start.server-funcs'
+import { Route as DemoLayoutDemoStartApiRequestRouteImport } from './routes/_demoLayout/demo/start.api-request'
+import { Route as DemoLayoutDemoSentryTestingRouteImport } from './routes/_demoLayout/demo/sentry.testing'
+import { Route as DemoLayoutDemoGuitarsGuitarIdRouteImport } from './routes/_demoLayout/demo/guitars/$guitarId'
+import { Route as DemoLayoutDemoFormSimpleRouteImport } from './routes/_demoLayout/demo/form.simple'
+import { Route as DemoLayoutDemoFormAddressRouteImport } from './routes/_demoLayout/demo/form.address'
+import { Route as DemoLayoutDemoApiTqTodosRouteImport } from './routes/_demoLayout/demo/api.tq-todos'
+import { Route as DemoLayoutDemoApiNamesRouteImport } from './routes/_demoLayout/demo/api.names'
+import { Route as DemoLayoutDemoStartSsrIndexRouteImport } from './routes/_demoLayout/demo/start.ssr.index'
+import { Route as DemoLayoutDemoStartSsrSpaModeRouteImport } from './routes/_demoLayout/demo/start.ssr.spa-mode'
+import { Route as DemoLayoutDemoStartSsrFullSsrRouteImport } from './routes/_demoLayout/demo/start.ssr.full-ssr'
+import { Route as DemoLayoutDemoStartSsrDataOnlyRouteImport } from './routes/_demoLayout/demo/start.ssr.data-only'
+import { Route as DemoLayoutDemoApiAiTtsRouteImport } from './routes/_demoLayout/demo/api.ai.tts'
+import { Route as DemoLayoutDemoApiAiTranscriptionRouteImport } from './routes/_demoLayout/demo/api.ai.transcription'
+import { Route as DemoLayoutDemoApiAiStructuredRouteImport } from './routes/_demoLayout/demo/api.ai.structured'
+import { Route as DemoLayoutDemoApiAiImageRouteImport } from './routes/_demoLayout/demo/api.ai.image'
+import { Route as DemoLayoutDemoApiAiChatRouteImport } from './routes/_demoLayout/demo/api.ai.chat'
 
+const DemoLayoutRouteRoute = DemoLayoutRouteRouteImport.update({
+  id: '/_demoLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
+  id: '/_appLayout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -75,54 +87,9 @@ const SpeakersSlugRoute = SpeakersSlugRouteImport.update({
   path: '/speakers/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStorybookRoute = DemoStorybookRouteImport.update({
-  id: '/demo/storybook',
-  path: '/demo/storybook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStoreRoute = DemoStoreRouteImport.update({
-  id: '/demo/store',
-  path: '/demo/store',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DemoI18nRoute = DemoI18nRouteImport.update({
   id: '/demo/i18n',
   path: '/demo/i18n',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoConvexRoute = DemoConvexRouteImport.update({
-  id: '/demo/convex',
-  path: '/demo/convex',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoClerkRoute = DemoClerkRouteImport.update({
-  id: '/demo/clerk',
-  path: '/demo/clerk',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoAiStructuredRoute = DemoAiStructuredRouteImport.update({
-  id: '/demo/ai-structured',
-  path: '/demo/ai-structured',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoAiImageRoute = DemoAiImageRouteImport.update({
-  id: '/demo/ai-image',
-  path: '/demo/ai-image',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoAiChatRoute = DemoAiChatRouteImport.update({
-  id: '/demo/ai-chat',
-  path: '/demo/ai-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiRemyChatRoute = ApiRemyChatRouteImport.update({
@@ -130,229 +97,311 @@ const ApiRemyChatRoute = ApiRemyChatRouteImport.update({
   path: '/api/remy-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DemoGuitarsIndexRoute = DemoGuitarsIndexRouteImport.update({
-  id: '/demo/guitars/',
-  path: '/demo/guitars/',
-  getParentRoute: () => rootRouteImport,
+const AppLayoutAppIndexRoute = AppLayoutAppIndexRouteImport.update({
+  id: '/app/',
+  path: '/app/',
+  getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
-  id: '/demo/start/server-funcs',
-  path: '/demo/start/server-funcs',
-  getParentRoute: () => rootRouteImport,
+const DemoLayoutDemoTanstackQueryRoute =
+  DemoLayoutDemoTanstackQueryRouteImport.update({
+    id: '/demo/tanstack-query',
+    path: '/demo/tanstack-query',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoTableRoute = DemoLayoutDemoTableRouteImport.update({
+  id: '/demo/table',
+  path: '/demo/table',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoStartApiRequestRoute = DemoStartApiRequestRouteImport.update({
-  id: '/demo/start/api-request',
-  path: '/demo/start/api-request',
-  getParentRoute: () => rootRouteImport,
+const DemoLayoutDemoStorybookRoute = DemoLayoutDemoStorybookRouteImport.update({
+  id: '/demo/storybook',
+  path: '/demo/storybook',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoSentryTestingRoute = DemoSentryTestingRouteImport.update({
-  id: '/demo/sentry/testing',
-  path: '/demo/sentry/testing',
-  getParentRoute: () => rootRouteImport,
+const DemoLayoutDemoStoreRoute = DemoLayoutDemoStoreRouteImport.update({
+  id: '/demo/store',
+  path: '/demo/store',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoGuitarsGuitarIdRoute = DemoGuitarsGuitarIdRouteImport.update({
-  id: '/demo/guitars/$guitarId',
-  path: '/demo/guitars/$guitarId',
-  getParentRoute: () => rootRouteImport,
+const DemoLayoutDemoConvexRoute = DemoLayoutDemoConvexRouteImport.update({
+  id: '/demo/convex',
+  path: '/demo/convex',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
-  id: '/demo/form/simple',
-  path: '/demo/form/simple',
-  getParentRoute: () => rootRouteImport,
+const DemoLayoutDemoClerkRoute = DemoLayoutDemoClerkRouteImport.update({
+  id: '/demo/clerk',
+  path: '/demo/clerk',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
-  id: '/demo/form/address',
-  path: '/demo/form/address',
-  getParentRoute: () => rootRouteImport,
+const DemoLayoutDemoAiStructuredRoute =
+  DemoLayoutDemoAiStructuredRouteImport.update({
+    id: '/demo/ai-structured',
+    path: '/demo/ai-structured',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoAiImageRoute = DemoLayoutDemoAiImageRouteImport.update({
+  id: '/demo/ai-image',
+  path: '/demo/ai-image',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoApiTqTodosRoute = DemoApiTqTodosRouteImport.update({
-  id: '/demo/api/tq-todos',
-  path: '/demo/api/tq-todos',
-  getParentRoute: () => rootRouteImport,
+const DemoLayoutDemoAiChatRoute = DemoLayoutDemoAiChatRouteImport.update({
+  id: '/demo/ai-chat',
+  path: '/demo/ai-chat',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
+const AppLayoutAppOrderRoute = AppLayoutAppOrderRouteImport.update({
+  id: '/app/order',
+  path: '/app/order',
+  getParentRoute: () => AppLayoutRouteRoute,
+} as any)
+const DemoLayoutDemoGuitarsIndexRoute =
+  DemoLayoutDemoGuitarsIndexRouteImport.update({
+    id: '/demo/guitars/',
+    path: '/demo/guitars/',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoStartServerFuncsRoute =
+  DemoLayoutDemoStartServerFuncsRouteImport.update({
+    id: '/demo/start/server-funcs',
+    path: '/demo/start/server-funcs',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoStartApiRequestRoute =
+  DemoLayoutDemoStartApiRequestRouteImport.update({
+    id: '/demo/start/api-request',
+    path: '/demo/start/api-request',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoSentryTestingRoute =
+  DemoLayoutDemoSentryTestingRouteImport.update({
+    id: '/demo/sentry/testing',
+    path: '/demo/sentry/testing',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoGuitarsGuitarIdRoute =
+  DemoLayoutDemoGuitarsGuitarIdRouteImport.update({
+    id: '/demo/guitars/$guitarId',
+    path: '/demo/guitars/$guitarId',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoFormSimpleRoute =
+  DemoLayoutDemoFormSimpleRouteImport.update({
+    id: '/demo/form/simple',
+    path: '/demo/form/simple',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoFormAddressRoute =
+  DemoLayoutDemoFormAddressRouteImport.update({
+    id: '/demo/form/address',
+    path: '/demo/form/address',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoApiTqTodosRoute =
+  DemoLayoutDemoApiTqTodosRouteImport.update({
+    id: '/demo/api/tq-todos',
+    path: '/demo/api/tq-todos',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoApiNamesRoute = DemoLayoutDemoApiNamesRouteImport.update({
   id: '/demo/api/names',
   path: '/demo/api/names',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
-  id: '/demo/start/ssr/',
-  path: '/demo/start/ssr/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrSpaModeRoute = DemoStartSsrSpaModeRouteImport.update({
-  id: '/demo/start/ssr/spa-mode',
-  path: '/demo/start/ssr/spa-mode',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrFullSsrRoute = DemoStartSsrFullSsrRouteImport.update({
-  id: '/demo/start/ssr/full-ssr',
-  path: '/demo/start/ssr/full-ssr',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
-  id: '/demo/start/ssr/data-only',
-  path: '/demo/start/ssr/data-only',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoApiAiTtsRoute = DemoApiAiTtsRouteImport.update({
+const DemoLayoutDemoStartSsrIndexRoute =
+  DemoLayoutDemoStartSsrIndexRouteImport.update({
+    id: '/demo/start/ssr/',
+    path: '/demo/start/ssr/',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoStartSsrSpaModeRoute =
+  DemoLayoutDemoStartSsrSpaModeRouteImport.update({
+    id: '/demo/start/ssr/spa-mode',
+    path: '/demo/start/ssr/spa-mode',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoStartSsrFullSsrRoute =
+  DemoLayoutDemoStartSsrFullSsrRouteImport.update({
+    id: '/demo/start/ssr/full-ssr',
+    path: '/demo/start/ssr/full-ssr',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoStartSsrDataOnlyRoute =
+  DemoLayoutDemoStartSsrDataOnlyRouteImport.update({
+    id: '/demo/start/ssr/data-only',
+    path: '/demo/start/ssr/data-only',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoApiAiTtsRoute = DemoLayoutDemoApiAiTtsRouteImport.update({
   id: '/demo/api/ai/tts',
   path: '/demo/api/ai/tts',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
-const DemoApiAiTranscriptionRoute = DemoApiAiTranscriptionRouteImport.update({
-  id: '/demo/api/ai/transcription',
-  path: '/demo/api/ai/transcription',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoApiAiStructuredRoute = DemoApiAiStructuredRouteImport.update({
-  id: '/demo/api/ai/structured',
-  path: '/demo/api/ai/structured',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoApiAiImageRoute = DemoApiAiImageRouteImport.update({
-  id: '/demo/api/ai/image',
-  path: '/demo/api/ai/image',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoApiAiChatRoute = DemoApiAiChatRouteImport.update({
+const DemoLayoutDemoApiAiTranscriptionRoute =
+  DemoLayoutDemoApiAiTranscriptionRouteImport.update({
+    id: '/demo/api/ai/transcription',
+    path: '/demo/api/ai/transcription',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoApiAiStructuredRoute =
+  DemoLayoutDemoApiAiStructuredRouteImport.update({
+    id: '/demo/api/ai/structured',
+    path: '/demo/api/ai/structured',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoApiAiImageRoute =
+  DemoLayoutDemoApiAiImageRouteImport.update({
+    id: '/demo/api/ai/image',
+    path: '/demo/api/ai/image',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoApiAiChatRoute = DemoLayoutDemoApiAiChatRouteImport.update({
   id: '/demo/api/ai/chat',
   path: '/demo/api/ai/chat',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
-  '/demo/ai-chat': typeof DemoAiChatRoute
-  '/demo/ai-image': typeof DemoAiImageRoute
-  '/demo/ai-structured': typeof DemoAiStructuredRoute
-  '/demo/clerk': typeof DemoClerkRoute
-  '/demo/convex': typeof DemoConvexRoute
   '/demo/i18n': typeof DemoI18nRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/storybook': typeof DemoStorybookRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/speakers/$slug': typeof SpeakersSlugRoute
   '/talks/$slug': typeof TalksSlugRoute
   '/schedule': typeof ScheduleIndexRoute
   '/speakers': typeof SpeakersIndexRoute
   '/talks': typeof TalksIndexRoute
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
-  '/demo/guitars/$guitarId': typeof DemoGuitarsGuitarIdRoute
-  '/demo/sentry/testing': typeof DemoSentryTestingRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/demo/guitars': typeof DemoGuitarsIndexRoute
-  '/demo/api/ai/chat': typeof DemoApiAiChatRoute
-  '/demo/api/ai/image': typeof DemoApiAiImageRoute
-  '/demo/api/ai/structured': typeof DemoApiAiStructuredRoute
-  '/demo/api/ai/transcription': typeof DemoApiAiTranscriptionRoute
-  '/demo/api/ai/tts': typeof DemoApiAiTtsRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/demo/start/ssr': typeof DemoStartSsrIndexRoute
+  '/app/order': typeof AppLayoutAppOrderRoute
+  '/demo/ai-chat': typeof DemoLayoutDemoAiChatRoute
+  '/demo/ai-image': typeof DemoLayoutDemoAiImageRoute
+  '/demo/ai-structured': typeof DemoLayoutDemoAiStructuredRoute
+  '/demo/clerk': typeof DemoLayoutDemoClerkRoute
+  '/demo/convex': typeof DemoLayoutDemoConvexRoute
+  '/demo/store': typeof DemoLayoutDemoStoreRoute
+  '/demo/storybook': typeof DemoLayoutDemoStorybookRoute
+  '/demo/table': typeof DemoLayoutDemoTableRoute
+  '/demo/tanstack-query': typeof DemoLayoutDemoTanstackQueryRoute
+  '/app': typeof AppLayoutAppIndexRoute
+  '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
+  '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
+  '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
+  '/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
+  '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
+  '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
+  '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
+  '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
+  '/demo/api/ai/image': typeof DemoLayoutDemoApiAiImageRoute
+  '/demo/api/ai/structured': typeof DemoLayoutDemoApiAiStructuredRoute
+  '/demo/api/ai/transcription': typeof DemoLayoutDemoApiAiTranscriptionRoute
+  '/demo/api/ai/tts': typeof DemoLayoutDemoApiAiTtsRoute
+  '/demo/start/ssr/data-only': typeof DemoLayoutDemoStartSsrDataOnlyRoute
+  '/demo/start/ssr/full-ssr': typeof DemoLayoutDemoStartSsrFullSsrRoute
+  '/demo/start/ssr/spa-mode': typeof DemoLayoutDemoStartSsrSpaModeRoute
+  '/demo/start/ssr': typeof DemoLayoutDemoStartSsrIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
-  '/demo/ai-chat': typeof DemoAiChatRoute
-  '/demo/ai-image': typeof DemoAiImageRoute
-  '/demo/ai-structured': typeof DemoAiStructuredRoute
-  '/demo/clerk': typeof DemoClerkRoute
-  '/demo/convex': typeof DemoConvexRoute
   '/demo/i18n': typeof DemoI18nRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/storybook': typeof DemoStorybookRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/speakers/$slug': typeof SpeakersSlugRoute
   '/talks/$slug': typeof TalksSlugRoute
   '/schedule': typeof ScheduleIndexRoute
   '/speakers': typeof SpeakersIndexRoute
   '/talks': typeof TalksIndexRoute
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
-  '/demo/guitars/$guitarId': typeof DemoGuitarsGuitarIdRoute
-  '/demo/sentry/testing': typeof DemoSentryTestingRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/demo/guitars': typeof DemoGuitarsIndexRoute
-  '/demo/api/ai/chat': typeof DemoApiAiChatRoute
-  '/demo/api/ai/image': typeof DemoApiAiImageRoute
-  '/demo/api/ai/structured': typeof DemoApiAiStructuredRoute
-  '/demo/api/ai/transcription': typeof DemoApiAiTranscriptionRoute
-  '/demo/api/ai/tts': typeof DemoApiAiTtsRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/demo/start/ssr': typeof DemoStartSsrIndexRoute
+  '/app/order': typeof AppLayoutAppOrderRoute
+  '/demo/ai-chat': typeof DemoLayoutDemoAiChatRoute
+  '/demo/ai-image': typeof DemoLayoutDemoAiImageRoute
+  '/demo/ai-structured': typeof DemoLayoutDemoAiStructuredRoute
+  '/demo/clerk': typeof DemoLayoutDemoClerkRoute
+  '/demo/convex': typeof DemoLayoutDemoConvexRoute
+  '/demo/store': typeof DemoLayoutDemoStoreRoute
+  '/demo/storybook': typeof DemoLayoutDemoStorybookRoute
+  '/demo/table': typeof DemoLayoutDemoTableRoute
+  '/demo/tanstack-query': typeof DemoLayoutDemoTanstackQueryRoute
+  '/app': typeof AppLayoutAppIndexRoute
+  '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
+  '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
+  '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
+  '/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
+  '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
+  '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
+  '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
+  '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
+  '/demo/api/ai/image': typeof DemoLayoutDemoApiAiImageRoute
+  '/demo/api/ai/structured': typeof DemoLayoutDemoApiAiStructuredRoute
+  '/demo/api/ai/transcription': typeof DemoLayoutDemoApiAiTranscriptionRoute
+  '/demo/api/ai/tts': typeof DemoLayoutDemoApiAiTtsRoute
+  '/demo/start/ssr/data-only': typeof DemoLayoutDemoStartSsrDataOnlyRoute
+  '/demo/start/ssr/full-ssr': typeof DemoLayoutDemoStartSsrFullSsrRoute
+  '/demo/start/ssr/spa-mode': typeof DemoLayoutDemoStartSsrSpaModeRoute
+  '/demo/start/ssr': typeof DemoLayoutDemoStartSsrIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_appLayout': typeof AppLayoutRouteRouteWithChildren
+  '/_demoLayout': typeof DemoLayoutRouteRouteWithChildren
   '/api/remy-chat': typeof ApiRemyChatRoute
-  '/demo/ai-chat': typeof DemoAiChatRoute
-  '/demo/ai-image': typeof DemoAiImageRoute
-  '/demo/ai-structured': typeof DemoAiStructuredRoute
-  '/demo/clerk': typeof DemoClerkRoute
-  '/demo/convex': typeof DemoConvexRoute
   '/demo/i18n': typeof DemoI18nRoute
-  '/demo/store': typeof DemoStoreRoute
-  '/demo/storybook': typeof DemoStorybookRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/speakers/$slug': typeof SpeakersSlugRoute
   '/talks/$slug': typeof TalksSlugRoute
   '/schedule/': typeof ScheduleIndexRoute
   '/speakers/': typeof SpeakersIndexRoute
   '/talks/': typeof TalksIndexRoute
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
-  '/demo/guitars/$guitarId': typeof DemoGuitarsGuitarIdRoute
-  '/demo/sentry/testing': typeof DemoSentryTestingRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/demo/guitars/': typeof DemoGuitarsIndexRoute
-  '/demo/api/ai/chat': typeof DemoApiAiChatRoute
-  '/demo/api/ai/image': typeof DemoApiAiImageRoute
-  '/demo/api/ai/structured': typeof DemoApiAiStructuredRoute
-  '/demo/api/ai/transcription': typeof DemoApiAiTranscriptionRoute
-  '/demo/api/ai/tts': typeof DemoApiAiTtsRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
+  '/_appLayout/app/order': typeof AppLayoutAppOrderRoute
+  '/_demoLayout/demo/ai-chat': typeof DemoLayoutDemoAiChatRoute
+  '/_demoLayout/demo/ai-image': typeof DemoLayoutDemoAiImageRoute
+  '/_demoLayout/demo/ai-structured': typeof DemoLayoutDemoAiStructuredRoute
+  '/_demoLayout/demo/clerk': typeof DemoLayoutDemoClerkRoute
+  '/_demoLayout/demo/convex': typeof DemoLayoutDemoConvexRoute
+  '/_demoLayout/demo/store': typeof DemoLayoutDemoStoreRoute
+  '/_demoLayout/demo/storybook': typeof DemoLayoutDemoStorybookRoute
+  '/_demoLayout/demo/table': typeof DemoLayoutDemoTableRoute
+  '/_demoLayout/demo/tanstack-query': typeof DemoLayoutDemoTanstackQueryRoute
+  '/_appLayout/app/': typeof AppLayoutAppIndexRoute
+  '/_demoLayout/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
+  '/_demoLayout/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
+  '/_demoLayout/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/_demoLayout/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
+  '/_demoLayout/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
+  '/_demoLayout/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
+  '/_demoLayout/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
+  '/_demoLayout/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/_demoLayout/demo/guitars/': typeof DemoLayoutDemoGuitarsIndexRoute
+  '/_demoLayout/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
+  '/_demoLayout/demo/api/ai/image': typeof DemoLayoutDemoApiAiImageRoute
+  '/_demoLayout/demo/api/ai/structured': typeof DemoLayoutDemoApiAiStructuredRoute
+  '/_demoLayout/demo/api/ai/transcription': typeof DemoLayoutDemoApiAiTranscriptionRoute
+  '/_demoLayout/demo/api/ai/tts': typeof DemoLayoutDemoApiAiTtsRoute
+  '/_demoLayout/demo/start/ssr/data-only': typeof DemoLayoutDemoStartSsrDataOnlyRoute
+  '/_demoLayout/demo/start/ssr/full-ssr': typeof DemoLayoutDemoStartSsrFullSsrRoute
+  '/_demoLayout/demo/start/ssr/spa-mode': typeof DemoLayoutDemoStartSsrSpaModeRoute
+  '/_demoLayout/demo/start/ssr/': typeof DemoLayoutDemoStartSsrIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/api/remy-chat'
-    | '/demo/ai-chat'
-    | '/demo/ai-image'
-    | '/demo/ai-structured'
-    | '/demo/clerk'
-    | '/demo/convex'
     | '/demo/i18n'
-    | '/demo/store'
-    | '/demo/storybook'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/speakers/$slug'
     | '/talks/$slug'
     | '/schedule'
     | '/speakers'
     | '/talks'
+    | '/app/order'
+    | '/demo/ai-chat'
+    | '/demo/ai-image'
+    | '/demo/ai-structured'
+    | '/demo/clerk'
+    | '/demo/convex'
+    | '/demo/store'
+    | '/demo/storybook'
+    | '/demo/table'
+    | '/demo/tanstack-query'
+    | '/app'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -375,21 +424,23 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/api/remy-chat'
-    | '/demo/ai-chat'
-    | '/demo/ai-image'
-    | '/demo/ai-structured'
-    | '/demo/clerk'
-    | '/demo/convex'
     | '/demo/i18n'
-    | '/demo/store'
-    | '/demo/storybook'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/speakers/$slug'
     | '/talks/$slug'
     | '/schedule'
     | '/speakers'
     | '/talks'
+    | '/app/order'
+    | '/demo/ai-chat'
+    | '/demo/ai-image'
+    | '/demo/ai-structured'
+    | '/demo/clerk'
+    | '/demo/convex'
+    | '/demo/store'
+    | '/demo/storybook'
+    | '/demo/table'
+    | '/demo/tanstack-query'
+    | '/app'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -411,82 +462,75 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_appLayout'
+    | '/_demoLayout'
     | '/api/remy-chat'
-    | '/demo/ai-chat'
-    | '/demo/ai-image'
-    | '/demo/ai-structured'
-    | '/demo/clerk'
-    | '/demo/convex'
     | '/demo/i18n'
-    | '/demo/store'
-    | '/demo/storybook'
-    | '/demo/table'
-    | '/demo/tanstack-query'
     | '/speakers/$slug'
     | '/talks/$slug'
     | '/schedule/'
     | '/speakers/'
     | '/talks/'
-    | '/demo/api/names'
-    | '/demo/api/tq-todos'
-    | '/demo/form/address'
-    | '/demo/form/simple'
-    | '/demo/guitars/$guitarId'
-    | '/demo/sentry/testing'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
-    | '/demo/guitars/'
-    | '/demo/api/ai/chat'
-    | '/demo/api/ai/image'
-    | '/demo/api/ai/structured'
-    | '/demo/api/ai/transcription'
-    | '/demo/api/ai/tts'
-    | '/demo/start/ssr/data-only'
-    | '/demo/start/ssr/full-ssr'
-    | '/demo/start/ssr/spa-mode'
-    | '/demo/start/ssr/'
+    | '/_appLayout/app/order'
+    | '/_demoLayout/demo/ai-chat'
+    | '/_demoLayout/demo/ai-image'
+    | '/_demoLayout/demo/ai-structured'
+    | '/_demoLayout/demo/clerk'
+    | '/_demoLayout/demo/convex'
+    | '/_demoLayout/demo/store'
+    | '/_demoLayout/demo/storybook'
+    | '/_demoLayout/demo/table'
+    | '/_demoLayout/demo/tanstack-query'
+    | '/_appLayout/app/'
+    | '/_demoLayout/demo/api/names'
+    | '/_demoLayout/demo/api/tq-todos'
+    | '/_demoLayout/demo/form/address'
+    | '/_demoLayout/demo/form/simple'
+    | '/_demoLayout/demo/guitars/$guitarId'
+    | '/_demoLayout/demo/sentry/testing'
+    | '/_demoLayout/demo/start/api-request'
+    | '/_demoLayout/demo/start/server-funcs'
+    | '/_demoLayout/demo/guitars/'
+    | '/_demoLayout/demo/api/ai/chat'
+    | '/_demoLayout/demo/api/ai/image'
+    | '/_demoLayout/demo/api/ai/structured'
+    | '/_demoLayout/demo/api/ai/transcription'
+    | '/_demoLayout/demo/api/ai/tts'
+    | '/_demoLayout/demo/start/ssr/data-only'
+    | '/_demoLayout/demo/start/ssr/full-ssr'
+    | '/_demoLayout/demo/start/ssr/spa-mode'
+    | '/_demoLayout/demo/start/ssr/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
+  DemoLayoutRouteRoute: typeof DemoLayoutRouteRouteWithChildren
   ApiRemyChatRoute: typeof ApiRemyChatRoute
-  DemoAiChatRoute: typeof DemoAiChatRoute
-  DemoAiImageRoute: typeof DemoAiImageRoute
-  DemoAiStructuredRoute: typeof DemoAiStructuredRoute
-  DemoClerkRoute: typeof DemoClerkRoute
-  DemoConvexRoute: typeof DemoConvexRoute
   DemoI18nRoute: typeof DemoI18nRoute
-  DemoStoreRoute: typeof DemoStoreRoute
-  DemoStorybookRoute: typeof DemoStorybookRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
   SpeakersSlugRoute: typeof SpeakersSlugRoute
   TalksSlugRoute: typeof TalksSlugRoute
   ScheduleIndexRoute: typeof ScheduleIndexRoute
   SpeakersIndexRoute: typeof SpeakersIndexRoute
   TalksIndexRoute: typeof TalksIndexRoute
-  DemoApiNamesRoute: typeof DemoApiNamesRoute
-  DemoApiTqTodosRoute: typeof DemoApiTqTodosRoute
-  DemoFormAddressRoute: typeof DemoFormAddressRoute
-  DemoFormSimpleRoute: typeof DemoFormSimpleRoute
-  DemoGuitarsGuitarIdRoute: typeof DemoGuitarsGuitarIdRoute
-  DemoSentryTestingRoute: typeof DemoSentryTestingRoute
-  DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
-  DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
-  DemoGuitarsIndexRoute: typeof DemoGuitarsIndexRoute
-  DemoApiAiChatRoute: typeof DemoApiAiChatRoute
-  DemoApiAiImageRoute: typeof DemoApiAiImageRoute
-  DemoApiAiStructuredRoute: typeof DemoApiAiStructuredRoute
-  DemoApiAiTranscriptionRoute: typeof DemoApiAiTranscriptionRoute
-  DemoApiAiTtsRoute: typeof DemoApiAiTtsRoute
-  DemoStartSsrDataOnlyRoute: typeof DemoStartSsrDataOnlyRoute
-  DemoStartSsrFullSsrRoute: typeof DemoStartSsrFullSsrRoute
-  DemoStartSsrSpaModeRoute: typeof DemoStartSsrSpaModeRoute
-  DemoStartSsrIndexRoute: typeof DemoStartSsrIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_demoLayout': {
+      id: '/_demoLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof DemoLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_appLayout': {
+      id: '/_appLayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -529,74 +573,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SpeakersSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/storybook': {
-      id: '/demo/storybook'
-      path: '/demo/storybook'
-      fullPath: '/demo/storybook'
-      preLoaderRoute: typeof DemoStorybookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/store': {
-      id: '/demo/store'
-      path: '/demo/store'
-      fullPath: '/demo/store'
-      preLoaderRoute: typeof DemoStoreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/demo/i18n': {
       id: '/demo/i18n'
       path: '/demo/i18n'
       fullPath: '/demo/i18n'
       preLoaderRoute: typeof DemoI18nRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/convex': {
-      id: '/demo/convex'
-      path: '/demo/convex'
-      fullPath: '/demo/convex'
-      preLoaderRoute: typeof DemoConvexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/clerk': {
-      id: '/demo/clerk'
-      path: '/demo/clerk'
-      fullPath: '/demo/clerk'
-      preLoaderRoute: typeof DemoClerkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/ai-structured': {
-      id: '/demo/ai-structured'
-      path: '/demo/ai-structured'
-      fullPath: '/demo/ai-structured'
-      preLoaderRoute: typeof DemoAiStructuredRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/ai-image': {
-      id: '/demo/ai-image'
-      path: '/demo/ai-image'
-      fullPath: '/demo/ai-image'
-      preLoaderRoute: typeof DemoAiImageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/ai-chat': {
-      id: '/demo/ai-chat'
-      path: '/demo/ai-chat'
-      fullPath: '/demo/ai-chat'
-      preLoaderRoute: typeof DemoAiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/remy-chat': {
@@ -606,181 +587,312 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRemyChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/demo/guitars/': {
-      id: '/demo/guitars/'
+    '/_appLayout/app/': {
+      id: '/_appLayout/app/'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppLayoutAppIndexRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
+    '/_demoLayout/demo/tanstack-query': {
+      id: '/_demoLayout/demo/tanstack-query'
+      path: '/demo/tanstack-query'
+      fullPath: '/demo/tanstack-query'
+      preLoaderRoute: typeof DemoLayoutDemoTanstackQueryRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/table': {
+      id: '/_demoLayout/demo/table'
+      path: '/demo/table'
+      fullPath: '/demo/table'
+      preLoaderRoute: typeof DemoLayoutDemoTableRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/storybook': {
+      id: '/_demoLayout/demo/storybook'
+      path: '/demo/storybook'
+      fullPath: '/demo/storybook'
+      preLoaderRoute: typeof DemoLayoutDemoStorybookRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/store': {
+      id: '/_demoLayout/demo/store'
+      path: '/demo/store'
+      fullPath: '/demo/store'
+      preLoaderRoute: typeof DemoLayoutDemoStoreRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/convex': {
+      id: '/_demoLayout/demo/convex'
+      path: '/demo/convex'
+      fullPath: '/demo/convex'
+      preLoaderRoute: typeof DemoLayoutDemoConvexRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/clerk': {
+      id: '/_demoLayout/demo/clerk'
+      path: '/demo/clerk'
+      fullPath: '/demo/clerk'
+      preLoaderRoute: typeof DemoLayoutDemoClerkRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/ai-structured': {
+      id: '/_demoLayout/demo/ai-structured'
+      path: '/demo/ai-structured'
+      fullPath: '/demo/ai-structured'
+      preLoaderRoute: typeof DemoLayoutDemoAiStructuredRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/ai-image': {
+      id: '/_demoLayout/demo/ai-image'
+      path: '/demo/ai-image'
+      fullPath: '/demo/ai-image'
+      preLoaderRoute: typeof DemoLayoutDemoAiImageRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/ai-chat': {
+      id: '/_demoLayout/demo/ai-chat'
+      path: '/demo/ai-chat'
+      fullPath: '/demo/ai-chat'
+      preLoaderRoute: typeof DemoLayoutDemoAiChatRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_appLayout/app/order': {
+      id: '/_appLayout/app/order'
+      path: '/app/order'
+      fullPath: '/app/order'
+      preLoaderRoute: typeof AppLayoutAppOrderRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
+    '/_demoLayout/demo/guitars/': {
+      id: '/_demoLayout/demo/guitars/'
       path: '/demo/guitars'
       fullPath: '/demo/guitars'
-      preLoaderRoute: typeof DemoGuitarsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoGuitarsIndexRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/start/server-funcs': {
-      id: '/demo/start/server-funcs'
+    '/_demoLayout/demo/start/server-funcs': {
+      id: '/_demoLayout/demo/start/server-funcs'
       path: '/demo/start/server-funcs'
       fullPath: '/demo/start/server-funcs'
-      preLoaderRoute: typeof DemoStartServerFuncsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoStartServerFuncsRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/start/api-request': {
-      id: '/demo/start/api-request'
+    '/_demoLayout/demo/start/api-request': {
+      id: '/_demoLayout/demo/start/api-request'
       path: '/demo/start/api-request'
       fullPath: '/demo/start/api-request'
-      preLoaderRoute: typeof DemoStartApiRequestRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoStartApiRequestRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/sentry/testing': {
-      id: '/demo/sentry/testing'
+    '/_demoLayout/demo/sentry/testing': {
+      id: '/_demoLayout/demo/sentry/testing'
       path: '/demo/sentry/testing'
       fullPath: '/demo/sentry/testing'
-      preLoaderRoute: typeof DemoSentryTestingRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoSentryTestingRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/guitars/$guitarId': {
-      id: '/demo/guitars/$guitarId'
+    '/_demoLayout/demo/guitars/$guitarId': {
+      id: '/_demoLayout/demo/guitars/$guitarId'
       path: '/demo/guitars/$guitarId'
       fullPath: '/demo/guitars/$guitarId'
-      preLoaderRoute: typeof DemoGuitarsGuitarIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoGuitarsGuitarIdRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/form/simple': {
-      id: '/demo/form/simple'
+    '/_demoLayout/demo/form/simple': {
+      id: '/_demoLayout/demo/form/simple'
       path: '/demo/form/simple'
       fullPath: '/demo/form/simple'
-      preLoaderRoute: typeof DemoFormSimpleRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoFormSimpleRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/form/address': {
-      id: '/demo/form/address'
+    '/_demoLayout/demo/form/address': {
+      id: '/_demoLayout/demo/form/address'
       path: '/demo/form/address'
       fullPath: '/demo/form/address'
-      preLoaderRoute: typeof DemoFormAddressRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoFormAddressRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/api/tq-todos': {
-      id: '/demo/api/tq-todos'
+    '/_demoLayout/demo/api/tq-todos': {
+      id: '/_demoLayout/demo/api/tq-todos'
       path: '/demo/api/tq-todos'
       fullPath: '/demo/api/tq-todos'
-      preLoaderRoute: typeof DemoApiTqTodosRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoApiTqTodosRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/api/names': {
-      id: '/demo/api/names'
+    '/_demoLayout/demo/api/names': {
+      id: '/_demoLayout/demo/api/names'
       path: '/demo/api/names'
       fullPath: '/demo/api/names'
-      preLoaderRoute: typeof DemoApiNamesRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoApiNamesRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/start/ssr/': {
-      id: '/demo/start/ssr/'
+    '/_demoLayout/demo/start/ssr/': {
+      id: '/_demoLayout/demo/start/ssr/'
       path: '/demo/start/ssr'
       fullPath: '/demo/start/ssr'
-      preLoaderRoute: typeof DemoStartSsrIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoStartSsrIndexRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/start/ssr/spa-mode': {
-      id: '/demo/start/ssr/spa-mode'
+    '/_demoLayout/demo/start/ssr/spa-mode': {
+      id: '/_demoLayout/demo/start/ssr/spa-mode'
       path: '/demo/start/ssr/spa-mode'
       fullPath: '/demo/start/ssr/spa-mode'
-      preLoaderRoute: typeof DemoStartSsrSpaModeRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoStartSsrSpaModeRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/start/ssr/full-ssr': {
-      id: '/demo/start/ssr/full-ssr'
+    '/_demoLayout/demo/start/ssr/full-ssr': {
+      id: '/_demoLayout/demo/start/ssr/full-ssr'
       path: '/demo/start/ssr/full-ssr'
       fullPath: '/demo/start/ssr/full-ssr'
-      preLoaderRoute: typeof DemoStartSsrFullSsrRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoStartSsrFullSsrRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/start/ssr/data-only': {
-      id: '/demo/start/ssr/data-only'
+    '/_demoLayout/demo/start/ssr/data-only': {
+      id: '/_demoLayout/demo/start/ssr/data-only'
       path: '/demo/start/ssr/data-only'
       fullPath: '/demo/start/ssr/data-only'
-      preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoStartSsrDataOnlyRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/api/ai/tts': {
-      id: '/demo/api/ai/tts'
+    '/_demoLayout/demo/api/ai/tts': {
+      id: '/_demoLayout/demo/api/ai/tts'
       path: '/demo/api/ai/tts'
       fullPath: '/demo/api/ai/tts'
-      preLoaderRoute: typeof DemoApiAiTtsRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoApiAiTtsRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/api/ai/transcription': {
-      id: '/demo/api/ai/transcription'
+    '/_demoLayout/demo/api/ai/transcription': {
+      id: '/_demoLayout/demo/api/ai/transcription'
       path: '/demo/api/ai/transcription'
       fullPath: '/demo/api/ai/transcription'
-      preLoaderRoute: typeof DemoApiAiTranscriptionRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoApiAiTranscriptionRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/api/ai/structured': {
-      id: '/demo/api/ai/structured'
+    '/_demoLayout/demo/api/ai/structured': {
+      id: '/_demoLayout/demo/api/ai/structured'
       path: '/demo/api/ai/structured'
       fullPath: '/demo/api/ai/structured'
-      preLoaderRoute: typeof DemoApiAiStructuredRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoApiAiStructuredRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/api/ai/image': {
-      id: '/demo/api/ai/image'
+    '/_demoLayout/demo/api/ai/image': {
+      id: '/_demoLayout/demo/api/ai/image'
       path: '/demo/api/ai/image'
       fullPath: '/demo/api/ai/image'
-      preLoaderRoute: typeof DemoApiAiImageRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoApiAiImageRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
-    '/demo/api/ai/chat': {
-      id: '/demo/api/ai/chat'
+    '/_demoLayout/demo/api/ai/chat': {
+      id: '/_demoLayout/demo/api/ai/chat'
       path: '/demo/api/ai/chat'
       fullPath: '/demo/api/ai/chat'
-      preLoaderRoute: typeof DemoApiAiChatRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof DemoLayoutDemoApiAiChatRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
   }
 }
 
+interface AppLayoutRouteRouteChildren {
+  AppLayoutAppOrderRoute: typeof AppLayoutAppOrderRoute
+  AppLayoutAppIndexRoute: typeof AppLayoutAppIndexRoute
+}
+
+const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
+  AppLayoutAppOrderRoute: AppLayoutAppOrderRoute,
+  AppLayoutAppIndexRoute: AppLayoutAppIndexRoute,
+}
+
+const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
+  AppLayoutRouteRouteChildren,
+)
+
+interface DemoLayoutRouteRouteChildren {
+  DemoLayoutDemoAiChatRoute: typeof DemoLayoutDemoAiChatRoute
+  DemoLayoutDemoAiImageRoute: typeof DemoLayoutDemoAiImageRoute
+  DemoLayoutDemoAiStructuredRoute: typeof DemoLayoutDemoAiStructuredRoute
+  DemoLayoutDemoClerkRoute: typeof DemoLayoutDemoClerkRoute
+  DemoLayoutDemoConvexRoute: typeof DemoLayoutDemoConvexRoute
+  DemoLayoutDemoStoreRoute: typeof DemoLayoutDemoStoreRoute
+  DemoLayoutDemoStorybookRoute: typeof DemoLayoutDemoStorybookRoute
+  DemoLayoutDemoTableRoute: typeof DemoLayoutDemoTableRoute
+  DemoLayoutDemoTanstackQueryRoute: typeof DemoLayoutDemoTanstackQueryRoute
+  DemoLayoutDemoApiNamesRoute: typeof DemoLayoutDemoApiNamesRoute
+  DemoLayoutDemoApiTqTodosRoute: typeof DemoLayoutDemoApiTqTodosRoute
+  DemoLayoutDemoFormAddressRoute: typeof DemoLayoutDemoFormAddressRoute
+  DemoLayoutDemoFormSimpleRoute: typeof DemoLayoutDemoFormSimpleRoute
+  DemoLayoutDemoGuitarsGuitarIdRoute: typeof DemoLayoutDemoGuitarsGuitarIdRoute
+  DemoLayoutDemoSentryTestingRoute: typeof DemoLayoutDemoSentryTestingRoute
+  DemoLayoutDemoStartApiRequestRoute: typeof DemoLayoutDemoStartApiRequestRoute
+  DemoLayoutDemoStartServerFuncsRoute: typeof DemoLayoutDemoStartServerFuncsRoute
+  DemoLayoutDemoGuitarsIndexRoute: typeof DemoLayoutDemoGuitarsIndexRoute
+  DemoLayoutDemoApiAiChatRoute: typeof DemoLayoutDemoApiAiChatRoute
+  DemoLayoutDemoApiAiImageRoute: typeof DemoLayoutDemoApiAiImageRoute
+  DemoLayoutDemoApiAiStructuredRoute: typeof DemoLayoutDemoApiAiStructuredRoute
+  DemoLayoutDemoApiAiTranscriptionRoute: typeof DemoLayoutDemoApiAiTranscriptionRoute
+  DemoLayoutDemoApiAiTtsRoute: typeof DemoLayoutDemoApiAiTtsRoute
+  DemoLayoutDemoStartSsrDataOnlyRoute: typeof DemoLayoutDemoStartSsrDataOnlyRoute
+  DemoLayoutDemoStartSsrFullSsrRoute: typeof DemoLayoutDemoStartSsrFullSsrRoute
+  DemoLayoutDemoStartSsrSpaModeRoute: typeof DemoLayoutDemoStartSsrSpaModeRoute
+  DemoLayoutDemoStartSsrIndexRoute: typeof DemoLayoutDemoStartSsrIndexRoute
+}
+
+const DemoLayoutRouteRouteChildren: DemoLayoutRouteRouteChildren = {
+  DemoLayoutDemoAiChatRoute: DemoLayoutDemoAiChatRoute,
+  DemoLayoutDemoAiImageRoute: DemoLayoutDemoAiImageRoute,
+  DemoLayoutDemoAiStructuredRoute: DemoLayoutDemoAiStructuredRoute,
+  DemoLayoutDemoClerkRoute: DemoLayoutDemoClerkRoute,
+  DemoLayoutDemoConvexRoute: DemoLayoutDemoConvexRoute,
+  DemoLayoutDemoStoreRoute: DemoLayoutDemoStoreRoute,
+  DemoLayoutDemoStorybookRoute: DemoLayoutDemoStorybookRoute,
+  DemoLayoutDemoTableRoute: DemoLayoutDemoTableRoute,
+  DemoLayoutDemoTanstackQueryRoute: DemoLayoutDemoTanstackQueryRoute,
+  DemoLayoutDemoApiNamesRoute: DemoLayoutDemoApiNamesRoute,
+  DemoLayoutDemoApiTqTodosRoute: DemoLayoutDemoApiTqTodosRoute,
+  DemoLayoutDemoFormAddressRoute: DemoLayoutDemoFormAddressRoute,
+  DemoLayoutDemoFormSimpleRoute: DemoLayoutDemoFormSimpleRoute,
+  DemoLayoutDemoGuitarsGuitarIdRoute: DemoLayoutDemoGuitarsGuitarIdRoute,
+  DemoLayoutDemoSentryTestingRoute: DemoLayoutDemoSentryTestingRoute,
+  DemoLayoutDemoStartApiRequestRoute: DemoLayoutDemoStartApiRequestRoute,
+  DemoLayoutDemoStartServerFuncsRoute: DemoLayoutDemoStartServerFuncsRoute,
+  DemoLayoutDemoGuitarsIndexRoute: DemoLayoutDemoGuitarsIndexRoute,
+  DemoLayoutDemoApiAiChatRoute: DemoLayoutDemoApiAiChatRoute,
+  DemoLayoutDemoApiAiImageRoute: DemoLayoutDemoApiAiImageRoute,
+  DemoLayoutDemoApiAiStructuredRoute: DemoLayoutDemoApiAiStructuredRoute,
+  DemoLayoutDemoApiAiTranscriptionRoute: DemoLayoutDemoApiAiTranscriptionRoute,
+  DemoLayoutDemoApiAiTtsRoute: DemoLayoutDemoApiAiTtsRoute,
+  DemoLayoutDemoStartSsrDataOnlyRoute: DemoLayoutDemoStartSsrDataOnlyRoute,
+  DemoLayoutDemoStartSsrFullSsrRoute: DemoLayoutDemoStartSsrFullSsrRoute,
+  DemoLayoutDemoStartSsrSpaModeRoute: DemoLayoutDemoStartSsrSpaModeRoute,
+  DemoLayoutDemoStartSsrIndexRoute: DemoLayoutDemoStartSsrIndexRoute,
+}
+
+const DemoLayoutRouteRouteWithChildren = DemoLayoutRouteRoute._addFileChildren(
+  DemoLayoutRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
+  DemoLayoutRouteRoute: DemoLayoutRouteRouteWithChildren,
   ApiRemyChatRoute: ApiRemyChatRoute,
-  DemoAiChatRoute: DemoAiChatRoute,
-  DemoAiImageRoute: DemoAiImageRoute,
-  DemoAiStructuredRoute: DemoAiStructuredRoute,
-  DemoClerkRoute: DemoClerkRoute,
-  DemoConvexRoute: DemoConvexRoute,
   DemoI18nRoute: DemoI18nRoute,
-  DemoStoreRoute: DemoStoreRoute,
-  DemoStorybookRoute: DemoStorybookRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
   SpeakersSlugRoute: SpeakersSlugRoute,
   TalksSlugRoute: TalksSlugRoute,
   ScheduleIndexRoute: ScheduleIndexRoute,
   SpeakersIndexRoute: SpeakersIndexRoute,
   TalksIndexRoute: TalksIndexRoute,
-  DemoApiNamesRoute: DemoApiNamesRoute,
-  DemoApiTqTodosRoute: DemoApiTqTodosRoute,
-  DemoFormAddressRoute: DemoFormAddressRoute,
-  DemoFormSimpleRoute: DemoFormSimpleRoute,
-  DemoGuitarsGuitarIdRoute: DemoGuitarsGuitarIdRoute,
-  DemoSentryTestingRoute: DemoSentryTestingRoute,
-  DemoStartApiRequestRoute: DemoStartApiRequestRoute,
-  DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
-  DemoGuitarsIndexRoute: DemoGuitarsIndexRoute,
-  DemoApiAiChatRoute: DemoApiAiChatRoute,
-  DemoApiAiImageRoute: DemoApiAiImageRoute,
-  DemoApiAiStructuredRoute: DemoApiAiStructuredRoute,
-  DemoApiAiTranscriptionRoute: DemoApiAiTranscriptionRoute,
-  DemoApiAiTtsRoute: DemoApiAiTtsRoute,
-  DemoStartSsrDataOnlyRoute: DemoStartSsrDataOnlyRoute,
-  DemoStartSsrFullSsrRoute: DemoStartSsrFullSsrRoute,
-  DemoStartSsrSpaModeRoute: DemoStartSsrSpaModeRoute,
-  DemoStartSsrIndexRoute: DemoStartSsrIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

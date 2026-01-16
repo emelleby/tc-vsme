@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router'
 import {
 	BookOpen,
 	ChefHat,
@@ -17,30 +17,31 @@ import {
 	Store,
 	Table,
 	X,
-} from "lucide-react";
-import { useState } from "react";
-import ClerkHeader from "../integrations/clerk/header-user.tsx";
-import TanChatAIAssistant from "./demo-AIAssistant.tsx";
-import ParaglideLocaleSwitcher from "./LocaleSwitcher.tsx";
-import RemyButton from "./RemyButton";
+} from 'lucide-react'
+import { useState } from 'react'
+import ClerkHeader from '../integrations/clerk/header-user.tsx'
+import TanChatAIAssistant from './demo-AIAssistant.tsx'
+import ParaglideLocaleSwitcher from './LocaleSwitcher.tsx'
+import RemyButton from './RemyButton'
+import { Button } from './ui/button.tsx'
 
 export default function Header() {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false)
 	const [groupedExpanded, setGroupedExpanded] = useState<
 		Record<string, boolean>
-	>({});
+	>({})
 
 	return (
 		<>
-			<header className="p-4 flex items-center bg-gray-800 text-white shadow-lg">
-				<button
+			<header className="p-4 gap-4 flex items-center bg-gray-800 text-white shadow-lg">
+				<Button
 					type="button"
 					onClick={() => setIsOpen(true)}
 					className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
 					aria-label="Open menu"
 				>
 					<Menu size={24} />
-				</button>
+				</Button>
 				<h1 className="ml-4 text-xl font-semibold">
 					<Link to="/">
 						<img
@@ -50,19 +51,23 @@ export default function Header() {
 						/>
 					</Link>
 				</h1>
-				<button
+				<Button
 					type="button"
+					variant="destructive"
 					onClick={() => {
-						throw new Error("Sentry Test Error");
+						throw new Error('Sentry Test Error')
 					}}
 				>
-					Break the world
-				</button>
+					Break the world!
+				</Button>
+				<Link to="/app">
+					<Button variant="outline">App</Button>
+				</Link>
 			</header>
 
 			<aside
 				className={`fixed top-0 left-0 h-full w-80 bg-gray-900 text-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
-					isOpen ? "translate-x-0" : "-translate-x-full"
+					isOpen ? 'translate-x-0' : '-translate-x-full'
 				}`}
 			>
 				<div className="flex items-center justify-between p-4 border-b border-gray-700">
@@ -84,7 +89,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Home size={20} />
@@ -99,7 +104,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Globe size={20} />
@@ -112,7 +117,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Globe size={20} />
@@ -125,7 +130,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Globe size={20} />
@@ -138,7 +143,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<MessagesSquare size={20} />
@@ -151,7 +156,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<ImageIcon size={20} />
@@ -164,7 +169,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<ChefHat size={20} />
@@ -177,7 +182,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<ClipboardType size={20} />
@@ -190,7 +195,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<ClipboardType size={20} />
@@ -203,7 +208,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Languages size={20} />
@@ -216,7 +221,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Table size={20} />
@@ -229,7 +234,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<SquareFunction size={20} />
@@ -242,7 +247,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Network size={20} />
@@ -256,7 +261,7 @@ export default function Header() {
 							className="flex-1 flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 							activeProps={{
 								className:
-									"flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+									'flex-1 flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 							}}
 						>
 							<StickyNote size={20} />
@@ -287,7 +292,7 @@ export default function Header() {
 								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 								}}
 							>
 								<StickyNote size={20} />
@@ -300,7 +305,7 @@ export default function Header() {
 								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 								}}
 							>
 								<StickyNote size={20} />
@@ -313,7 +318,7 @@ export default function Header() {
 								className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 								activeProps={{
 									className:
-										"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+										'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 								}}
 							>
 								<StickyNote size={20} />
@@ -328,7 +333,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Store size={20} />
@@ -341,7 +346,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<BookOpen size={20} />
@@ -354,7 +359,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Network size={20} />
@@ -367,7 +372,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Globe size={20} />
@@ -380,7 +385,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Globe size={20} />
@@ -393,7 +398,7 @@ export default function Header() {
 						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2"
 						activeProps={{
 							className:
-								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2",
+								'flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2',
 						}}
 					>
 						<Globe size={20} />
@@ -414,5 +419,5 @@ export default function Header() {
 				</div>
 			</aside>
 		</>
-	);
+	)
 }
