@@ -12,7 +12,6 @@ import { Toaster } from 'sonner'
 import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary'
 import { NotFound } from '@/components/NotFound'
 import { getLocale, shouldRedirect } from '@/paraglide/runtime'
-import Header from '../components/Header'
 import ClerkProvider from '../integrations/clerk/provider'
 import ConvexProvider from '../integrations/convex/provider'
 
