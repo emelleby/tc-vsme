@@ -62,7 +62,7 @@ export function OrderForm() {
 	const isDefault = useStore(orderForm.store, (state) => state.isDefaultValue)
 
 	return (
-		<div className="container mx-auto rounded-lg border mt-4">
+		<div className="container mx-auto rounded-lg border border-border mt-4">
 			<orderForm.AppForm>
 				<orderForm.Form>
 					<h1 className="text-3xl font-bold">Place Your Order</h1>
