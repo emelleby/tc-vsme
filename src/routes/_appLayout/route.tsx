@@ -5,6 +5,7 @@ import { createFileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
 import { AppSidebar } from '@/components/app-sidebar'
+import { ThemeSwitcher } from '@/components/ThemeSwitcher'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -41,12 +42,12 @@ export const Route = createFileRoute('/_appLayout')({
 })
 
 function RouteComponent() {
-	const state = Route.useLoaderData()
+	Route.useLoaderData()
 	return (
 		<SidebarProvider>
 			<AppSidebar />
 			<SidebarInset>
-				<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+				<header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
 					<div className="flex items-center gap-2 px-4">
 						<SidebarTrigger className="-ml-1" />
 						<Separator orientation="vertical" className="mr-2 h-4" />
@@ -63,6 +64,9 @@ function RouteComponent() {
 								</BreadcrumbItem>
 							</BreadcrumbList>
 						</Breadcrumb>
+					</div>
+					<div className="flex items-center gap-2 px-4">
+						<ThemeSwitcher />
 					</div>
 				</header>
 				<div className="flex flex-1 flex-col gap-4 p-4 pt-0">

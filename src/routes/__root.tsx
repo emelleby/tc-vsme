@@ -11,10 +11,10 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { Toaster } from 'sonner'
 import { DefaultCatchBoundary } from '@/components/DefaultCatchBoundary'
 import { NotFound } from '@/components/NotFound'
+import { useTheme } from '@/hooks/use-theme'
 import { getLocale, shouldRedirect } from '@/paraglide/runtime'
 import ClerkProvider from '../integrations/clerk/provider'
 import ConvexProvider from '../integrations/convex/provider'
-
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import AiDevtools from '../lib/ai-devtools'
 import StoreDevtools from '../lib/demo-store-devtools'
@@ -64,10 +64,16 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 	shellComponent: RootComponent,
 })
+function ThemeInitializer() {
+	useTheme()
+	return null
+}
+
 function RootComponent() {
 	return (
 		<ClerkProvider>
 			<ConvexProvider>
+				<ThemeInitializer />
 				<RootDocument>
 					<Outlet />
 				</RootDocument>
