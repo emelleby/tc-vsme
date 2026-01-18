@@ -1,0 +1,17 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "home_page": "Hjemmeside",
+  "about_page": "Om oss",
+  "example_message": "Velkommen til din i18n-app.",
+  "language_label": "Språk",
+  "current_locale": "Gjeldende språk: {locale}",
+  "learn_router": "Lær Paraglide JS",
+  "nav_home": "Hjem",
+  "nav_about": "Om oss",
+  "nav_back_to_main": "Tilbake til hovedside",
+  "nav_demo": "Demo",
+  "index_title": "Hjemmeside kombinert",
+  "index_demo": "Demo",
+  "index_app": "App"
+}
+

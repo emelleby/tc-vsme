@@ -65,6 +65,9 @@ export default function DemoHeader() {
 						App
 					</Button>
 				</Link>
+				<Button variant="outline" asChild>
+					<Link to="/">Back to Main</Link>
+				</Button>
 			</header>
 
 			<aside
