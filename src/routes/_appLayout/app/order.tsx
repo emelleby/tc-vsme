@@ -25,8 +25,34 @@ export function OrderForm() {
 		} as z.input<typeof orderFormSchema>,
 		validationLogic: revalidateLogic(),
 		validators: { onDynamic: orderFormSchema, onDynamicAsyncDebounceMs: 500 },
-		onSubmit: () => {
-			toast.success('success')
+		onSubmit: async ({ value }) => {
+			console.log('Form data:', value)
+			toast.success(
+				<div className="text-sm">
+					<p className="font-semibold mb-2">Order Submitted</p>
+					<div className="space-y-1">
+						<p>
+							<strong>Product:</strong> {value.product}
+						</p>
+						<p>
+							<strong>Name:</strong> {value.firstName} {value.lastName}
+						</p>
+						<p>
+							<strong>Email:</strong> {value.email}
+						</p>
+						<p>
+							<strong>Address: </strong> {value.street_address}, {value.zip},{' '}
+							{value.city}
+						</p>
+						<p>
+							<strong>Payment:</strong> {value.paymentMethod}
+						</p>
+						<p>
+							<strong>Terms Agreed:</strong> {value.terms ? 'Yes' : 'No'}
+						</p>
+					</div>
+				</div>,
+			)
 		},
 		onSubmitInvalid({ formApi }) {
 			const errorMap = formApi.state.errorMap['onDynamic']!

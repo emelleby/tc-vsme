@@ -39,5 +39,6 @@ export const WithValue: Story = {
     id: 'lastName',
     value: 'Doe',
     placeholder: 'Enter last name',
+    required: true
   },
 }

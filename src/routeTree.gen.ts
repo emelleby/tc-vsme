@@ -19,6 +19,7 @@ import { Route as TalksSlugRouteImport } from './routes/talks.$slug'
 import { Route as SpeakersSlugRouteImport } from './routes/speakers.$slug'
 import { Route as DemoI18nRouteImport } from './routes/demo.i18n'
 import { Route as ApiRemyChatRouteImport } from './routes/api.remy-chat'
+import { Route as DemoLayoutAboutRouteImport } from './routes/_demoLayout/about'
 import { Route as DemoLayoutDemoIndexRouteImport } from './routes/_demoLayout/demo/index'
 import { Route as AppLayoutAppIndexRouteImport } from './routes/_appLayout/app/index'
 import { Route as DemoLayoutDemoTanstackQueryRouteImport } from './routes/_demoLayout/demo/tanstack-query'
@@ -97,6 +98,11 @@ const ApiRemyChatRoute = ApiRemyChatRouteImport.update({
   id: '/api/remy-chat',
   path: '/api/remy-chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DemoLayoutAboutRoute = DemoLayoutAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => DemoLayoutRouteRoute,
 } as any)
 const DemoLayoutDemoIndexRoute = DemoLayoutDemoIndexRouteImport.update({
   id: '/demo/',
@@ -268,6 +274,7 @@ const DemoLayoutDemoApiAiChatRoute = DemoLayoutDemoApiAiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof DemoLayoutAboutRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
   '/demo/i18n': typeof DemoI18nRoute
   '/speakers/$slug': typeof SpeakersSlugRoute
@@ -308,6 +315,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof DemoLayoutAboutRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
   '/demo/i18n': typeof DemoI18nRoute
   '/speakers/$slug': typeof SpeakersSlugRoute
@@ -351,6 +359,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_appLayout': typeof AppLayoutRouteRouteWithChildren
   '/_demoLayout': typeof DemoLayoutRouteRouteWithChildren
+  '/_demoLayout/about': typeof DemoLayoutAboutRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
   '/demo/i18n': typeof DemoI18nRoute
   '/speakers/$slug': typeof SpeakersSlugRoute
@@ -393,6 +402,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/api/remy-chat'
     | '/demo/i18n'
     | '/speakers/$slug'
@@ -433,6 +443,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/api/remy-chat'
     | '/demo/i18n'
     | '/speakers/$slug'
@@ -475,6 +486,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_appLayout'
     | '/_demoLayout'
+    | '/_demoLayout/about'
     | '/api/remy-chat'
     | '/demo/i18n'
     | '/speakers/$slug'
@@ -598,6 +610,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/remy-chat'
       preLoaderRoute: typeof ApiRemyChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_demoLayout/about': {
+      id: '/_demoLayout/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof DemoLayoutAboutRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
     }
     '/_demoLayout/demo/': {
       id: '/_demoLayout/demo/'
@@ -827,6 +846,7 @@ const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(
 )
 
 interface DemoLayoutRouteRouteChildren {
+  DemoLayoutAboutRoute: typeof DemoLayoutAboutRoute
   DemoLayoutDemoAiChatRoute: typeof DemoLayoutDemoAiChatRoute
   DemoLayoutDemoAiImageRoute: typeof DemoLayoutDemoAiImageRoute
   DemoLayoutDemoAiStructuredRoute: typeof DemoLayoutDemoAiStructuredRoute
@@ -858,6 +878,7 @@ interface DemoLayoutRouteRouteChildren {
 }
 
 const DemoLayoutRouteRouteChildren: DemoLayoutRouteRouteChildren = {
+  DemoLayoutAboutRoute: DemoLayoutAboutRoute,
   DemoLayoutDemoAiChatRoute: DemoLayoutDemoAiChatRoute,
   DemoLayoutDemoAiImageRoute: DemoLayoutDemoAiImageRoute,
   DemoLayoutDemoAiStructuredRoute: DemoLayoutDemoAiStructuredRoute,
