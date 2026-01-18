@@ -12,6 +12,18 @@
   "nav_demo": "Demo",
   "index_title": "Hjemmeside kombinert",
   "index_demo": "Demo",
-  "index_app": "App"
+  "index_app": "App",
+  "about_title": "Om denne demoen",
+  "about_intro": "Velkommen til TanStack-demoapplikasjonen. Denne delen viser ulike funksjoner og integrasjoner bygget med moderne webteknologier.",
+  "about_whats_included": "Hva som er inkludert",
+  "about_router": "TanStack Router for kraftig ruting og navigasjon",
+  "about_query": "TanStack Query for håndtering av servertilstand",
+  "about_form": "TanStack Form for fleksibel skjemahåndtering",
+  "about_clerk": "Clerk for autentisering og brukeradministrasjon",
+  "about_convex": "Convex for backend-database og sanntidsfunksjoner",
+  "about_ai": "AI-integrasjoner for chat, bildegenerering og mer",
+  "about_explore": "Utforsk demoene",
+  "about_explore_desc": "Naviger gjennom de ulike deleseksjonene ved hjelp av menyen for å se disse teknologiene i aksjon. Hver demo er designet for å vise spesifikke muligheter og beste praksis.",
+  "about_note": "Merk: Denne deleseksjonen vil bli fjernet i fremtidige versjoner av applikasjonen."
 }
 

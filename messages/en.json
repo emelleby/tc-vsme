@@ -12,5 +12,17 @@
   "nav_demo": "Demo",
   "index_title": "Home Page Combined",
   "index_demo": "Demo",
-  "index_app": "App"
+  "index_app": "App",
+  "about_title": "About This Demo",
+  "about_intro": "Welcome to the TanStack demo application. This section showcases various features and integrations built with modern web technologies.",
+  "about_whats_included": "What's Included",
+  "about_router": "TanStack Router for powerful routing and navigation",
+  "about_query": "TanStack Query for server state management",
+  "about_form": "TanStack Form for flexible form handling",
+  "about_clerk": "Clerk for authentication and user management",
+  "about_convex": "Convex for backend database and real-time features",
+  "about_ai": "AI integrations for chat, image generation, and more",
+  "about_explore": "Explore the Demos",
+  "about_explore_desc": "Navigate through the different demo sections using the menu to see these technologies in action. Each demo is designed to showcase specific capabilities and best practices.",
+  "about_note": "Note: This demo section will be removed in future versions of the application."
 }
