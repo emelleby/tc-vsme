@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignUpRouteImport } from './routes/sign-up'
+import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as DemoLayoutRouteRouteImport } from './routes/_demoLayout/route'
 import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -51,6 +53,16 @@ import { Route as DemoLayoutDemoApiAiStructuredRouteImport } from './routes/_dem
 import { Route as DemoLayoutDemoApiAiImageRouteImport } from './routes/_demoLayout/demo/api.ai.image'
 import { Route as DemoLayoutDemoApiAiChatRouteImport } from './routes/_demoLayout/demo/api.ai.chat'
 
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoLayoutRouteRoute = DemoLayoutRouteRouteImport.update({
   id: '/_demoLayout',
   getParentRoute: () => rootRouteImport,
@@ -274,6 +286,8 @@ const DemoLayoutDemoApiAiChatRoute = DemoLayoutDemoApiAiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/about': typeof DemoLayoutAboutRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
   '/demo/i18n': typeof DemoI18nRoute
@@ -315,6 +329,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/about': typeof DemoLayoutAboutRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
   '/demo/i18n': typeof DemoI18nRoute
@@ -359,6 +375,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_appLayout': typeof AppLayoutRouteRouteWithChildren
   '/_demoLayout': typeof DemoLayoutRouteRouteWithChildren
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/_demoLayout/about': typeof DemoLayoutAboutRoute
   '/api/remy-chat': typeof ApiRemyChatRoute
   '/demo/i18n': typeof DemoI18nRoute
@@ -402,6 +420,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/sign-in'
+    | '/sign-up'
     | '/about'
     | '/api/remy-chat'
     | '/demo/i18n'
@@ -443,6 +463,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/sign-in'
+    | '/sign-up'
     | '/about'
     | '/api/remy-chat'
     | '/demo/i18n'
@@ -486,6 +508,8 @@ export interface FileRouteTypes {
     | '/'
     | '/_appLayout'
     | '/_demoLayout'
+    | '/sign-in'
+    | '/sign-up'
     | '/_demoLayout/about'
     | '/api/remy-chat'
     | '/demo/i18n'
@@ -530,6 +554,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
   DemoLayoutRouteRoute: typeof DemoLayoutRouteRouteWithChildren
+  SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
   ApiRemyChatRoute: typeof ApiRemyChatRoute
   DemoI18nRoute: typeof DemoI18nRoute
   SpeakersSlugRoute: typeof SpeakersSlugRoute
@@ -541,6 +567,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_demoLayout': {
       id: '/_demoLayout'
       path: ''
@@ -917,6 +957,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
   DemoLayoutRouteRoute: DemoLayoutRouteRouteWithChildren,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
   ApiRemyChatRoute: ApiRemyChatRoute,
   DemoI18nRoute: DemoI18nRoute,
   SpeakersSlugRoute: SpeakersSlugRoute,
