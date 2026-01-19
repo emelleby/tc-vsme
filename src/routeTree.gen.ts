@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as CreateOrganizationRouteImport } from './routes/create-organization'
 import { Route as DemoLayoutRouteRouteImport } from './routes/_demoLayout/route'
 import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
@@ -61,6 +62,11 @@ const SignUpRoute = SignUpRouteImport.update({
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
+  id: '/create-organization',
+  path: '/create-organization',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoLayoutRouteRoute = DemoLayoutRouteRouteImport.update({
@@ -286,6 +292,7 @@ const DemoLayoutDemoApiAiChatRoute = DemoLayoutDemoApiAiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/create-organization': typeof CreateOrganizationRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/about': typeof DemoLayoutAboutRoute
@@ -329,6 +336,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/create-organization': typeof CreateOrganizationRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/about': typeof DemoLayoutAboutRoute
@@ -375,6 +383,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_appLayout': typeof AppLayoutRouteRouteWithChildren
   '/_demoLayout': typeof DemoLayoutRouteRouteWithChildren
+  '/create-organization': typeof CreateOrganizationRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/_demoLayout/about': typeof DemoLayoutAboutRoute
@@ -420,6 +429,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/create-organization'
     | '/sign-in'
     | '/sign-up'
     | '/about'
@@ -463,6 +473,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/create-organization'
     | '/sign-in'
     | '/sign-up'
     | '/about'
@@ -508,6 +519,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_appLayout'
     | '/_demoLayout'
+    | '/create-organization'
     | '/sign-in'
     | '/sign-up'
     | '/_demoLayout/about'
@@ -554,6 +566,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
   DemoLayoutRouteRoute: typeof DemoLayoutRouteRouteWithChildren
+  CreateOrganizationRoute: typeof CreateOrganizationRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   ApiRemyChatRoute: typeof ApiRemyChatRoute
@@ -579,6 +592,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/create-organization': {
+      id: '/create-organization'
+      path: '/create-organization'
+      fullPath: '/create-organization'
+      preLoaderRoute: typeof CreateOrganizationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_demoLayout': {
@@ -957,6 +977,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
   DemoLayoutRouteRoute: DemoLayoutRouteRouteWithChildren,
+  CreateOrganizationRoute: CreateOrganizationRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   ApiRemyChatRoute: ApiRemyChatRoute,

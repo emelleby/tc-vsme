@@ -8,6 +8,8 @@
  * authentication pattern.
  */
 
+// Server functions
+export { getAuthContext } from './context'
 // Types
 export type {
 	AuthContext,

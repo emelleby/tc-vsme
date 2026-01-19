@@ -1,3 +1,4 @@
+import { UserButton } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { m } from '@/paraglide/messages'
 import { getLocale, setLocale } from '@/paraglide/runtime'
@@ -54,9 +55,6 @@ export default function Header() {
 					</nav>
 					{/* Back to Main Button */}
 					<div className="flex items-center gap-4">
-						<Button variant="outline" asChild>
-							<Link to="/">{m.nav_back_to_main()}</Link>
-						</Button>
 						<LanguageSwitcher
 							languages={languages}
 							value={currentLocale}
@@ -64,6 +62,7 @@ export default function Header() {
 							variant="outline"
 						/>
 						<ThemeSwitcher />
+						<UserButton />
 					</div>
 				</div>
 			</div>
