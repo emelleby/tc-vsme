@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -20,6 +20,7 @@ export interface LanguageSwitcherProps {
 	variant?: 'outline' | 'ghost'
 	onChange?: (code: string) => void | Promise<void>
 	className?: string
+	showIcon?: boolean
 }
 
 export function LanguageSwitcher({
@@ -29,6 +30,7 @@ export function LanguageSwitcher({
 	variant = 'outline',
 	onChange,
 	className,
+	showIcon = false,
 }: LanguageSwitcherProps) {
 	const currentLanguage = languages.find((lang) => lang.code === value)
 	const displayLabel =
@@ -38,8 +40,8 @@ export function LanguageSwitcher({
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button variant={variant} size="sm" className={cn('gap-2', className)}>
-					{displayLabel}
-					<ChevronDown className="size-4" />
+					{showIcon ? <Globe className="size-4" /> : displayLabel}
+					{!showIcon && <ChevronDown className="size-4" />}
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align={align}>
