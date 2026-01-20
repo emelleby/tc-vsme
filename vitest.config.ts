@@ -11,9 +11,20 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'jsdom',
+		environmentMatchGlobs: [
+			// all tests in convex/ will run in edge-runtime
+			['convex/**', 'edge-runtime'],
+			// all other tests use jsdom
+			['**', 'jsdom'],
+		],
 		setupFiles: [],
 		include: ['**/__tests__/**/*.test.{ts,tsx}', '**/*.test.{ts,tsx}'],
 		exclude: ['node_modules', '.output', 'dist'],
+		server: {
+			deps: {
+				inline: ['convex-test'],
+			},
+		},
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'json', 'html'],

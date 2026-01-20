@@ -14,9 +14,11 @@
  */
 
 import { OrganizationSwitcher, useUser } from '@clerk/clerk-react'
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 import Header from '@/components/Header'
 import { getAuthContext } from '@/lib/auth'
+import { setupOrganization } from '@/lib/convex/setup-organization'
 
 /**
  * Route configuration with permission checks
@@ -56,6 +58,89 @@ export const Route = createFileRoute('/create-organization')({
 function CreateOrganizationPage() {
 	const { authContext } = Route.useRouteContext()
 	const { user } = useUser()
+	const navigate = useNavigate()
+	const [isSettingUp, setIsSettingUp] = useState(false)
+	const [error, setError] = useState<string | null>(null)
+
+	// Listen for organization changes
+	useEffect(() => {
+		const setupOrgInConvex = async () => {
+			// Only proceed if:
+			// 1. User has selected an org
+			// 2. Org doesn't have vsmeDb flag yet
+			// 3. Not already setting up
+			if (!authContext.orgId || authContext.vsmeDb || isSettingUp) {
+				return
+			}
+
+			setIsSettingUp(true)
+			setError(null)
+
+			try {
+				const result = await setupOrganization({
+					data: {
+						orgId: authContext.orgId,
+					},
+				})
+
+				if (result.success) {
+					// Success! Redirect to dashboard
+					// The _appLayout route will now pass because vsmeDb is true
+					navigate({ to: '/app' })
+				} else {
+					setError(result.error || 'Failed to set up organization')
+				}
+			} catch (err) {
+				const errorMessage =
+					err instanceof Error ? err.message : 'An unexpected error occurred'
+				setError(errorMessage)
+			} finally {
+				setIsSettingUp(false)
+			}
+		}
+
+		setupOrgInConvex()
+	}, [authContext.orgId, authContext.vsmeDb, navigate, isSettingUp])
+
+	// Show loading state while setting up
+	if (isSettingUp) {
+		return (
+			<>
+				<Header />
+				<div className="min-h-screen flex items-center justify-center">
+					<div className="text-center space-y-4">
+						<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+						<p className="text-muted-foreground">
+							Setting up your organization...
+						</p>
+					</div>
+				</div>
+			</>
+		)
+	}
+
+	// Show error if setup failed
+	if (error) {
+		return (
+			<>
+				<Header />
+				<div className="min-h-screen flex items-center justify-center">
+					<div className="max-w-md p-8 space-y-4 text-center">
+						<div className="text-destructive text-4xl">⚠️</div>
+						<h2 className="text-2xl font-bold">Setup Failed</h2>
+						<p className="text-muted-foreground">{error}</p>
+						<button
+							type="button"
+							onClick={() => setError(null)}
+							className="px-4 py-2 bg-primary text-primary-foreground rounded-md"
+						>
+							Try Again
+						</button>
+					</div>
+				</div>
+			</>
+		)
+	}
 
 	return (
 		<>
@@ -122,10 +207,6 @@ function CreateOrganizationPage() {
 							</pre>
 						</details>
 					)}
-
-					{/* Story 5 Integration Point */}
-					{/* TODO: Add Convex mutation calls on org creation/selection */}
-					{/* See docs/story3-to-story5-handover.md for integration details */}
 				</div>
 			</div>
 		</>

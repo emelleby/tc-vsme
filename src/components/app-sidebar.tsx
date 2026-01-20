@@ -64,7 +64,7 @@ const data = {
 				},
 				{
 					title: 'Settings',
-					url: '#',
+					url: '/app/settings',
 				},
 			],
 		},
@@ -112,7 +112,7 @@ const data = {
 		},
 		{
 			title: 'Settings',
-			url: '#',
+			url: '/app/settings',
 			icon: Settings2,
 			items: [
 				{
