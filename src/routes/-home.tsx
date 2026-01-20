@@ -9,6 +9,8 @@ import {
 	DollarSign,
 	FileBarChart,
 	FileText,
+	Globe,
+	LayoutTemplate,
 	Lock,
 	Shield,
 	ThumbsUp,
@@ -37,694 +39,545 @@ import { ContactForm } from '@/lib/forms/forms/ContactForm'
 
 export default function Home() {
 	return (
-		<div className="min-h-screen bg-mesh">
+		<div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+			{/* Decorative Background Elements */}
+			<div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+				<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--sky)]/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+				<div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[var(--teal)]/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+			</div>
+
 			{/* Hero Section */}
-			<section className="relative pt-20 pb-16 md:pt-32 md:pb-24 overflow-hidden">
-				<div className="container px-4 md:px-6">
-					<div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+			<section className="relative pt-24 pb-20 md:pt-32 md:pb-32 overflow-hidden items-center justify-center flex">
+				<div className="container px-4 md:px-6 relative z-10">
+					<div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 						{/* Left Content */}
-						<div className="flex-1 text-center lg:text-left z-10">
+						<div className="flex-1 text-center lg:text-left">
 							<motion.div
 								initial={{ opacity: 0, y: 20 }}
 								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.5 }}
+								transition={{ duration: 0.6 }}
 							>
-								<Badge
-									variant="outline"
-									className="mb-6 border-sky/50 p-2 text-sky-600 bg-sky-200/40 backdrop-blur-sm"
-								>
+								<div className="inline-flex items-center rounded-full border border-[var(--sky)]/30 bg-[var(--sky)]/10 px-3 py-1 text-sm text-[var(--sky)] mb-6 backdrop-blur-md">
+									<span className="flex h-2 w-2 rounded-full bg-[var(--sky)] mr-2 animate-pulse"></span>
 									EU-standardisert Bærekraftsrapportering
-								</Badge>
-								<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-									Eu-standardisert{' '}
-									<span className="font-nunito text-transparent bg-clip-text bg-gradient-to-r from-[var(--sky)] to-[var(--teal)]">
+								</div>
+
+								<h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
+									Forenklet{' '}
+									<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--teal)] via-[var(--sky)] to-[var(--copper)]">
 										VSME-rapportering
 									</span>
 									<br />
-									for Små og Mellomstore Bedrifter
+									for Fremtidens Bedrifter
 								</h1>
-								<p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0 font-extralight">
-									Vår AI-baserte plattform gjør EU-standardisert
-									bærekraftsrapportering tilgjengelig og enkelt for SMBer. Spar
-									tid, reduser kostnader og sikre full overholdelse av de nyeste
-									forskriftene.
+
+								<p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+									Vår AI-drevne plattform gjør kompleks bærekraftsrapportering
+									enkelt for SMBer. Spar tid, reduser kostnader og bygg tillit
+									med automatiserte løsninger.
 								</p>
 
-								<div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-6">
+								<div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
 									<Button
 										size="lg"
-										className="bg-gradient-to-r from-[var(--sky)] to-[var(--teal)] hover:opacity-90 text-white border-0"
+										className="bg-gradient-to-r from-[var(--teal)] to-[var(--sky)] hover:opacity-90 text-white border-0 shadow-lg shadow-[var(--teal)]/20 transition-transform hover:scale-105"
 									>
-										Kom i gang i dag
-										<ArrowRight className="ml-2 h-4 w-4" />
+										Start din reise
+										<ArrowRight className="ml-2 h-5 w-5" />
 									</Button>
 									<Button
 										size="lg"
 										variant="outline"
-										className="border-sky/20 hover:bg-sky/5"
+										className="border-[var(--sky)]/30 hover:bg-[var(--sky)]/5 hover:border-[var(--sky)] text-foreground min-w-[160px]"
 									>
-										Book et møte
+										Book demo
 									</Button>
 								</div>
 
-								<div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-									<Button asChild size="lg" variant="outline">
-										<Link to="/pricing">Pricing</Link>
-									</Button>
-									<Button asChild size="lg" variant="outline">
-										<Link to="http://localhost:3001" target="_blank">
-											Scope321 <ArrowRight className="ml-2 h-4 w-4" />
-										</Link>
-									</Button>
+								<div className="flex items-center justify-center lg:justify-start gap-6 text-sm text-muted-foreground">
+									<div className="flex items-center gap-2">
+										<CheckCircle2 className="h-4 w-4 text-[var(--teal)]" />
+										<span>Ingen bindingstid</span>
+									</div>
+									<div className="flex items-center gap-2">
+										<CheckCircle2 className="h-4 w-4 text-[var(--teal)]" />
+										<span>Gratis oppstartsmøte</span>
+									</div>
 								</div>
 							</motion.div>
 						</div>
 
-						{/* Right - Hero Image with Floating Cards */}
-						<div className="flex-1 w-full max-w-[600px] lg:max-w-none relative">
+						{/* Right - Hero Visual */}
+						<div className="flex-1 w-full max-w-[600px] lg:max-w-none relative perspective-1000">
 							<motion.div
-								initial={{ opacity: 0, scale: 0.95 }}
-								animate={{ opacity: 1, scale: 1 }}
-								transition={{ duration: 0.6, delay: 0.2 }}
-								className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl"
+								initial={{ opacity: 0, rotateY: -5, scale: 0.95 }}
+								animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+								transition={{ duration: 0.8, delay: 0.2 }}
+								className="relative z-10"
 							>
-								{/* Hero Image */}
-								<img
-									src="/images/hero-workspace.jpg"
-									alt="Collaborative workspace"
-									className="w-full h-full object-cover"
-								/>
+								<div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 bg-background/50 backdrop-blur-sm group">
+									<div className="absolute inset-0 bg-gradient-to-tr from-[var(--teal)]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+									<img
+										src="/images/hero-workspace.jpg"
+										alt="Sustainability Dashboard"
+										className="w-full h-auto object-cover rounded-2xl"
+									/>
 
-								{/* Floating Status Card - Top Right */}
-								<motion.div
-									initial={{ opacity: 0, x: 20 }}
-									animate={{
-										opacity: 1,
-										x: 0,
-										y: [0, -10, 0],
-									}}
-									transition={{
-										opacity: { duration: 0.5, delay: 0.8 },
-										x: { duration: 0.5, delay: 0.8 },
-										y: {
-											duration: 3,
+									{/* Floating Card: Score */}
+									<motion.div
+										className="absolute -top-6 right-6 md:top-8 md:right-8 z-20"
+										animate={{ y: [0, -10, 0] }}
+										transition={{
+											duration: 4,
 											repeat: Infinity,
 											ease: 'easeInOut',
-											delay: 0.8,
-										},
-									}}
-									className="absolute top-4 right-4 md:top-6 md:right-6"
-								>
-									<GlowingCard
-										glowColor="sky"
-										className="bg-white/75 backdrop-blur-md border-green-200 shadow-lg min-w-[200px]"
+										}}
 									>
-										<CardContent className="pt-0">
-											<div className="flex items-center gap-2">
-												<div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center">
-													<Check className="h-3 w-3 text-teal-600" />
+										<GlowingCard
+											glowColor="teal"
+											className="w-auto min-w-[180px] bg-card/20 backdrop-blur-xl border border-[var(--teal)]/20"
+										>
+											<CardContent className="px-4 flex flex-col gap-1 items-center text-center">
+												<div className="h-10 w-10 rounded-full bg-[var(--teal)]/10 flex items-center justify-center mb-1">
+													<Shield className="h-5 w-5 text-[var(--teal)]" />
 												</div>
-												<p className="">Samsvarsstatus</p>
-											</div>
-											<p className="text-lg font-semibold text-teal-700">
-												100% Fullført
-											</p>
-										</CardContent>
-									</GlowingCard>
-								</motion.div>
+												<span className="text-sm font-medium text-muted-foreground">
+													VSME Score
+												</span>
+												<span className="text-2xl font-bold text-[var(--teal)]">
+													A+
+												</span>
+											</CardContent>
+										</GlowingCard>
+									</motion.div>
 
-								{/* Floating Time Saved Card - Middle Left */}
-								<motion.div
-									initial={{ opacity: 0, x: -20 }}
-									animate={{
-										opacity: 1,
-										x: 5,
-										y: [0, 10, 0],
-									}}
-									transition={{
-										opacity: { duration: 0.5, delay: 1 },
-										x: { duration: 0.5, delay: 1 },
-										y: {
-											duration: 3.5,
+									{/* Floating Card: Savings */}
+									<motion.div
+										className="absolute -bottom-6 -left-6 md:bottom-8 md:left-8 z-20"
+										animate={{ y: [0, 10, 0] }}
+										transition={{
+											duration: 5,
 											repeat: Infinity,
 											ease: 'easeInOut',
 											delay: 1,
-										},
-									}}
-									className="absolute top-1/2 left-4 md:left-6 -translate-y-1/2"
-								>
-									<GlowingCard
-										glowColor="teal"
-										className="bg-white/75 backdrop-blur-md border-sky/20 shadow-lg min-w-[200px]"
+										}}
 									>
-										<CardContent className="pt-0">
-											<div className="flex items-center gap-2">
-												<div className="h-5 w-5 rounded-full bg-sky/10 flex items-center justify-center">
-													<svg
-														className="h-5 w-5 text-(--sky)]"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-													>
-														<path
-															strokeLinecap="round"
-															strokeLinejoin="round"
-															strokeWidth={2}
-															d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-														/>
-													</svg>
+										<GlowingCard
+											glowColor="copper"
+											className="w-auto min-w-[200px] bg-card/20 backdrop-blur-xl border border-[var(--copper)]/20"
+										>
+											<CardContent className="px-4 flex items-center gap-4">
+												<div className="h-10 w-10 rounded-full bg-[var(--copper)]/10 flex items-center justify-center">
+													<Clock className="h-5 w-5 text-[var(--copper)]" />
 												</div>
-												Spart Tid
-											</div>
-											<p className="text-lg font-semibold text-[var(--sky)]">
-												24 timer denne måneden
-											</p>
-										</CardContent>
-									</GlowingCard>
-								</motion.div>
+												<div>
+													<p className="text-sm text-muted-foreground">
+														Tid spart
+													</p>
+													<p className="text-lg font-bold text-[var(--copper)]">
+														-70%
+													</p>
+												</div>
+											</CardContent>
+										</GlowingCard>
+									</motion.div>
+								</div>
 							</motion.div>
+
+							{/* Background Blob behind image */}
+							<div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[var(--sky)]/20 blur-3xl -z-10 rounded-full opacity-60" />
 						</div>
 					</div>
 				</div>
 			</section>
 
-			{/* Features Section */}
-			<section id="features" className="py-20 bg-gray-50">
-				<div className="container px-4 md:px-6">
-					<div className="text-center mb-16">
-						<h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--sky)]">
-							Enkel bærekraftsrapportering
+			{/* Trusted By Section */}
+			<section className="py-10 border-y border-border/50 bg-muted/30">
+				<div className="container px-4 text-center">
+					<p className="text-sm text-muted-foreground font-semibold uppercase tracking-wider mb-6">
+						Stolt samarbeidspartner for fremtidsrettede bedrifter
+					</p>
+					<div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
+						{/* Placeholder Logos - In production use real SVGs */}
+						{[
+							'Acme Corp',
+							'Nordic Green',
+							'EcoSolutions',
+							'FutureTech',
+							'SustainAB',
+						].map((name) => (
+							<div
+								key={name}
+								className="text-xl font-bold font-title text-muted-foreground/80 hover:text-[var(--teal)] cursor-default"
+							>
+								{name}
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
+
+			{/* Value Props / Features Grid */}
+			<section id="features" className="py-24 relative overflow-hidden">
+				<div className="container px-4 md:px-6 relative z-10">
+					<div className="text-center max-w-3xl mx-auto mb-16">
+						<h2 className="text-3xl md:text-5xl font-bold mb-6">
+							Bærekraft gjort <span className="text-[var(--teal)]">enkelt</span>
 						</h2>
-						<p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+						<p className="text-lg text-muted-foreground leading-relaxed">
 							Vår plattform effektiviserer hele VSME-rapporteringsprosessen med
-							kraftige, brukervennlige verktøy spesielt designet for små og
-							mellomstore bedrifter.
+							verktøy skreddersydd for din bedriftshverdag.
 						</p>
 					</div>
-					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-						{/* Card 1 - Steg for steg */}
-						<GlowingCard glowColor="sky" className="bg-white">
-							<CardContent className="p-6">
-								<CheckCircle2 className="w-8 h-8 mb-2 text-sky-600" />
 
-								<h3 className="text-lg font-semibold mb-2">Steg for steg</h3>
-								<p className="text-muted-foreground">
-									Trinnvise arbeidsflyter guider deg gjennom alle aspekter av
-									EU-krav til bærekraftsrapportering, og sikrer at ingenting
-									blir oversett.
-								</p>
-							</CardContent>
-						</GlowingCard>
-
-						{/* Card 2 - Tidsbesparende maler */}
-						<GlowingCard glowColor="rose" className="bg-white">
-							<CardContent className="p-6">
-								<Clock className="w-8 h-8 mb-2 text-rose-600" />
-								<h3 className="text-lg font-semibold mb-2">
-									Tidsbesparende maler
-								</h3>
-								<p className=" text-muted-foreground">
-									Ferdigbygde maler og automatisert datainnsamling reduserer
-									rapporteringstiden med opptil 70%, slik at du kan fokusere på
-									kjernevirksomheten.
-								</p>
-							</CardContent>
-						</GlowingCard>
-
-						{/* Card 3 - AI-basert */}
-						<GlowingCard glowColor="teal" className="bg-white">
-							<CardContent className="p-6">
-								<Zap className="w-8 h-8 mb-2 text-teal-600" />
-								<h3 className="text-lg font-semibold mb-2">AI-basert</h3>
-								<p className=" text-muted-foreground">
-									Importer dine eksisterende bærekraftdata, så ordner vår
-									VSME-AI rapporteringen automatisk basert på dette. Du fyller
-									kun inn eventuelle mangler.
-								</p>
-							</CardContent>
-						</GlowingCard>
-
-						{/* Card 4 - Sikker datalagring */}
-						<GlowingCard glowColor="amber" className="bg-white">
-							<CardContent className="p-6">
-								<Lock className="w-8 h-8 mb-2 text-amber-600" />
-								<h3 className="text-lg font-semibold mb-2">
-									Sikker datalagring
-								</h3>
-								<p className=" text-muted-foreground">
-									Alle dine bærekraftdata lagres sikkert med kryptering og
-									regelmessige sikkerhetskopier.
-								</p>
-							</CardContent>
-						</GlowingCard>
-
-						{/* Card 5 - Ekspertstøtte */}
-						<GlowingCard glowColor="teal" className="bg-white">
-							<CardContent className="p-6">
-								<Users className="w-8 h-8 mb-2 text-teal-600" />
-								<h3 className="text-lg font-semibold mb-2">Ekspertstøtte</h3>
-								<p className=" text-muted-foreground">
-									Tilgang til bærekraftseksperter som kan guide deg gjennom
-									rapporteringskrav og svare på dine spørsmål.
-								</p>
-							</CardContent>
-						</GlowingCard>
-
-						{/* Card 6 - Tilpassbare rapporter */}
-						<GlowingCard glowColor="pink" className="bg-white">
-							<CardContent className="p-6">
-								<FileBarChart className="w-8 h-8 mb-2 text-pink-700" />
-								<h3 className="text-lg font-semibold mb-2">
-									Tilpassbare rapporter
-								</h3>
-								<p className=" text-muted-foreground">
-									Generer profesjonelle rapporter skreddersydd for din bransje
-									og spesifikke interessentkrav med bare noen få klikk.
-								</p>
-							</CardContent>
-						</GlowingCard>
+					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+						{[
+							{
+								title: 'Steg-for-steg Guide',
+								desc: 'Intuitiv arbeidsflyt som leder deg trygt gjennom alle EU-krav uten unødvendig kompleksitet.',
+								icon: CheckCircle2,
+								color: 'sky',
+							},
+							{
+								title: 'Smarte Maler',
+								desc: 'Ferdigutfylte maler basert på din bransje reduserer manuelt arbeid betraktelig.',
+								icon: LayoutTemplate,
+								color: 'teal',
+							},
+							{
+								title: 'AI-Assistent',
+								desc: 'Vår AI analyserer dine data og foreslår formuleringer til rapportene dine.',
+								icon: Zap,
+								color: 'copper', // Using copper for AI/Spark
+							},
+							{
+								title: 'Datasikkerhet',
+								desc: 'Bank-grade kryptering sørger for at sensitive selskapsdata alltid er trygge.',
+								icon: Lock,
+								color: 'amber',
+							},
+							{
+								title: 'Eksperthjelp',
+								desc: 'Få tilgang til sertifiserte bærekraftskonsulenter direkte i plattformen.',
+								icon: Users,
+								color: 'rose',
+							},
+							{
+								title: 'Rapportgenerering',
+								desc: 'Eksporter profesjonelle PDF-rapporter klare for styringsmøter og banker.',
+								icon: FileText,
+								color: 'pink',
+							},
+						].map((feature, idx) => (
+							<GlowingCard
+								key={idx}
+								glowColor={feature.color as any}
+								className="bg-card h-full"
+							>
+								<CardHeader>
+									<div
+										className={`w-12 h-12 rounded-lg bg-[var(--${feature.color})]/10 flex items-center justify-center mb-4`}
+									>
+										<feature.icon
+											className={`h-6 w-6 text-[var(--${feature.color})]`}
+										/>
+									</div>
+									<CardTitle className="text-xl">{feature.title}</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<CardDescription className="text-base">
+										{feature.desc}
+									</CardDescription>
+								</CardContent>
+							</GlowingCard>
+						))}
 					</div>
 				</div>
 			</section>
 
-			{/* Why Choose Section */}
-			<section className="py-20">
+			{/* Why Choose Section (Visual Hierarchy Improved) */}
+			<section className="py-24 bg-[var(--sky)]/5">
 				<div className="container px-4 md:px-6">
-					<div className="grid lg:grid-cols-2 gap-12 items-center">
-						{/* Left Content */}
-						<div>
-							<Badge
-								variant="outline"
-								className="mb-4 border-teal/50 text-teal bg-teal/10 backdrop-blur-sm"
-							>
-								Hvorfor Velge VSME Guru
-							</Badge>
-							<h2 className="text-3xl md:text-4xl font-bold mb-4">
-								Bærekraftsrapportering som gir{' '}
-								<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--sky)] to-[var(--teal)]">
-									forretningsmessig mening
-								</span>
-							</h2>
-							<p className="text-muted-foreground mb-8">
-								EU-standardisert bærekraftsrapportering blir stadig mer
-								forventet av SMBer. Vår plattform forvandler et komplekst
-								regulatorisk krav til en strategisk mulighet for din virksomhet.
-							</p>
-
-							<div className="space-y-6">
-								{/* Feature 1 */}
-								<div className="flex gap-4">
-									<div className="flex-shrink-0">
-										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
-											<CheckCircle className="w-6 h-6 text-slate-600" />
-										</div>
-									</div>
-									<div>
-										<h3 className="font-semibold mb-1">
-											Sikre juridisk samsvar
-										</h3>
-										<p className=" text-muted-foreground">
-											Oppfylle EU-krav til bærekraftsrapportering.
-										</p>
-									</div>
-								</div>
-
-								{/* Feature 2 */}
-								<div className="flex gap-4">
-									<div className="flex-shrink-0">
-										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
-											<DollarSign className="w-6 h-6 text-slate-600" />
-										</div>
-									</div>
-									<div>
-										<h3 className="font-semibold mb-1">
-											Reduser rapporteringskostnader
-										</h3>
-										<p className=" text-muted-foreground">
-											Kutt kostnadene ved bærekraftsrapportering sammenlignet
-											med tradisjonelle konsulenttjenester.
-										</p>
-									</div>
-								</div>
-
-								{/* Feature 3 */}
-								<div className="flex gap-4">
-									<div className="flex-shrink-0">
-										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
-											<TrendingUp className="w-6 h-6 text-slate-600" />
-										</div>
-									</div>
-									<div>
-										<h3 className="font-semibold mb-1">Bygg investortillit</h3>
-										<p className=" text-muted-foreground">
-											Tiltrekk investorer og partnere som i økende grad krever
-											transparent bærekraftdata.
-										</p>
-									</div>
-								</div>
-
-								{/* Feature 4 */}
-								<div className="flex gap-4">
-									<div className="flex-shrink-0">
-										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
-											<ThumbsUp className="w-6 h-6 text-slate-600" />
-										</div>
-									</div>
-									<div>
-										<h3 className="font-semibold mb-1">Styrk merkevaren</h3>
-										<p className=" text-muted-foreground">
-											Vis ditt engasjement for bærekraft til kunder, partnere og
-											ansatte.
-										</p>
-									</div>
-								</div>
-							</div>
-
-							<div className="mt-8">
-								<Button
-									size="lg"
-									className="bg-gradient-to-r from-[var(--sky)] to-[var(--teal)] hover:opacity-90 text-white border-0"
-								>
-									Les vår VSME Guide
-								</Button>
-							</div>
-						</div>
-
-						{/* Right Image */}
-						<div className="relative">
-							<div className="relative rounded-2xl overflow-hidden shadow-2xl">
+					<div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+						<div className="order-2 lg:order-1 relative">
+							<div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/50">
 								<img
-									src="https://images.pexels.com/photos/6476254/pexels-photo-6476254.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-									alt="Team collaborating on sustainability reporting"
+									src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+									alt="Meeting"
 									className="w-full h-auto"
 								/>
-								{/* Overlay Card with Animation */}
-								<motion.div
-									initial={{ opacity: 0, y: 20 }}
-									animate={{
-										opacity: 1,
-										y: [0, -8, 0],
-									}}
-									transition={{
-										opacity: { duration: 0.5, delay: 0.3 },
-										y: {
-											duration: 3,
-											repeat: Infinity,
-											ease: 'easeInOut',
-											delay: 0.3,
-										},
-									}}
-									className="absolute bottom-6 left-6"
-								>
-									<div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-gray-100">
-										<div className="flex items-center gap-2 mb-3">
-											<BarChart3 className="w-5 h-5 text-[var(--sky)]" />
-											<p className="font-semibold text-gray-900">
-												Utslippssporing
-											</p>
+								<div className="absolute inset-0 bg-[var(--teal)]/10 mix-blend-multiply" />
+							</div>
+							{/* Decorative elements around image */}
+							<div className="absolute -z-10 -bottom-10 -left-10 w-40 h-40 bg-[var(--copper)]/20 rounded-full blur-2xl" />
+							<div className="absolute -z-10 -top-10 -right-10 w-40 h-40 bg-[var(--teal)]/20 rounded-full blur-2xl" />
+						</div>
+
+						<div className="order-1 lg:order-2">
+							<Badge
+								variant="outline"
+								className="mb-6 border-[var(--copper)]/50 text-[var(--copper)] bg-[var(--copper)]/10"
+							>
+								Strategisk Fordel
+							</Badge>
+							<h2 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
+								Mer enn bare <br />
+								<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--teal)] to-[var(--sky)]">
+									Compliance
+								</span>
+							</h2>
+							<p className="text-lg text-muted-foreground mb-8">
+								Bærekraftsrapportering handler om å fremtidssikre din bedrift.
+								Vi hjelper deg å snu krav til konkurransefortrinn.
+							</p>
+
+							<div className="grid gap-6">
+								{[
+									{
+										title: 'Bankfinansiering',
+										desc: 'Grønne lån krever god dokumentasjon.',
+										icon: DollarSign,
+									},
+									{
+										title: 'Kunderelasjoner',
+										desc: 'Store kunder krever bærekraftig leverandørkjede.',
+										icon: Users,
+									},
+									{
+										title: 'Risikostyring',
+										desc: 'Identifiser og reduser klimarisiko tidlig.',
+										icon: BarChart3,
+									},
+									{
+										title: 'Omdømme',
+										desc: 'Tiltrekk talenter som bryr seg om framtiden.',
+										icon: Globe,
+									},
+								].map((item, i) => (
+									<div key={i} className="flex gap-4 items-start">
+										<div className="mt-1 bg-white dark:bg-slate-800 p-2 rounded-full shadow-xs text-[var(--teal)]">
+											<item.icon className="h-5 w-5" />
 										</div>
-										<p className=" text-gray-600 mb-4">Scope 1, 2 & 3</p>
-										<div className="flex items-end gap-8">
-											<div>
-												<div className="text-4xl font-bold text-(--teal)">
-													68%
-												</div>
-												<div className="text-xs text-gray-600 mt-1">
-													Reduksjonspotensial
-												</div>
-											</div>
-											<div>
-												<div className="text-4xl font-bold text-(--teal)">
-													2026
-												</div>
-												<div className="text-xs text-gray-600 mt-1">
-													Mål satt
-												</div>
-											</div>
+										<div>
+											<h3 className="font-bold text-lg">{item.title}</h3>
+											<p className="text-muted-foreground">{item.desc}</p>
 										</div>
 									</div>
-								</motion.div>
+								))}
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			{/* Pricing Section */}
-			<section className="py-20">
-				<div className="container px-4 md:px-6">
-					<div className="text-center mb-16">
-						<Badge
-							variant="outline"
-							className="mb-4 border-sky/50 text-sky bg-sky/10 backdrop-blur-sm"
-						>
-							Enkel Prising
-						</Badge>
-						<div className="text-3xl md:text-4xl font-bold pb-1 text-transparent bg-clip-text bg-linear-to-r from-(--sky) to-(--teal)">
-							Velg riktig plan for din bedrift
-						</div>
-						<p className="text-muted-foreground">
-							Alle planer inkluderer våre kjernefunksjoner med fleksible
-							alternativer som passer dine behov
-						</p>
-					</div>
-					<div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-						<GlowingCard className="border-muted">
+			{/* Pricing - Cleaner Design */}
+			<section className="py-24" id="pricing">
+				<div className="container px-4 text-center max-w-5xl mx-auto">
+					<Badge
+						variant="outline"
+						className="mb-4 border-[var(--teal)]/50 text-[var(--teal)]"
+					>
+						Priser
+					</Badge>
+					<h2 className="text-3xl md:text-5xl font-bold mb-4">
+						Investér i framtiden
+					</h2>
+					<p className="text-muted-foreground mb-12 max-w-2xl mx-auto">
+						Gjennomsiktige priser tilpasset din bedrifts størrelse. Ingen
+						skjulte kostnader.
+					</p>
+
+					<div className="grid md:grid-cols-3 gap-8 items-start">
+						{/* Starter */}
+						<GlowingCard glowColor="sky" className="relative group">
 							<CardHeader>
-								<CardTitle>Basic</CardTitle>
-								<CardDescription>
-									Perfekt for små bedrifter som nettopp har begynt med
-									bærekraftsrapportering
-								</CardDescription>
+								<CardTitle className="text-2xl">Start</CardTitle>
+								<CardDescription>For de minste bedriftene</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<div className="text-3xl font-bold mb-4">
-									Kontakt oss{' '}
-									<span className=" font-normal text-muted-foreground">
+								<div className="text-4xl font-bold mb-6">
+									Kr 1.990{' '}
+									<span className="text-base font-normal text-muted-foreground">
 										/mnd
 									</span>
 								</div>
-								<ul className="space-y-2 ">
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" />{' '}
-										Grunnleggende bærekraftsmålinger
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> 1
-										brukerkonto
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> Standard
-										rapportmaler
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> Eksport av
-										rapporter
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" />{' '}
-										Grunnleggende dataanalyse
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> Måling av
-										utvikling
-									</li>
+								<ul className="text-left space-y-3 mb-6">
+									{[
+										'1 Bruker',
+										'Standard VSME rapport',
+										'E-post support',
+										'Årlig oppdatering',
+									].map((feat, i) => (
+										<li key={i} className="flex items-center gap-2">
+											<Check className="h-4 w-4 text-green-500" /> {feat}
+										</li>
+									))}
 								</ul>
-							</CardContent>
-							<CardFooter>
 								<Button className="w-full" variant="outline">
-									Be om demo
+									Start nå
 								</Button>
-							</CardFooter>
+							</CardContent>
 						</GlowingCard>
 
+						{/* Growth (Highlighted) */}
 						<GlowingCard
 							glowColor="teal"
-							className="border-[var(--teal)] relative overflow-hidden"
+							className="relative border-[var(--teal)] shadow-2xl scale-105 z-10"
 						>
-							<div className="absolute top-0 right-0 bg-[var(--teal)] text-white text-xs px-3 py-1 rounded-bl-lg">
-								Mest Populær
-							</div>
+							<div className="absolute top-0 inset-x-0 h-1 bg-[var(--teal)]" />
 							<CardHeader>
-								<CardTitle>Basic + Klimaregnskap</CardTitle>
-								<CardDescription>
-									Ideelt for bedrifter som trenger omfattende klimaregnskap
-								</CardDescription>
+								<div className="text-[var(--teal)] font-bold text-sm uppercase tracking-wide mb-2">
+									Anbefalt
+								</div>
+								<CardTitle className="text-3xl">Vekst</CardTitle>
+								<CardDescription>For etablerte SMBer</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<div className="text-3xl font-bold mb-4">Kontakt oss</div>
-								<ul className="space-y-2 ">
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-(--teal)" /> Alle
-										Basic-funksjoner
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-(--teal)" /> Fullstendig
-										klimaregnskap
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-(--teal)" /> Opptil 3
-										brukerkontoer
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-(--teal)" /> Tilpassede
-										rapportmaler
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-(--teal)" /> Prioritert
-										støtte
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-(--teal)" /> Avansert
-										analyse
-									</li>
+								<div className="text-4xl font-bold mb-6">
+									Kr 3.990{' '}
+									<span className="text-base font-normal text-muted-foreground">
+										/mnd
+									</span>
+								</div>
+								<ul className="text-left space-y-3 mb-6">
+									{[
+										'3 Brukere',
+										'Utvidet rapportering',
+										'Klimaregnskap (Scope 1-3)',
+										'Prioritert support',
+										'API tilgang',
+									].map((feat, i) => (
+										<li key={i} className="flex items-center gap-2">
+											<Check className="h-4 w-4 text-[var(--teal)]" />
+											<span className="font-medium">{feat}</span>
+										</li>
+									))}
 								</ul>
-							</CardContent>
-							<CardFooter>
-								<Button className="w-full bg-[var(--teal)] hover:bg-[var(--teal)]/90 text-white">
-									Be om demo
+								<Button className="w-full bg-[var(--teal)] hover:bg-[var(--teal)]/90 text-white shadow-lg shadow-[var(--teal)]/25">
+									Get Started
 								</Button>
-							</CardFooter>
+							</CardContent>
 						</GlowingCard>
 
-						<GlowingCard className="border-muted">
+						{/* Enterprise */}
+						<GlowingCard glowColor="copper" className="relative group">
 							<CardHeader>
-								<CardTitle>Enterprise</CardTitle>
-								<CardDescription>
-									For store organisasjoner som krever maksimal fleksibilitet og
-									støtte
-								</CardDescription>
+								<CardTitle className="text-2xl">Enterprise</CardTitle>
+								<CardDescription>For større organisasjoner</CardDescription>
 							</CardHeader>
 							<CardContent>
-								<div className="text-3xl font-bold mb-4">Kontakt oss</div>
-								<ul className="space-y-2 ">
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> Alle
-										funksjoner
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" />{' '}
-										Ubegrensede brukerkontoer
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> Tilpassede
-										integrasjoner
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> Dedikert
-										support
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" /> Tilpasset
-										analyse
-									</li>
-									<li className="flex items-center">
-										<Check className="h-4 w-4 mr-2 text-green-500" />{' '}
-										Sanntidsoppdateringer
-									</li>
+								<div className="text-4xl font-bold mb-6">Ta kontakt</div>
+								<ul className="text-left space-y-3 mb-6">
+									{[
+										'Ubegrenset brukere',
+										'Skreddersydd oppsett',
+										'Dedikert rådgiver',
+										'SSO & Sikkerhet',
+										'Custom integrasjoner',
+									].map((feat, i) => (
+										<li key={i} className="flex items-center gap-2">
+											<Check className="h-4 w-4 text-[var(--copper)]" /> {feat}
+										</li>
+									))}
 								</ul>
-							</CardContent>
-							<CardFooter>
 								<Button className="w-full" variant="outline">
-									Kontakt oss
+									Kontakt salg
 								</Button>
-							</CardFooter>
+							</CardContent>
 						</GlowingCard>
 					</div>
 				</div>
 			</section>
 
-			{/* Contact Section */}
-			<section id="contact" className="py-20 bg-gray-50">
-				<div className="container px-4 md:px-6">
-					<div className="text-center mb-12">
-						<Badge
+			{/* Contact / CTA Section */}
+			<section className="py-24 bg-muted/50">
+				<div className="container px-4 text-center max-w-4xl mx-auto">
+					<h2 className="text-3xl md:text-5xl font-bold mb-8">
+						Klar for å komme i gang?
+					</h2>
+					<p className="text-xl text-muted-foreground mb-8">
+						Book et uforpliktende møte med en av våre bærekraftseksperter og se
+						hvordan vi kan hjelpe deg.
+					</p>
+					<div className="flex flex-col sm:flex-row gap-4 justify-center">
+						<Button
+							size="lg"
+							className="bg-foreground text-background hover:opacity-90 px-8 text-lg h-12"
+						>
+							Book Demo
+						</Button>
+						<Button
+							size="lg"
 							variant="outline"
-							className="mb-4 border-teal/50 text-teal bg-teal/10 backdrop-blur-sm"
+							className="px-8 text-lg h-12 bg-background"
 						>
 							Kontakt Oss
-						</Badge>
-						<h2 className="text-3xl md:text-4xl font-bold mb-4">
-							La oss hjelpe deg med{' '}
-							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--sky)] to-[var(--teal)]">
-								bærekraftsrapportering
-							</span>
-						</h2>
-						<p className="text-muted-foreground max-w-2xl mx-auto">
-							Ta kontakt med oss i dag for å lære mer om hvordan VSME Guru kan
-							forenkle din bærekraftsrapportering
-						</p>
+						</Button>
 					</div>
-					<div className="max-w-2xl mx-auto">
-						<GlowingCard glowColor="teal" className="bg-card">
-							<CardContent className="p-8">
-								<ContactForm />
-							</CardContent>
-						</GlowingCard>
+
+					<div className="mt-16 text-left max-w-2xl mx-auto bg-card p-8 rounded-2xl border shadow-sm">
+						<h3 className="text-2xl font-bold mb-6 text-center">
+							Eller send oss en melding
+						</h3>
+						<ContactForm />
 					</div>
 				</div>
 			</section>
 
-			{/* FAQ Section */}
-			<section className="py-20 bg-muted/30">
-				<div className="container px-4 md:px-6 max-w-3xl">
-					<div className="text-center mb-16">
-						<Badge
-							variant="outline"
-							className="mb-4 border-sky/50 text-sky bg-sky/10 backdrop-blur-sm"
-						>
-							Ofte Stilte Spørsmål
-						</Badge>
-						<h2 className="text-3xl md:text-4xl font-bold mb-4">
-							Alt du trenger å vite om VSME Guru
-						</h2>
-						<p className="text-muted-foreground">
-							Har du spørsmål om VSME-rapportering eller vår plattform? Finn
-							raske svar nedenfor.
-						</p>
+			{/* FAQ Layout Improved */}
+			<section className="py-24">
+				<div className="container px-4 md:px-6 max-w-3xl mx-auto">
+					<div className="text-center mb-12">
+						<h2 className="text-3xl font-bold mb-4">Ofte stilte spørsmål</h2>
 					</div>
-					<Accordion type="single" collapsible className="w-full">
-						<AccordionItem value="item-1">
-							<AccordionTrigger>Hva er VSME-rapportering?</AccordionTrigger>
-							<AccordionContent>
-								VSME (Voluntary Sustainability for Micro and Small Enterprises)
-								rapportering er et rammeverk utviklet av EU for å hjelpe små og
-								mellomstore bedrifter med å rapportere om deres
-								bærekraftspraksis og ytelse. Det følger forenklede standarder
-								sammenlignet med den mer omfattende CSRD (Corporate
-								Sustainability Reporting Directive) som kreves for større
-								selskaper.
-							</AccordionContent>
-						</AccordionItem>
-						<AccordionItem value="item-2">
-							<AccordionTrigger>
-								Hvor lang tid tar det å implementere plattformen deres?
+					<Accordion type="single" collapsible className="w-full space-y-4">
+						<AccordionItem
+							value="item-1"
+							className="border rounded-lg px-4 bg-card shadow-xs"
+						>
+							<AccordionTrigger className="text-lg font-medium hover:no-underline hover:text-[var(--teal)]">
+								Hvem må rapportere etter VSME?
 							</AccordionTrigger>
-							<AccordionContent>
-								De fleste SMB-er kan komme i gang med vår plattform på bare 1-2
-								dager. Vår veiledede oppsettsprosess tar deg gjennom hvert
-								trinn, og vårt supportteam er tilgjengelig for å hjelpe med
-								eventuelle spørsmål. Selve rapporteringsprosessen blir betydelig
-								raskere når du er satt opp i systemet.
+							<AccordionContent className="text-muted-foreground pb-4">
+								VSME er frivillig for de fleste SMBer, men blir ofte et krav fra
+								banker og større kunder. Det er en forenklet standard designet
+								for å være overkommelig for mindre selskaper.
 							</AccordionContent>
 						</AccordionItem>
-						<AccordionItem value="item-3">
-							<AccordionTrigger>
-								Hva hvis jeg ikke har erfaring med bærekraftsrapportering?
+						<AccordionItem
+							value="item-2"
+							className="border rounded-lg px-4 bg-card shadow-xs"
+						>
+							<AccordionTrigger className="text-lg font-medium hover:no-underline hover:text-[var(--teal)]">
+								Trenger jeg en konsulent?
 							</AccordionTrigger>
-							<AccordionContent>
-								Vår plattform er spesielt designet for bedrifter uten tidligere
-								erfaring med bærekraftsrapportering. Systemet gir trinnvis
-								veiledning, forklaringer av nøkkelbegreper og maler tilpasset
-								din bransje. Vårt supportteam inkluderer bærekraftseksperter som
-								kan svare på spørsmålene dine.
+							<AccordionContent className="text-muted-foreground pb-4">
+								Med vår plattform trenger du i utgangspunktet ikke ekstern
+								konsulent. Systemet guider deg gjennom prosessen. For komplekse
+								spørsmål har vi eksperter tilgjengelig via chat.
 							</AccordionContent>
 						</AccordionItem>
-						<AccordionItem value="item-4">
-							<AccordionTrigger>
+						<AccordionItem
+							value="item-3"
+							className="border rounded-lg px-4 bg-card shadow-xs"
+						>
+							<AccordionTrigger className="text-lg font-medium hover:no-underline hover:text-[var(--teal)]">
+								Er dataene mine trygge?
+							</AccordionTrigger>
+							<AccordionContent className="text-muted-foreground pb-4">
+								Ja, vi bruker industristandard kryptering og følger GDPR
+								strengt. Dine data tilhører deg og deles aldri med tredjeparter
+								uten ditt samtykke.
+							</AccordionContent>
+						</AccordionItem>
+						<AccordionItem
+							value="item-4"
+							className="border rounded-lg px-4 bg-card shadow-xs"
+						>
+							<AccordionTrigger className="text-lg font-medium hover:no-underline hover:text-[var(--teal)]">
 								Hvordan fungerer prisingen deres?
 							</AccordionTrigger>
-							<AccordionContent>
+							<AccordionContent className="text-muted-foreground pb-4">
 								Vi tilbyr fleksible prisplaner basert på bedriftsstørrelse og
 								rapporteringsbehov. Tilpassede enterprise-planer er
 								tilgjengelige for bedrifter med mer komplekse krav. Alle planer
@@ -732,11 +585,14 @@ export default function Home() {
 								med endrede forskrifter.
 							</AccordionContent>
 						</AccordionItem>
-						<AccordionItem value="item-5">
-							<AccordionTrigger>
+						<AccordionItem
+							value="item-5"
+							className="border rounded-lg px-4 bg-card shadow-xs"
+						>
+							<AccordionTrigger className="text-lg font-medium hover:no-underline hover:text-[var(--teal)]">
 								Kan jeg eksportere rapporter for å dele med interessenter?
 							</AccordionTrigger>
-							<AccordionContent>
+							<AccordionContent className="text-muted-foreground pb-4">
 								Ja, du kan enkelt eksportere dine fullstendige
 								bærekraftsrapporter i flere formater inkludert PDF og Excel.
 								Dette gjør det enkelt å dele med interessenter, investorer,

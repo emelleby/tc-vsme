@@ -11,7 +11,7 @@ import {
 import { cn } from '@/lib/utils'
 
 interface GlowingCardProps extends React.ComponentProps<typeof Card> {
-	glowColor?: 'sky' | 'teal' | 'rose' | 'amber' | 'pink'
+	glowColor?: 'sky' | 'teal' | 'rose' | 'amber' | 'pink' | 'copper'
 }
 
 const GlowingCard = React.forwardRef<HTMLDivElement, GlowingCardProps>(
@@ -25,17 +25,19 @@ const GlowingCard = React.forwardRef<HTMLDivElement, GlowingCardProps>(
 				<Card
 					ref={ref}
 					className={cn(
-						'h-full transition-all duration-300 border-transparent',
+						'h-full transition-all duration-300 border-2 border-transparent',
 						glowColor === 'sky' &&
-							'hover:shadow-[0_0_20px_-5px_var(--sky)] hover:border-(--sky)]',
+							'hover:shadow-[0_0_20px_-5px_var(--sky)] hover:border-[var(--sky)]',
 						glowColor === 'teal' &&
-							'hover:shadow-[0_0_20px_-5px_var(--teal)] hover:border-(--teal)]',
+							'hover:shadow-[0_0_20px_-5px_var(--teal)] hover:border-[var(--teal)]',
 						glowColor === 'rose' &&
-							'hover:shadow-[0_0_20px_-5px_var(--rose)] hover:border-(--rose)]',
+							'hover:shadow-[0_0_20px_-5px_var(--rose)] hover:border-[var(--rose)]',
 						glowColor === 'amber' &&
-							'hover:shadow-[0_0_20px_-5px_var(--amber)] hover:border-(--amber)]',
+							'hover:shadow-[0_0_20px_-5px_var(--amber)] hover:border-[var(--amber)]',
 						glowColor === 'pink' &&
-							'hover:shadow-[0_0_20px_-5px_var(--pink)] hover:border-(--pink)]',
+							'hover:shadow-[0_0_20px_-5px_var(--pink)] hover:border-[var(--pink)]',
+						glowColor === 'copper' &&
+							'hover:shadow-[0_0_20px_-5px_var(--copper)] hover:border-[var(--copper)]',
 						className,
 					)}
 					{...props}

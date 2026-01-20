@@ -71,6 +71,14 @@ code {
   --shadow-2xl: 0px 5px 10px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0.5px;
   --spacing: 0.25rem;
+
+  /* Custom Palette vars */
+  --sky: oklch(0.70 0.14 240);
+  --teal: oklch(0.65 0.14 180);
+  --copper: oklch(0.72 0.16 50);
+  --rose: oklch(0.65 0.20 20);
+  --amber: oklch(0.82 0.16 80);
+  --pink: oklch(0.70 0.18 350);
 }
 
 .dark {
@@ -124,6 +132,14 @@ code {
   --shadow-lg: 0px 5px 10px 0px hsl(0 0% 0% / 0.20), 0px 4px 6px -1px hsl(0 0% 0% / 0.20);
   --shadow-xl: 0px 5px 10px 0px hsl(0 0% 0% / 0.20), 0px 8px 10px -1px hsl(0 0% 0% / 0.20);
   --shadow-2xl: 0px 5px 10px 0px hsl(0 0% 0% / 0.50);
+
+  /* Custom Palette vars */
+  --sky: oklch(0.55 0.15 240);
+  --teal: oklch(0.55 0.14 180);
+  --copper: oklch(0.65 0.16 50);
+  --rose: oklch(0.55 0.20 20);
+  --amber: oklch(0.75 0.16 80);
+  --pink: oklch(0.60 0.18 350);
 }
 
 @theme inline {
