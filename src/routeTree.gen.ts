@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as CreateOrganizationRouteImport } from './routes/create-organization'
 import { Route as DemoLayoutRouteRouteImport } from './routes/_demoLayout/route'
 import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
@@ -63,6 +64,11 @@ const SignUpRoute = SignUpRouteImport.update({
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreateOrganizationRoute = CreateOrganizationRouteImport.update({
@@ -300,6 +306,7 @@ const DemoLayoutDemoApiAiChatRoute = DemoLayoutDemoApiAiChatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-organization': typeof CreateOrganizationRoute
+  '/pricing': typeof PricingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/about': typeof DemoLayoutAboutRoute
@@ -345,6 +352,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-organization': typeof CreateOrganizationRoute
+  '/pricing': typeof PricingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/about': typeof DemoLayoutAboutRoute
@@ -393,6 +401,7 @@ export interface FileRoutesById {
   '/_appLayout': typeof AppLayoutRouteRouteWithChildren
   '/_demoLayout': typeof DemoLayoutRouteRouteWithChildren
   '/create-organization': typeof CreateOrganizationRoute
+  '/pricing': typeof PricingRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/_demoLayout/about': typeof DemoLayoutAboutRoute
@@ -440,6 +449,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/create-organization'
+    | '/pricing'
     | '/sign-in'
     | '/sign-up'
     | '/about'
@@ -485,6 +495,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/create-organization'
+    | '/pricing'
     | '/sign-in'
     | '/sign-up'
     | '/about'
@@ -532,6 +543,7 @@ export interface FileRouteTypes {
     | '/_appLayout'
     | '/_demoLayout'
     | '/create-organization'
+    | '/pricing'
     | '/sign-in'
     | '/sign-up'
     | '/_demoLayout/about'
@@ -580,6 +592,7 @@ export interface RootRouteChildren {
   AppLayoutRouteRoute: typeof AppLayoutRouteRouteWithChildren
   DemoLayoutRouteRoute: typeof DemoLayoutRouteRouteWithChildren
   CreateOrganizationRoute: typeof CreateOrganizationRoute
+  PricingRoute: typeof PricingRoute
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
   ApiRemyChatRoute: typeof ApiRemyChatRoute
@@ -605,6 +618,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create-organization': {
@@ -1000,6 +1020,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppLayoutRouteRoute: AppLayoutRouteRouteWithChildren,
   DemoLayoutRouteRoute: DemoLayoutRouteRouteWithChildren,
   CreateOrganizationRoute: CreateOrganizationRoute,
+  PricingRoute: PricingRoute,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
   ApiRemyChatRoute: ApiRemyChatRoute,
