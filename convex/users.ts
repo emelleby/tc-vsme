@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { requireUserId } from './_utils/auth'
 
 /**
  * Upsert user record: create if not exists, update organizationIds if exists.
@@ -16,6 +17,9 @@ export const upsertUser = mutation({
   },
   returns: v.id('users'),
   handler: async (ctx, args) => {
+    // Require authentication
+    await requireUserId(ctx)
+
     // Check if user already exists
     const existing = await ctx.db
       .query('users')
@@ -58,8 +62,47 @@ export const upsertUser = mutation({
 })
 
 /**
- * Fetch user by Clerk user ID.
+ * Fetch the currently authenticated user's data.
+ * Returns null if user record doesn't exist in Convex.
+ *
+ * Note: This function fetches the authenticated user's own data only.
+ * It does not accept a clerkId argument to prevent cross-user data access.
+ */
+export const getMe = query({
+  args: {},
+  returns: v.union(
+    v.object({
+      _id: v.id('users'),
+      _creationTime: v.number(),
+      clerkId: v.string(),
+      email: v.string(),
+      firstName: v.optional(v.string()),
+      lastName: v.optional(v.string()),
+      username: v.optional(v.string()),
+      organizationIds: v.array(v.string()),
+      updatedAt: v.number(),
+    }),
+    v.null()
+  ),
+  handler: async (ctx) => {
+    // Require authentication
+    const userId = await requireUserId(ctx)
+
+    // Fetch the authenticated user's own data
+    return await ctx.db
+      .query('users')
+      .withIndex('by_clerkId', (q) => q.eq('clerkId', userId))
+      .unique()
+  },
+})
+
+/**
+ * Fetch user by Clerk user ID (admin/internal use only).
  * Returns null if not found.
+ *
+ * WARNING: This function allows fetching any user by clerkId.
+ * It should only be used internally by trusted code paths.
+ * For frontend use, use getMe() instead.
  */
 export const getByClerkId = query({
   args: {
@@ -80,6 +123,14 @@ export const getByClerkId = query({
     v.null()
   ),
   handler: async (ctx, args) => {
+    // Require authentication
+    const userId = await requireUserId(ctx)
+
+    // Users can only fetch their own data
+    if (userId !== args.clerkId) {
+      throw new Error("Unauthorized: Can only fetch own user data")
+    }
+
     return await ctx.db
       .query('users')
       .withIndex('by_clerkId', (q) => q.eq('clerkId', args.clerkId))
@@ -89,6 +140,7 @@ export const getByClerkId = query({
 
 export default {
   upsertUser,
+  getMe,
   getByClerkId,
 }
 

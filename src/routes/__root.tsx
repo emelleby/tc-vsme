@@ -14,7 +14,7 @@ import { NotFound } from '@/components/NotFound'
 import { useTheme } from '@/hooks/use-theme'
 import { getLocale, shouldRedirect } from '@/paraglide/runtime'
 import ClerkProvider from '../integrations/clerk/provider'
-import ConvexProvider from '../integrations/convex/provider'
+import ConvexProviderWithClerk from '../integrations/convex/provider'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import AiDevtools from '../lib/ai-devtools'
 import StoreDevtools from '../lib/demo-store-devtools'
@@ -72,12 +72,12 @@ function ThemeInitializer() {
 function RootComponent() {
 	return (
 		<ClerkProvider>
-			<ConvexProvider>
+			<ConvexProviderWithClerk>
 				<ThemeInitializer />
 				<RootDocument>
 					<Outlet />
 				</RootDocument>
-			</ConvexProvider>
+			</ConvexProviderWithClerk>
 		</ClerkProvider>
 	)
 }

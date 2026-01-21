@@ -6,12 +6,14 @@ import * as organizations from './organizations'
 import * as users from './users'
 import * as todos from './todos'
 import * as schema from './schema'
+import * as auth from './_utils/auth'
 
 export const modules = {
   './organizations.ts': () => Promise.resolve(organizations),
   './users.ts': () => Promise.resolve(users),
   './todos.ts': () => Promise.resolve(todos),
   './schema.ts': () => Promise.resolve(schema),
+  './_utils/auth.ts': () => Promise.resolve(auth),
   './_generated/api.d.ts': () => Promise.resolve({}),
   './_generated/api.js': () => Promise.resolve({}),
   './_generated/dataModel.d.ts': () => Promise.resolve({}),

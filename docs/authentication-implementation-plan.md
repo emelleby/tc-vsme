@@ -91,7 +91,7 @@ Request → clerkMiddleware() → authMiddleware → Route Handler
 Implement a complete authentication and authorization system that:
 1. Protects routes based on user/organization metadata
 2. Guides users through the onboarding journey
-3. Ensures organization-level data isolation
+3. Ensures organization-level data isolation with database-layer authorization
 4. Provides seamless UX with automatic redirects
 
 ### Success Criteria
@@ -99,11 +99,14 @@ Implement a complete authentication and authorization system that:
 - [ ] Routing decisions correctly follow the metadata flags
 - [ ] Users are guided through sign-up → org setup → dashboard flow
 - [ ] Organization data is isolated per tenant
+- [ ] Database-layer authorization prevents unauthorized data access (Story 7)
 - [ ] All auth flows have automated test coverage
 
 ---
 
 ## User Stories
+
+**Note on Story Numbering**: Story 7 contains the detailed JWT integration implementation. References to "Story 4" in some sections refer to this same JWT integration story - this is a numbering inconsistency in the original document. The correct story for Convex + Clerk JWT Integration is **Story 7**.
 
 ### Story 1: Global Auth Middleware
 **Priority**: P0 (Critical Path)
@@ -384,12 +387,13 @@ describe('CreateOrganization page', () => {
 ### Story 5: Convex Schema & Organization/User Mutations
 **Priority**: P1 (High)
 **Estimate**: 1.5 days
+**Dependencies**: Story 7 (Convex + Clerk JWT Integration) must be completed first for auth checks
 
 #### Description
 As a developer, I need Convex tables and mutations to store organization and user data, manage the `vsmeDb` flag, and enable organization-scoped data isolation with user tracking for future analytics.
 
 #### Technical Approach
-Extend Convex schema with organizations and users tables:
+Extend Convex schema with organizations and users tables and add authorization checks using auth utilities from Story 7:
 
 ```typescript
 // convex/schema.ts
@@ -421,9 +425,9 @@ When a user creates/joins an organization:
 
 #### Files to Create/Modify
 - `convex/schema.ts` - Add organizations and users tables
-- `convex/organizations.ts` - Org CRUD mutations
-- `convex/users.ts` - User upsert mutations
-- `convex/auth.ts` - Auth helper functions (optional)
+- `convex/organizations.ts` - Org CRUD mutations with auth checks
+- `convex/users.ts` - User upsert mutations with auth checks
+- `convex/_utils/auth.ts` - Auth helper functions (from Story 7)
 
 #### Acceptance Criteria
 - [ ] Organizations table exists with proper schema
@@ -437,6 +441,7 @@ When a user creates/joins an organization:
 - [ ] Proper error handling for duplicate orgs
 - [ ] Org metadata updated with `vsmeDb: true` after successful creation
 - [ ] User redirected to `/app` after successful org creation
+- [ ] All mutations/queries include authorization checks using auth utilities from Story 7
 
 #### Test Cases
 ```typescript
@@ -448,6 +453,8 @@ describe('organizations mutations', () => {
   it('returns null for non-existent org')
   it('updates org metadata with vsmeDb flag')
   it('redirects to /app after successful setup')
+  it('requires authentication for all operations')
+  it('enforces organization-scoped access')
 })
 
 // Convex function tests - users
@@ -458,6 +465,8 @@ describe('users mutations', () => {
   it('fetches user by clerkId')
   it('returns null for non-existent user')
   it('stores username when available from Clerk')
+  it('requires authentication for all operations')
+  it('prevents fetching other users data')
 })
 ```
 
@@ -508,32 +517,338 @@ describe('HeaderButtons', () => {
 **Priority**: P1 (High)
 **Estimate**: 1.5 days
 
+#### Technical Rationale
+
+**Purpose & Necessity:**
+This story addresses a **critical security gap** in the three-layer authentication architecture. While Layer 1 (Clerk) issues JWT tokens and Layer 2 (TanStack Start middleware) validates them for frontend route protection, **Layer 3 (Convex data layer) has NO native way to verify these tokens without explicit configuration**.
+
+Without JWT integration, Convex functions would have no way to:
+- Verify that requests come from authenticated users
+- Extract user/org context from incoming requests
+- Enforce organization-scoped data access
+- Prevent unauthorized data queries/mutations
+
+**Security Contribution Beyond Current Measures:**
+
+| Security Layer | Current Protection | What Story 7 Adds |
+|----------------|-------------------|-------------------|
+| **Frontend** | Route guards, session checks | ✅ Already covered by Story 1 & 2 |
+| **API Surface** | Clerk middleware validates JWT | ✅ Already covered by Story 1 |
+| **Database Layer** | ❌ NONE (Convex is open by default) | ✅ JWT verification + org scoping |
+
+**Critical Gap Filled:**
+- **Data-level authorization**: Convex functions can now check `ctx.auth.getUserIdentity()` before returning data
+- **Multi-tenant isolation**: Prevents cross-organization data leaks (Org A users cannot query Org B data)
+- **Auditability**: Every Convex operation is tied to authenticated identity
+- **Defense in depth**: Even if frontend protections are bypassed, the database layer remains secure
+
+**Redundancy Analysis:**
+**Not redundant** - fills a specific architectural gap:
+- Stories 1 & 2 protect **routes** (frontend)
+- Story 7 protects **data** (backend/database layer)
+- These are **orthogonal security boundaries** - both are required for defense in depth
+
 #### Description
-As a developer, I need Convex to verify Clerk JWT tokens and extract user/org context, ensuring secure API access.
+As a developer, I need Convex to verify Clerk JWT tokens and extract user/org context, ensuring secure API access at the database layer.
 
 #### Technical Approach
-Configure Convex to use Clerk as auth provider:
-1. Set up Clerk JWT template for Convex
-2. Configure Convex auth handler
-3. Create helper to get auth context in Convex functions
+Configure Convex to use Clerk as OIDC auth provider:
+
+1. **Create Clerk JWT Template** (Clerk Dashboard):
+   - Navigate to Dashboard → JWT Templates → New Template
+   - Name: `convex`
+   - Claims: Include standard OIDC claims (`sub`, `iss`, `email`, `name`) and custom claims (`org_id`, `org_role`)
+   - Audience: Use Convex application ID (from environment variable or generate unique identifier)
+   - Algorithm: RS256
+   - Expiration: 5 minutes (default)
+
+2. **Configure Convex auth handler** (`convex/auth.config.ts`):
+   - Clerk uses OIDC standard, so configure as OIDC provider
+   - Domain: Clerk issuer URL (e.g., `https://your-instance.clerk.accounts.dev`)
+   - Application ID: The audience configured in JWT template
+
+3. **Create helper utilities** (`convex/_utils/auth.ts`):
+   - Extract `userId` from JWT claims (`sub` claim)
+   - Extract `orgId` from JWT claims (custom `org_id` claim)
+   - Provide type-safe auth context access
+   - Handle authentication errors gracefully
+
+4. **Update Convex provider** (`src/integrations/convex/provider.tsx`):
+   - Replace `ConvexProvider` with `ConvexProviderWithClerk` from `convex/react-clerk`
+   - Pass Clerk's `useAuth` hook to enable JWT token fetching
+
+5. **Update existing Convex functions** to use auth context:
+   - Use `ctx.auth.getUserIdentity()` to get authenticated user
+   - Extract `userId` from `identity.subject` or `identity.tokenIdentifier`
+   - Extract `orgId` from `identity.org_id` (custom claim)
+   - Add authorization checks before data access
 
 #### Files to Create/Modify
-- `convex/auth.config.ts` - Clerk auth configuration
-- `convex/_utils/auth.ts` - Auth helper utilities
+- `convex/auth.config.ts` - Clerk OIDC auth configuration (NEW)
+- `convex/_utils/auth.ts` - Auth helper utilities (NEW)
+- `src/integrations/convex/provider.tsx` - Update to use ConvexProviderWithClerk (MODIFY)
+- `convex/organizations.ts` - Add auth checks to queries/mutations (MODIFY)
+- `convex/users.ts` - Add auth checks to queries/mutations (MODIFY)
+
+#### Implementation Details
+
+**Step 1: Create Clerk JWT Template**
+```bash
+# Clerk Dashboard Steps:
+1. Navigate to: https://dashboard.clerk.com/apps/[APP_ID]/jwt-templates
+2. Click "New Template"
+3. Configure:
+   - Name: convex
+   - Short-lived: Yes (recommended)
+   - Claims to include:
+     * Standard: sub, iss, email, name, given_name, family_name
+     * Custom: org_id, org_role
+   - Audience: Your Convex application ID (e.g., "convex-tc-vsme")
+   - Algorithm: RS256
+   - Lifetime: 5 minutes
+4. Save template
+```
+
+**Step 2: Create `convex/auth.config.ts`**
+```typescript
+import { AuthConfig } from "convex/server";
+
+export default {
+  providers: [
+    {
+      // Clerk's OIDC issuer URL
+      // Replace with your actual Clerk instance URL
+      domain: process.env.CLERK_ISSUER_URL || "https://your-instance.clerk.accounts.dev",
+
+      // The audience configured in Clerk JWT template
+      // This must match the "Audience" field in your Clerk JWT template
+      applicationID: process.env.CONVEX_JWT_AUDIENCE || "convex-tc-vsme",
+    },
+  ],
+} satisfies AuthConfig;
+```
+
+**Step 3: Create `convex/_utils/auth.ts`**
+```typescript
+import { query, mutation } from "../_generated/server";
+import { v } from "convex/values";
+
+/**
+ * Extract user ID from authenticated context.
+ * Throws error if user is not authenticated.
+ */
+export function requireUserId(ctx: any): string {
+  const identity = ctx.auth.getUserIdentity();
+  if (!identity) {
+    throw new Error("Unauthorized: User must be authenticated");
+  }
+  // Use 'subject' claim as the user ID (standard OIDC 'sub' claim)
+  return identity.subject;
+}
+
+/**
+ * Extract organization ID from authenticated context.
+ * Returns null if no organization is selected.
+ */
+export function getOrgId(ctx: any): string | null {
+  const identity = ctx.auth.getUserIdentity();
+  if (!identity) {
+    return null;
+  }
+  // Extract custom 'org_id' claim from JWT
+  return identity.org_id as string | null;
+}
+
+/**
+ * Require organization context.
+ * Throws error if no organization is selected.
+ */
+export function requireOrgId(ctx: any): string {
+  const orgId = getOrgId(ctx);
+  if (!orgId) {
+    throw new Error("Unauthorized: Organization must be selected");
+  }
+  return orgId;
+}
+
+/**
+ * Get full authenticated user identity.
+ * Returns null if not authenticated.
+ */
+export async function getAuthIdentity(ctx: any) {
+  return await ctx.auth.getUserIdentity();
+}
+```
+
+**Step 4: Update `src/integrations/convex/provider.tsx`**
+```typescript
+import { ConvexProviderWithClerk } from 'convex/react-clerk'
+import { ConvexQueryClient } from '@convex-dev/react-query'
+import { useAuth } from '@clerk/tanstack-react-start'
+
+const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL
+if (!CONVEX_URL) {
+  console.error('missing envar CONVEX_URL')
+}
+const convexQueryClient = new ConvexQueryClient(CONVEX_URL)
+
+export default function AppConvexProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <ConvexProviderWithClerk client={convexQueryClient.convexClient} useAuth={useAuth}>
+      {children}
+    </ConvexProviderWithClerk>
+  )
+}
+```
+
+**Step 5: Update `convex/organizations.ts` with auth checks**
+```typescript
+import { mutation, query } from './_generated/server'
+import { v } from 'convex/values'
+import { requireUserId, requireOrgId } from './_utils/auth'
+
+/**
+ * Fetch organization by Clerk organization ID.
+ * Requires authentication and organization context.
+ */
+export const getByClerkOrgId = query({
+  args: {
+    clerkOrgId: v.string(),
+  },
+  returns: v.union(
+    v.object({
+      _id: v.id('organizations'),
+      _creationTime: v.number(),
+      clerkOrgId: v.string(),
+      name: v.string(),
+      slug: v.string(),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    // Require authentication
+    const userId = requireUserId(ctx)
+    const orgId = requireOrgId(ctx)
+
+    // Verify user has access to this organization
+    // (Optional: Add additional authorization logic here)
+
+    return await ctx.db
+      .query('organizations')
+      .withIndex('by_clerkOrgId', (q) => q.eq('clerkOrgId', args.clerkOrgId))
+      .unique()
+  },
+})
+
+// ... other functions with similar auth checks
+```
+
+**Step 6: Update `convex/users.ts` with auth checks**
+```typescript
+import { mutation, query } from './_generated/server'
+import { v } from 'convex/values'
+import { requireUserId } from './_utils/auth'
+
+/**
+ * Fetch user by Clerk user ID.
+ * Requires authentication.
+ */
+export const getByClerkId = query({
+  args: {
+    clerkId: v.string(),
+  },
+  returns: v.union(
+    v.object({
+      _id: v.id('users'),
+      _creationTime: v.number(),
+      clerkId: v.string(),
+      email: v.string(),
+      firstName: v.optional(v.string()),
+      lastName: v.optional(v.string()),
+      username: v.optional(v.string()),
+      organizationIds: v.array(v.string()),
+      updatedAt: v.number(),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    // Require authentication
+    const userId = requireUserId(ctx)
+
+    // Users can only fetch their own data
+    if (userId !== args.clerkId) {
+      throw new Error("Unauthorized: Can only fetch own user data")
+    }
+
+    return await ctx.db
+      .query('users')
+      .withIndex('by_clerkId', (q) => q.eq('clerkId', args.clerkId))
+      .unique()
+  },
+})
+
+// ... other functions with similar auth checks
+```
+
+#### Environment Variables Required
+Add to `.env`:
+```env
+# Clerk issuer URL (format: https://[INSTANCE].clerk.accounts.dev)
+CLERK_ISSUER_URL=https://your-instance.clerk.accounts.dev
+
+# Convex JWT audience (must match Clerk JWT template audience)
+CONVEX_JWT_AUDIENCE=convex-tc-vsme
+```
 
 #### Acceptance Criteria
-- [ ] Convex functions can access authenticated user ID
-- [ ] Convex functions can access organization ID from JWT
-- [ ] Unauthenticated requests are properly rejected
-- [ ] Auth context is type-safe
+- [ ] Clerk JWT template is created with correct claims and audience
+- [ ] `convex/auth.config.ts` is created with Clerk OIDC configuration
+- [ ] `convex/_utils/auth.ts` provides helper functions for auth context
+- [ ] `src/integrations/convex/provider.tsx` uses `ConvexProviderWithClerk`
+- [ ] Convex functions can access authenticated user ID via `ctx.auth.getUserIdentity()`
+- [ ] Convex functions can access organization ID from JWT custom claims
+- [ ] Unauthenticated requests to protected Convex functions are rejected
+- [ ] Auth context is type-safe with TypeScript
+- [ ] Organization-scoped queries enforce multi-tenant isolation
 
 #### Test Cases
 ```typescript
-describe('Convex Auth', () => {
-  it('extracts userId from Clerk JWT')
-  it('extracts orgId from Clerk JWT')
-  it('rejects requests without valid JWT')
-  it('handles missing orgId gracefully')
+// convex/_utils/__tests__/auth.test.ts
+describe('Convex Auth Utils', () => {
+  describe('requireUserId', () => {
+    it('returns userId when user is authenticated')
+    it('throws error when user is not authenticated')
+  })
+
+  describe('getOrgId', () => {
+    it('returns orgId when organization is selected')
+    it('returns null when no organization is selected')
+    it('returns null when user is not authenticated')
+  })
+
+  describe('requireOrgId', () => {
+    it('returns orgId when organization is selected')
+    it('throws error when no organization is selected')
+    it('throws error when user is not authenticated')
+  })
+})
+
+// convex/__tests__/organizations-auth.test.ts
+describe('Organizations with Auth', () => {
+  it('allows fetching organization when user has access')
+  it('rejects fetching organization when user is not authenticated')
+  it('enforces organization-scoped data access')
+})
+
+// convex/__tests__/users-auth.test.ts
+describe('Users with Auth', () => {
+  it('allows fetching own user data when authenticated')
+  it('rejects fetching other user data')
+  it('rejects fetching user data when not authenticated')
 })
 ```
 
@@ -549,10 +864,10 @@ As a user with full access, I want the dashboard pages to display organization-s
 #### Technical Approach
 Enhance dashboard pages to:
 - Use auth context from `Route.useRouteContext()`
-- Query Convex with organization ID filter
+- Query Convex with organization ID filter (JWT-authenticated via Story 7)
 - Display org-specific data
 
-**Note**: Auth protection is already handled by global middleware (Story 1) and `_appLayout` beforeLoad (Story 2).
+**Note**: Auth protection is handled by global middleware (Story 1), `_appLayout` beforeLoad (Story 2), and Convex JWT verification (Story 7).
 
 #### Files to Modify
 - `src/routes/_appLayout/app/index.tsx` - Dashboard with org data
@@ -564,7 +879,7 @@ function RouteComponent() {
   const { authContext } = Route.useRouteContext()
   const { orgId } = authContext
 
-  // Query Convex with org filter
+  // Query Convex with org filter (JWT-authenticated via Story 7)
   const orgData = useQuery(api.organizations.getByClerkId, {
     clerkOrgId: orgId
   })
@@ -577,10 +892,11 @@ function RouteComponent() {
 
 #### Acceptance Criteria
 - [ ] Dashboard accesses auth context from route context
-- [ ] Convex queries are scoped to current organization
+- [ ] Convex queries are scoped to current organization (JWT-authenticated via Story 7)
 - [ ] Loading states are shown while fetching data
 - [ ] Error states are handled gracefully
 - [ ] Organization switcher updates the data displayed
+- [ ] Unauthorized data access is prevented at database layer
 
 ---
 
@@ -605,16 +921,20 @@ describe('E2E Authentication Flow', () => {
     it('signs up and redirects to organization setup')
     it('creates organization and redirects to dashboard')
     it('can access org-specific data')
+    it('JWT tokens are properly sent to Convex')
   })
 
   describe('Returning User', () => {
     it('signs in and accesses dashboard directly')
     it('can switch between organizations')
+    it('JWT tokens refresh on organization switch')
   })
 
   describe('Permission Boundaries', () => {
     it('denies dashboard access without vsmeDb')
     it('denies protected routes for visitors')
+    it('prevents unauthorized Convex queries')
+    it('prevents cross-organization data access')
   })
 })
 ```
@@ -626,13 +946,13 @@ describe('E2E Authentication Flow', () => {
 ### Phase 1: Foundation (Week 1)
 - Story 1: Global Auth Middleware (1 day)
 - Story 2: Enhanced _appLayout Route Protection (1 day)
-- Story 4: Convex + Clerk JWT Integration (1.5 days)
-- Story 5: Convex Schema & Organization/User Mutations (1.5 days)
+- Story 7: Convex + Clerk JWT Integration (1.5 days)
+- Story 5: Convex Schema & Organization/User Mutations (1.5 days) - *depends on Story 7*
 
 ### Phase 2: Core Features (Week 2)
 - Story 3: Create Organization Page (1 day) - *depends on Story 5*
 - Story 6: Header Conditional Rendering (1 day)
-- Story 8: Dashboard with Organization Data (1 day)
+- Story 8: Dashboard with Organization Data (1 day) - *depends on Story 7*
 - Integration testing (1 day)
 
 ### Phase 3: Testing & Polish (Week 3)
@@ -647,14 +967,16 @@ describe('E2E Authentication Flow', () => {
 | 1 | Global Auth Middleware | P0 | 1 day | - |
 | 2 | Enhanced _appLayout Route Protection | P0 | 1 day | Story 1 |
 | 3 | Create Organization Page | P1 | 1 day | Story 1, 2, **5** |
-| 4 | Convex + Clerk JWT Integration | P1 | 1.5 days | - |
-| 5 | Convex Schema & Org/User Mutations | P1 | 1.5 days | Story 4 |
+| 4 | *(No story - see Story 7)* | - | - | - |
+| 5 | Convex Schema & Org/User Mutations | P1 | 1.5 days | Story 7 |
 | 6 | Header Conditional Rendering | P2 | 1 day | - |
-| 7 | *(Merged into Story 4)* | - | - | - |
-| 8 | Dashboard with Organization Data | P1 | 1 day | Story 2, 5 |
+| 7 | Convex + Clerk JWT Integration | P1 | 1.5 days | - |
+| 8 | Dashboard with Organization Data | P1 | 1 day | Story 2, 5, 7 |
 | 9 | End-to-End Auth Flow Tests | P1 | 2 days | All |
 
 **Note**: Story 3 depends on Story 5 because the Create Organization page needs to call the Convex mutations to create org/user records.
+**Note**: Story 5 depends on Story 7 (Convex + Clerk JWT Integration) to use auth utilities for authorization checks.
+**Note**: Story 8 depends on Story 7 (Convex + Clerk JWT Integration) because the dashboard needs authenticated Convex queries with organization-scoped data access.
 
 ---
 
@@ -860,15 +1182,19 @@ src/
 │   ├── Header.tsx                     # Updated with conditional auth buttons
 │   └── HeaderButtons.tsx              # Auth-aware navigation component
 └── integrations/
-    └── clerk/
-        ├── provider.tsx               # ClerkProvider wrapper
-        └── header-user.tsx            # Enhanced with org logic
+    ├── clerk/
+    │   ├── provider.tsx               # ClerkProvider wrapper
+    │   └── header-user.tsx            # Enhanced with org logic
+    └── convex/
+        └── provider.tsx               # ConvexProviderWithClerk wrapper (UPDATED for Story 7)
 
 convex/
 ├── schema.ts                          # Updated with organizations and users tables
 ├── organizations.ts                   # Org CRUD operations
 ├── users.ts                           # User upsert operations
-└── auth.config.ts                     # Clerk JWT integration
+├── auth.config.ts                     # Clerk JWT integration (NEW)
+└── _utils/
+    └── auth.ts                        # Auth helper utilities (NEW)
 ```
 
 ### Key Architecture Decisions
@@ -877,6 +1203,8 @@ convex/
 2. **Global middleware for basic auth**: Fast check in `src/start.ts` (no DB calls)
 3. **Route-level checks for permissions**: `beforeLoad` in `_appLayout` for VSME metadata
 4. **`/create-organization` at root level**: Accessible before user has full VSME access
+5. **Convex JWT verification (Story 7)**: Database-layer security using Clerk OIDC provider to prevent unauthorized data access
+6. **Three-layer defense**: Frontend route guards (Story 1-2) + Database-layer auth (Story 7) for defense in depth
 
 ---
 
@@ -884,13 +1212,15 @@ convex/
 
 ### Unit Tests (Vitest)
 - Auth context functions
+- Auth utility functions (Story 7)
 - Route guard logic
 - Public route matching
 - Metadata flag parsing
 
 ### Integration Tests
 - Clerk middleware behavior
-- Convex auth integration
+- Convex auth integration (Story 7)
+- JWT token verification
 - Route protection flow
 
 ### E2E Tests (Playwright)
@@ -900,6 +1230,7 @@ convex/
 
 ### Test Coverage Goals
 - Auth utilities: 90%+
+- Auth helper functions (Story 7): 90%+
 - Route guards: 85%+
 - Components: 75%+
 
@@ -909,19 +1240,32 @@ convex/
 
 ### Required Environment Variables
 ```env
+# Clerk authentication
 VITE_CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
+
+# Convex connection
 VITE_CONVEX_URL=https://...
+
+# Clerk JWT integration for Convex (Story 7)
+CLERK_ISSUER_URL=https://your-instance.clerk.accounts.dev
+CONVEX_JWT_AUDIENCE=convex-tc-vsme
 ```
 
 ### Clerk Configuration
 - Enable Organizations feature
-- Configure JWT template for Convex
-- Set up public metadata fields
+- Create JWT template named "convex" with:
+  - Standard OIDC claims: `sub`, `iss`, `email`, `name`
+  - Custom claims: `org_id`, `org_role`
+  - Audience: Matches `CONVEX_JWT_AUDIENCE` environment variable
+  - Algorithm: RS256
+  - Lifetime: 5 minutes
+- Set up public metadata fields on users and organizations
 
 ### Convex Configuration
-- Configure Clerk as auth provider
-- Set JWT issuer URL
+- Create `convex/auth.config.ts` with Clerk OIDC provider configuration
+- Set JWT issuer URL and application ID (must match Clerk JWT template)
+- Update `src/integrations/convex/provider.tsx` to use `ConvexProviderWithClerk`
 
 ---
 
@@ -930,9 +1274,11 @@ VITE_CONVEX_URL=https://...
 | Risk | Mitigation |
 |------|------------|
 | Clerk API rate limits | Implement caching for metadata |
-| JWT token expiration | Handle refresh gracefully |
-| Org switch mid-request | Invalidate cached auth context |
+| JWT token expiration | Handle refresh gracefully (Convex auto-refreshes via ConvexProviderWithClerk) |
+| Org switch mid-request | Invalidate cached auth context (Convex auto-handles via token refresh) |
 | Convex cold starts | Optimize function bundle size |
+| JWT verification failure | Implement proper error handling and user-friendly error messages |
+| Audience mismatch | Ensure `CONVEX_JWT_AUDIENCE` matches Clerk JWT template exactly |
 
 ---
 
@@ -942,6 +1288,7 @@ VITE_CONVEX_URL=https://...
 2. **Caching strategy**: How long should auth context be cached?
 3. **Error pages**: Should we create custom 401/403 error components?
 4. **Audit logging**: Do we need to log authentication events?
+5. **JWT template claims**: Should we include additional custom claims in the JWT template for future use?
 
 ---
 
@@ -997,7 +1344,10 @@ sequenceDiagram
             BL-->>U: Redirect /create-organization
         else Full access
             BL->>R: Render with authContext
-            R->>C: Query org data
+            R->>C: Query org data (with JWT)
+            C->>C: Verify JWT (Story 7)
+            C->>C: Extract userId/orgId from JWT
+            C->>C: Check authorization
             C-->>R: Organization data
             R-->>U: Dashboard page
         end

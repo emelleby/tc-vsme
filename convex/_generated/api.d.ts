@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as _utils_auth from "../_utils/auth.js";
 import type * as organizations from "../organizations.js";
 import type * as todos from "../todos.js";
 import type * as users from "../users.js";
@@ -19,6 +20,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "_utils/auth": typeof _utils_auth;
   organizations: typeof organizations;
   todos: typeof todos;
   users: typeof users;

@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { requireUserId, requireOrgId } from './_utils/auth'
 
 /**
  * Create a new organization record in Convex.
@@ -13,6 +14,9 @@ export const createOrganization = mutation({
   },
   returns: v.id('organizations'),
   handler: async (ctx, args) => {
+    // Require authentication
+    await requireUserId(ctx)
+
     // Check if org already exists
     const existing = await ctx.db
       .query('organizations')
@@ -44,6 +48,9 @@ export const upsertOrganization = mutation({
   },
   returns: v.id('organizations'),
   handler: async (ctx, args) => {
+    // Require authentication
+    await requireUserId(ctx)
+
     // Check if org already exists
     const existing = await ctx.db
       .query('organizations')
@@ -87,6 +94,13 @@ export const getByClerkOrgId = query({
     v.null()
   ),
   handler: async (ctx, args) => {
+    // Require authentication and organization context
+    await requireUserId(ctx)
+    await requireOrgId(ctx)
+
+    // Verify user has access to this organization
+    // (Optional: Add additional authorization logic here)
+
     return await ctx.db
       .query('organizations')
       .withIndex('by_clerkOrgId', (q) => q.eq('clerkOrgId', args.clerkOrgId))
@@ -103,6 +117,9 @@ export const exists = query({
   },
   returns: v.boolean(),
   handler: async (ctx, args) => {
+    // Require authentication
+    await requireUserId(ctx)
+
     const org = await ctx.db
       .query('organizations')
       .withIndex('by_clerkOrgId', (q) => q.eq('clerkOrgId', args.clerkOrgId))

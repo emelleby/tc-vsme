@@ -10,10 +10,8 @@ function SettingsPage() {
 	const { authContext } = Route.useRouteContext()
 	const { userId, orgId } = authContext
 
-	// Fetch user data from Convex
-	const userData = useQuery(api.users.getByClerkId, {
-		clerkId: userId,
-	})
+	// Fetch current user's data from Convex (uses JWT auth)
+	const userData = useQuery(api.users.getMe)
 
 	// Fetch organization data from Convex if orgId exists
 	const orgData = useQuery(
