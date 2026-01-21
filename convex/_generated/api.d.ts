@@ -9,6 +9,9 @@
  */
 
 import type * as _utils_auth from "../_utils/auth.js";
+import type * as emissions from "../emissions.js";
+import type * as mongodb_client from "../mongodb/client.js";
+import type * as mongodb_queries from "../mongodb/queries.js";
 import type * as organizations from "../organizations.js";
 import type * as todos from "../todos.js";
 import type * as users from "../users.js";
@@ -21,6 +24,9 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   "_utils/auth": typeof _utils_auth;
+  emissions: typeof emissions;
+  "mongodb/client": typeof mongodb_client;
+  "mongodb/queries": typeof mongodb_queries;
   organizations: typeof organizations;
   todos: typeof todos;
   users: typeof users;

@@ -36,6 +36,7 @@ import { Route as DemoLayoutDemoAiStructuredRouteImport } from './routes/_demoLa
 import { Route as DemoLayoutDemoAiImageRouteImport } from './routes/_demoLayout/demo/ai-image'
 import { Route as DemoLayoutDemoAiChatRouteImport } from './routes/_demoLayout/demo/ai-chat'
 import { Route as AppLayoutAppOrderRouteImport } from './routes/_appLayout/app/order'
+import { Route as AppLayoutAppEmissionsRouteImport } from './routes/_appLayout/app/emissions'
 import { Route as DemoLayoutDemoGuitarsIndexRouteImport } from './routes/_demoLayout/demo/guitars/index'
 import { Route as AppLayoutAppSettingsIndexRouteImport } from './routes/_appLayout/app/settings/index'
 import { Route as DemoLayoutDemoStartServerFuncsRouteImport } from './routes/_demoLayout/demo/start.server-funcs'
@@ -191,6 +192,11 @@ const AppLayoutAppOrderRoute = AppLayoutAppOrderRouteImport.update({
   path: '/app/order',
   getParentRoute: () => AppLayoutRouteRoute,
 } as any)
+const AppLayoutAppEmissionsRoute = AppLayoutAppEmissionsRouteImport.update({
+  id: '/app/emissions',
+  path: '/app/emissions',
+  getParentRoute: () => AppLayoutRouteRoute,
+} as any)
 const DemoLayoutDemoGuitarsIndexRoute =
   DemoLayoutDemoGuitarsIndexRouteImport.update({
     id: '/demo/guitars/',
@@ -317,6 +323,7 @@ export interface FileRoutesByFullPath {
   '/schedule': typeof ScheduleIndexRoute
   '/speakers': typeof SpeakersIndexRoute
   '/talks': typeof TalksIndexRoute
+  '/app/emissions': typeof AppLayoutAppEmissionsRoute
   '/app/order': typeof AppLayoutAppOrderRoute
   '/demo/ai-chat': typeof DemoLayoutDemoAiChatRoute
   '/demo/ai-image': typeof DemoLayoutDemoAiImageRoute
@@ -363,6 +370,7 @@ export interface FileRoutesByTo {
   '/schedule': typeof ScheduleIndexRoute
   '/speakers': typeof SpeakersIndexRoute
   '/talks': typeof TalksIndexRoute
+  '/app/emissions': typeof AppLayoutAppEmissionsRoute
   '/app/order': typeof AppLayoutAppOrderRoute
   '/demo/ai-chat': typeof DemoLayoutDemoAiChatRoute
   '/demo/ai-image': typeof DemoLayoutDemoAiImageRoute
@@ -412,6 +420,7 @@ export interface FileRoutesById {
   '/schedule/': typeof ScheduleIndexRoute
   '/speakers/': typeof SpeakersIndexRoute
   '/talks/': typeof TalksIndexRoute
+  '/_appLayout/app/emissions': typeof AppLayoutAppEmissionsRoute
   '/_appLayout/app/order': typeof AppLayoutAppOrderRoute
   '/_demoLayout/demo/ai-chat': typeof DemoLayoutDemoAiChatRoute
   '/_demoLayout/demo/ai-image': typeof DemoLayoutDemoAiImageRoute
@@ -460,6 +469,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/speakers'
     | '/talks'
+    | '/app/emissions'
     | '/app/order'
     | '/demo/ai-chat'
     | '/demo/ai-image'
@@ -506,6 +516,7 @@ export interface FileRouteTypes {
     | '/schedule'
     | '/speakers'
     | '/talks'
+    | '/app/emissions'
     | '/app/order'
     | '/demo/ai-chat'
     | '/demo/ai-image'
@@ -554,6 +565,7 @@ export interface FileRouteTypes {
     | '/schedule/'
     | '/speakers/'
     | '/talks/'
+    | '/_appLayout/app/emissions'
     | '/_appLayout/app/order'
     | '/_demoLayout/demo/ai-chat'
     | '/_demoLayout/demo/ai-image'
@@ -795,6 +807,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutAppOrderRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
+    '/_appLayout/app/emissions': {
+      id: '/_appLayout/app/emissions'
+      path: '/app/emissions'
+      fullPath: '/app/emissions'
+      preLoaderRoute: typeof AppLayoutAppEmissionsRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
     '/_demoLayout/demo/guitars/': {
       id: '/_demoLayout/demo/guitars/'
       path: '/demo/guitars'
@@ -932,12 +951,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppLayoutRouteRouteChildren {
+  AppLayoutAppEmissionsRoute: typeof AppLayoutAppEmissionsRoute
   AppLayoutAppOrderRoute: typeof AppLayoutAppOrderRoute
   AppLayoutAppIndexRoute: typeof AppLayoutAppIndexRoute
   AppLayoutAppSettingsIndexRoute: typeof AppLayoutAppSettingsIndexRoute
 }
 
 const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
+  AppLayoutAppEmissionsRoute: AppLayoutAppEmissionsRoute,
   AppLayoutAppOrderRoute: AppLayoutAppOrderRoute,
   AppLayoutAppIndexRoute: AppLayoutAppIndexRoute,
   AppLayoutAppSettingsIndexRoute: AppLayoutAppSettingsIndexRoute,

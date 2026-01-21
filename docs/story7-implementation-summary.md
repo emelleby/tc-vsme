@@ -186,7 +186,7 @@ To verify that JWT integration is working correctly:
 
 2. **Start your React app:**
    ```bash
-   npm run dev
+   bun run dev
    ```
 
 3. **Sign in to your app with Clerk**
@@ -216,7 +216,7 @@ To verify that JWT integration is working correctly:
 
 Run the JWT integration test:
 ```bash
-npx vitest convex/__tests__/jwt-integration.test.ts
+bun run vitest convex/__tests__/jwt-integration.test.ts
 ```
 
 This test verifies:

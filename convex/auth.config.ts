@@ -28,7 +28,7 @@ export default {
   providers: [
     {
       // Clerk's OIDC issuer URL
-      // Replace with your actual Clerk instance URL
+      // Replaceed with the actual Clerk instance URL
       domain: process.env.CLERK_ISSUER_URL || "https://clerk.gentle.cod-4.lcl.dev",
 
       // The audience configured in Clerk JWT template

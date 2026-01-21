@@ -63,8 +63,16 @@ const data = {
 					url: '/app/order',
 				},
 				{
+					title: 'Emissions',
+					url: '/app/emissions',
+				},
+				{
 					title: 'Settings',
 					url: '/app/settings',
+				},
+				{
+					title: 'Dashboard',
+					url: '/app',
 				},
 			],
 		},

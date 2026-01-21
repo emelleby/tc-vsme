@@ -859,13 +859,14 @@ describe('Users with Auth', () => {
 **Estimate**: 1 day
 
 #### Description
-As a user with full access, I want the dashboard pages to display organization-specific data fetched from Convex, with proper loading and error states.
+As a user with full access, I want the dashboard pages to display organization-specific data fetched from Convex and MongoDB, with proper loading and error states.
 
 #### Technical Approach
 Enhance dashboard pages to:
 - Use auth context from `Route.useRouteContext()`
 - Query Convex with organization ID filter (JWT-authenticated via Story 7)
-- Display org-specific data
+- Display org-specific data from both Convex and MongoDB
+- Handle loading and error states gracefully
 
 **Note**: Auth protection is handled by global middleware (Story 1), `_appLayout` beforeLoad (Story 2), and Convex JWT verification (Story 7).
 
