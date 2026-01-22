@@ -1,5 +1,6 @@
 'use client'
 
+import { OrganizationSwitcher } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { Menu } from 'lucide-react'
 import { useState } from 'react'
@@ -11,7 +12,6 @@ import {
 	SheetTrigger,
 } from '@/components/ui/sheet'
 import { m } from '@/paraglide/messages'
-
 import { HeaderButtons } from './HeaderButtons'
 
 export default function Header() {
@@ -114,6 +114,14 @@ export default function Header() {
 
 					{/* Right Side Controls - Always Visible */}
 					<div className="flex items-center gap-2 xl:gap-4">
+						<OrganizationSwitcher
+							hidePersonal
+							skipInvitationScreen
+							afterSelectOrganizationUrl="/app"
+							appearance={{
+								baseTheme: undefined,
+							}}
+						/>
 						<HeaderButtons />
 					</div>
 				</div>

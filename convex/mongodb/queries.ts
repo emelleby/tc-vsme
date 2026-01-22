@@ -31,7 +31,7 @@ export async function fetchCompanyEmissions(
 
   const company = await collection.findOne(
     { OrgId: orgIdToUse },
-    { projection: { Emissions: 1 } }
+    { projection: { Emissions: 1, CompanyName: 1 } }
   );
 
   if (!company?.Emissions) {

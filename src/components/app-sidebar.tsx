@@ -1,13 +1,11 @@
 'use client'
+import { OrganizationSwitcher } from '@clerk/clerk-react'
 import { Link } from '@tanstack/react-router'
 
 import {
-	AudioWaveform,
 	BookOpen,
 	Bot,
-	Command,
 	Frame,
-	GalleryVerticalEnd,
 	// biome-ignore lint/suspicious/noShadowRestrictedNames: <false positive>
 	Map,
 	PieChart,
@@ -19,7 +17,7 @@ import {
 import { NavMain } from '@/components/nav-main'
 import { NavProjects } from '@/components/nav-projects'
 import { NavUser } from '@/components/nav-user'
-import { TeamSwitcher } from '@/components/team-switcher'
+// import { TeamSwitcher } from '@/components/team-switcher'
 import {
 	Sidebar,
 	SidebarContent,
@@ -31,23 +29,23 @@ import { YearSelector } from '@/components/year-selector'
 
 // This is sample data.
 const data = {
-	teams: [
-		{
-			name: 'Acme Inc',
-			logo: GalleryVerticalEnd,
-			plan: 'Enterprise',
-		},
-		{
-			name: 'Acme Corp.',
-			logo: AudioWaveform,
-			plan: 'Startup',
-		},
-		{
-			name: 'Evil Corp.',
-			logo: Command,
-			plan: 'Free',
-		},
-	],
+	// teams: [
+	// 	{
+	// 		name: 'Acme Inc',
+	// 		logo: GalleryVerticalEnd,
+	// 		plan: 'Enterprise',
+	// 	},
+	// 	{
+	// 		name: 'Acme Corp.',
+	// 		logo: AudioWaveform,
+	// 		plan: 'Startup',
+	// 	},
+	// 	{
+	// 		name: 'Evil Corp.',
+	// 		logo: Command,
+	// 		plan: 'Free',
+	// 	},
+	// ],
 	navMain: [
 		{
 			title: 'Links',
@@ -166,7 +164,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
 		<Sidebar collapsible="icon" {...props}>
 			<SidebarHeader>
-				<TeamSwitcher teams={data.teams} />
+				<OrganizationSwitcher
+					hidePersonal
+					skipInvitationScreen
+					afterSelectOrganizationUrl="/app"
+					appearance={{
+						baseTheme: undefined,
+					}}
+				/>
 				<YearSelector />
 			</SidebarHeader>
 			<SidebarContent>

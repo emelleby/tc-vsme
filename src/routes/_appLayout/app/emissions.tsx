@@ -13,7 +13,7 @@ export const Route = createFileRoute('/_appLayout/app/emissions')({
 const HARDCODED_ORG_ID = 'org_2tWO47gV8vEOLN1lrpV57N02Dh2'
 
 // Toggle between hardcoded and authContext orgId for testing
-const USE_HARDCODED_ORG = true // Set to true to use hardcoded orgId instead of authContext
+const USE_HARDCODED_ORG = false // Set to true to use hardcoded orgId instead of authContext
 
 type EmissionsData = {
 	TotalCo2?: number
@@ -65,6 +65,7 @@ function EmissionsPage() {
 			if (!result.success) {
 				throw new Error(result.error || 'Failed to fetch data')
 			}
+			console.log('result.data', result.data)
 			return result.data as Record<string, EmissionsData>
 		},
 		staleTime: 5 * 60 * 1000, // Data fresh for 5 minutes
@@ -178,7 +179,7 @@ function EmissionsCard({ year, data, loading, error, isSelected }: YearData) {
 
 					{Object.keys(data)
 						.filter((key) => key !== 'TotalCo2')
-						.slice(0, 5)
+						.slice(0, 7)
 						.map((key) => (
 							<div key={key} className="flex flex-col gap-1">
 								<span className="text-xs text-muted-foreground">{key}</span>
