@@ -170,8 +170,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					afterSelectOrganizationUrl="/app"
 					appearance={{
 						baseTheme: undefined,
+						elements: {
+							rootBox: {
+								width: '100%',
+								borderBottom: '1px solid #eee',
+								paddingBottom: '4px',
+							},
+							organizationSwitcherTrigger: {
+								width: '100%',
+								justifyContent: 'flex-start',
+							},
+							organizationSwitcherTriggerIcon: {
+								flexShrink: '0',
+								width: '1.3rem',
+								height: '1.3rem',
+								marginLeft: 'auto',
+							},
+						},
 					}}
 				/>
+
 				<YearSelector />
 			</SidebarHeader>
 			<SidebarContent>
