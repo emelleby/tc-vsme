@@ -8,7 +8,7 @@ import { getMongoClient } from "./client";
  * co2-intensities-dev database. Can fetch all years or a specific year.
  * Uses field projection to fetch only the Emissions field for better performance.
  *
- * @param {string} orgId - The organization ID (matches Clerk organization ID)
+ * @param {string} orgIdToUse - The organization ID (matches Clerk organization ID)
  * @param {number} [year] - Optional year to fetch specific year's data (e.g., 2024)
  * @returns {Promise<any>} Emissions data object, or null if not found
  *
@@ -22,7 +22,7 @@ import { getMongoClient } from "./client";
  * ```
  */
 export async function fetchCompanyEmissions(
-  orgId: string,
+  orgIdToUse: string,
   year?: number
 ) {
   const client = await getMongoClient();
@@ -30,7 +30,7 @@ export async function fetchCompanyEmissions(
   const collection = db.collection("companies");
 
   const company = await collection.findOne(
-    { OrgId: orgId },
+    { OrgId: orgIdToUse },
     { projection: { Emissions: 1 } }
   );
 

@@ -3,6 +3,7 @@ import { action } from "./_generated/server";
 import { v } from "convex/values";
 import { requireUserId } from "./_utils/auth";
 import { fetchCompanyEmissions } from "./mongodb/queries";
+import { getOrgId } from "./_utils/auth";
 
 /**
  * Sanitize MongoDB data to be Convex-compatible.
@@ -39,8 +40,9 @@ function sanitizeMongoData(data: any): any {
  * Requires authentication and verifies that the user has access to the requested organization.
  * Prevents cross-organization data access by checking user's org context.
  *
- * @param {string} orgId - The organization ID to fetch emissions for
+ * @param {string} orgIdToUse - The organization ID to fetch emissions for
  * @param {number} [year] - Optional year to fetch specific year's data
+ * @param {boolean} [testingMode] - Set to true to bypass org verification for testing
  * @returns {Promise<{success: boolean, data?: any, error?: string}>}
  *
  * @example
@@ -59,28 +61,27 @@ function sanitizeMongoData(data: any): any {
  */
 export const getEmissionsByOrgId = action({
   args: {
-    orgId: v.string(),
+    orgIdToUse: v.string(),
     year: v.optional(v.number()),
+    testingMode: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     // 1. Verify authentication
     await requireUserId(ctx);
 
     // 2. Get user's org context
-    // const userOrgId = await getOrgId(ctx);
-
-    // Hardcoded for testing purposes
-    const userOrgId = 'org_2tWO47gV8vEOLN1lrpV57N02Dh2'
+    const userOrgId = await getOrgId(ctx);
 
     // 3. Verify authorization - prevent cross-org access
     // Allow access if user's org matches requested org, or if no org context (for testing/admin)
-    if (userOrgId && userOrgId !== args.orgId) {
+    // Bypass check when testingMode is enabled
+    if (!args.testingMode && userOrgId && userOrgId !== args.orgIdToUse) {
       throw new Error("Unauthorized: Cannot access other organizations");
     }
 
     // 4. Fetch from MongoDB
     try {
-      const data = await fetchCompanyEmissions(args.orgId, args.year);
+      const data = await fetchCompanyEmissions(args.orgIdToUse, args.year);
 
       // Convert any Date objects to ISO strings for Convex compatibility
       const sanitizedData = data ? sanitizeMongoData(data) : null;

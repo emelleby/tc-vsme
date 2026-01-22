@@ -37,7 +37,7 @@ describe('Emissions Action', () => {
     // Without auth, should throw error
     await expect(
       t.action(api.emissions.getEmissionsByOrgId, {
-        orgId: HARDCODED_ORG_ID
+        orgIdToUse: HARDCODED_ORG_ID
       })
     ).rejects.toThrow('Unauthorized')
   })
@@ -47,7 +47,7 @@ describe('Emissions Action', () => {
     await expect(
       t.withIdentity({ subject: 'user_123', org_id: HARDCODED_ORG_ID })
         .action(api.emissions.getEmissionsByOrgId, {
-          orgId: 'org_different_org'
+          orgIdToUse: 'org_different_org'
         })
     ).rejects.toThrow('Cannot access other organizations')
   })
@@ -57,7 +57,7 @@ describe('Emissions Action', () => {
     const result = await t
       .withIdentity({ subject: 'user_123', org_id: HARDCODED_ORG_ID })
       .action(api.emissions.getEmissionsByOrgId, {
-        orgId: HARDCODED_ORG_ID
+        orgIdToUse: HARDCODED_ORG_ID
       })
 
     // Result should be an object with success field
@@ -70,7 +70,7 @@ describe('Emissions Action', () => {
     const result = await t
       .withIdentity({ subject: 'user_123', org_id: HARDCODED_ORG_ID })
       .action(api.emissions.getEmissionsByOrgId, {
-        orgId: HARDCODED_ORG_ID,
+        orgIdToUse: HARDCODED_ORG_ID,
         year: 2024,
       })
 
@@ -82,7 +82,7 @@ describe('Emissions Action', () => {
     const result = await t
       .withIdentity({ subject: 'user_123' })
       .action(api.emissions.getEmissionsByOrgId, {
-        orgId: HARDCODED_ORG_ID
+        orgIdToUse: HARDCODED_ORG_ID
       })
 
     // Should not throw error
