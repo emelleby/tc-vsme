@@ -27,6 +27,7 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from '@/components/ui/sidebar'
+import { YearSelector } from '@/components/year-selector'
 
 // This is sample data.
 const data = {
@@ -50,10 +51,14 @@ const data = {
 	navMain: [
 		{
 			title: 'Links',
-			url: '#',
+			url: '/app',
 			icon: SquareTerminal,
 			isActive: true,
 			items: [
+				{
+					title: 'Dashboard',
+					url: '/app',
+				},
 				{
 					title: 'Demo',
 					url: '/demo',
@@ -69,10 +74,6 @@ const data = {
 				{
 					title: 'Settings',
 					url: '/app/settings',
-				},
-				{
-					title: 'Dashboard',
-					url: '/app',
 				},
 			],
 		},
@@ -166,6 +167,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 		<Sidebar collapsible="icon" {...props}>
 			<SidebarHeader>
 				<TeamSwitcher teams={data.teams} />
+				<YearSelector />
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />

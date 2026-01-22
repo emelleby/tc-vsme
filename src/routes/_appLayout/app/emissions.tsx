@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { useStore } from '@tanstack/react-store'
 import { useAction } from 'convex/react'
+import { yearStore } from '@/lib/year-store'
 import { api } from '../../../../convex/_generated/api'
 
 export const Route = createFileRoute('/_appLayout/app/emissions')({
@@ -23,6 +25,7 @@ type YearData = {
 	data: EmissionsData | null
 	loading: boolean
 	error: string | null
+	isSelected?: boolean
 }
 
 /**
@@ -36,6 +39,7 @@ type YearData = {
  */
 function EmissionsPage() {
 	const getEmissions = useAction(api.emissions.getEmissionsByOrgId)
+	const selectedYear = useStore(yearStore, (state) => state.selectedYear)
 
 	const { authContext } = Route.useRouteContext()
 	const { orgId } = authContext
@@ -76,18 +80,21 @@ function EmissionsPage() {
 			data: allEmissions?.['2022'] || null,
 			loading: isLoading,
 			error: error?.message || null,
+			isSelected: selectedYear === 2022,
 		},
 		{
 			year: 2023,
 			data: allEmissions?.['2023'] || null,
 			loading: isLoading,
 			error: error?.message || null,
+			isSelected: selectedYear === 2023,
 		},
 		{
 			year: 2024,
 			data: allEmissions?.['2024'] || null,
 			loading: isLoading,
 			error: error?.message || null,
+			isSelected: selectedYear === 2024,
 		},
 	]
 
@@ -111,13 +118,14 @@ function EmissionsPage() {
 			</div>
 
 			<div className="grid gap-4 md:grid-cols-3">
-				{yearData.map(({ year, data, loading, error }) => (
+				{yearData.map(({ year, data, loading, error, isSelected }) => (
 					<EmissionsCard
 						key={year}
 						year={year}
 						data={data}
 						loading={loading}
 						error={error}
+						isSelected={isSelected}
 					/>
 				))}
 			</div>
@@ -129,9 +137,13 @@ function EmissionsPage() {
  * Extracted card component for displaying emissions data for a single year.
  * Handles loading, error, and empty states with appropriate UI feedback.
  */
-function EmissionsCard({ year, data, loading, error }: YearData) {
+function EmissionsCard({ year, data, loading, error, isSelected }: YearData) {
 	return (
-		<div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+		<div
+			className={`rounded-lg border p-6 shadow-sm transition-colors ${
+				isSelected ? 'border-primary bg-primary/10' : 'border-border bg-card'
+			}`}
+		>
 			<h2 className="text-xl font-semibold mb-4">{year} Emissions</h2>
 
 			{loading && (
