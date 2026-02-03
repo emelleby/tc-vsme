@@ -8,7 +8,6 @@ import {
 	Clock,
 	DollarSign,
 	FileBarChart,
-	FileText,
 	Lock,
 	Shield,
 	ThumbsUp,
@@ -17,6 +16,7 @@ import {
 	Zap,
 } from 'lucide-react'
 import { motion } from 'motion/react'
+import { useId } from 'react'
 import {
 	Accordion,
 	AccordionContent,
@@ -36,6 +36,7 @@ import {
 import { ContactForm } from '@/lib/forms/forms/ContactForm'
 
 export default function Home() {
+	const timeIconId = useId()
 	return (
 		<div className="min-h-screen bg-mesh">
 			{/* Hero Section */}
@@ -57,7 +58,7 @@ export default function Home() {
 								</Badge>
 								<h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
 									Eu-standardisert{' '}
-									<span className="font-nunito text-transparent bg-clip-text bg-gradient-to-r from-[var(--sky)] to-[var(--teal)]">
+									<span className="font-nunito text-transparent bg-clip-text bg-linear-to-r from(--sky) to(--teal)">
 										VSME-rapportering
 									</span>
 									<br />
@@ -73,7 +74,7 @@ export default function Home() {
 								<div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-6">
 									<Button
 										size="lg"
-										className="bg-gradient-to-r from-[var(--sky)] to-[var(--teal)] hover:opacity-90 text-white border-0"
+										className="bg-linear-to-r from(--sky) to(--teal) hover:opacity-90 text-white border-0"
 									>
 										Kom i gang i dag
 										<ArrowRight className="ml-2 h-4 w-4" />
@@ -106,7 +107,7 @@ export default function Home() {
 								initial={{ opacity: 0, scale: 0.95 }}
 								animate={{ opacity: 1, scale: 1 }}
 								transition={{ duration: 0.6, delay: 0.2 }}
-								className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl"
+								className="relative w-full aspect-4/3 rounded-2xl overflow-hidden shadow-2xl"
 							>
 								{/* Hero Image */}
 								<img
@@ -181,11 +182,13 @@ export default function Home() {
 											<div className="flex items-center gap-2">
 												<div className="h-5 w-5 rounded-full bg-sky/10 flex items-center justify-center">
 													<svg
-														className="h-5 w-5 text-(--sky)]"
+														className="h-5 w-5 text-(--sky)"
 														fill="none"
 														viewBox="0 0 24 24"
 														stroke="currentColor"
+														aria-labelledby={timeIconId}
 													>
+														<title id={timeIconId}>Tidsbesparelse</title>
 														<path
 															strokeLinecap="round"
 															strokeLinejoin="round"
@@ -196,7 +199,7 @@ export default function Home() {
 												</div>
 												Spart Tid
 											</div>
-											<p className="text-lg font-semibold text-[var(--sky)]">
+											<p className="text-lg font-semibold text(--sky)">
 												24 timer denne måneden
 											</p>
 										</CardContent>
@@ -212,7 +215,7 @@ export default function Home() {
 			<section id="features" className="py-20 bg-gray-50">
 				<div className="container px-4 md:px-6">
 					<div className="text-center mb-16">
-						<h2 className="text-3xl md:text-4xl font-bold mb-4 text-[var(--sky)]">
+						<h2 className="text-3xl md:text-4xl font-bold mb-4 text(--sky)">
 							Enkel bærekraftsrapportering
 						</h2>
 						<p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -321,7 +324,7 @@ export default function Home() {
 							</Badge>
 							<h2 className="text-3xl md:text-4xl font-bold mb-4">
 								Bærekraftsrapportering som gir{' '}
-								<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--sky)] to-[var(--teal)]">
+								<span className="text-transparent bg-clip-text bg-linear-to-r from(--sky) to(--teal)">
 									forretningsmessig mening
 								</span>
 							</h2>
@@ -334,7 +337,7 @@ export default function Home() {
 							<div className="space-y-6">
 								{/* Feature 1 */}
 								<div className="flex gap-4">
-									<div className="flex-shrink-0">
+									<div className="shrink-0">
 										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
 											<CheckCircle className="w-6 h-6 text-slate-600" />
 										</div>
@@ -351,7 +354,7 @@ export default function Home() {
 
 								{/* Feature 2 */}
 								<div className="flex gap-4">
-									<div className="flex-shrink-0">
+									<div className="shrink-0">
 										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
 											<DollarSign className="w-6 h-6 text-slate-600" />
 										</div>
@@ -369,7 +372,7 @@ export default function Home() {
 
 								{/* Feature 3 */}
 								<div className="flex gap-4">
-									<div className="flex-shrink-0">
+									<div className="shrink-0">
 										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
 											<TrendingUp className="w-6 h-6 text-slate-600" />
 										</div>
@@ -385,7 +388,7 @@ export default function Home() {
 
 								{/* Feature 4 */}
 								<div className="flex gap-4">
-									<div className="flex-shrink-0">
+									<div className="shrink-0">
 										<div className="w-12 h-12 rounded-lg bg-teal/10 flex items-center justify-center">
 											<ThumbsUp className="w-6 h-6 text-slate-600" />
 										</div>
@@ -403,7 +406,7 @@ export default function Home() {
 							<div className="mt-8">
 								<Button
 									size="lg"
-									className="bg-gradient-to-r from-[var(--sky)] to-[var(--teal)] hover:opacity-90 text-white border-0"
+									className="bg-linear-to-r from(--sky) to(--teal) hover:opacity-90 text-white border-0"
 								>
 									Les vår VSME Guide
 								</Button>
@@ -438,7 +441,7 @@ export default function Home() {
 								>
 									<div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-gray-100">
 										<div className="flex items-center gap-2 mb-3">
-											<BarChart3 className="w-5 h-5 text-[var(--sky)]" />
+											<BarChart3 className="w-5 h-5 text(--sky)" />
 											<p className="font-semibold text-gray-900">
 												Utslippssporing
 											</p>
@@ -540,9 +543,9 @@ export default function Home() {
 
 						<GlowingCard
 							glowColor="teal"
-							className="border-[var(--teal)] relative overflow-hidden"
+							className="border(--teal) relative overflow-hidden"
 						>
-							<div className="absolute top-0 right-0 bg-[var(--teal)] text-white text-xs px-3 py-1 rounded-bl-lg">
+							<div className="absolute top-0 right-0 bg(--teal) text-white text-xs px-3 py-1 rounded-bl-lg">
 								Mest Populær
 							</div>
 							<CardHeader>
@@ -581,7 +584,7 @@ export default function Home() {
 								</ul>
 							</CardContent>
 							<CardFooter>
-								<Button className="w-full bg-[var(--teal)] hover:bg-[var(--teal)]/90 text-white">
+								<Button className="w-full bg(--teal) hover:bg(--teal)/90 text-white">
 									Be om demo
 								</Button>
 							</CardFooter>
@@ -646,7 +649,7 @@ export default function Home() {
 						</Badge>
 						<h2 className="text-3xl md:text-4xl font-bold mb-4">
 							La oss hjelpe deg med{' '}
-							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--sky)] to-[var(--teal)]">
+							<span className="text-transparent bg-clip-text bg-linear-to-r from(--sky) to(--teal)">
 								bærekraftsrapportering
 							</span>
 						</h2>

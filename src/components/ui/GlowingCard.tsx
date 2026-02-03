@@ -27,17 +27,17 @@ const GlowingCard = React.forwardRef<HTMLDivElement, GlowingCardProps>(
 					className={cn(
 						'h-full transition-all duration-300 border-2 border-transparent',
 						glowColor === 'sky' &&
-							'hover:shadow-[0_0_20px_-5px_var(--sky)] hover:border-[var(--sky)]',
+							'hover:shadow-[0_0_20px_-5px_var(--sky)] hover:border-(--sky)',
 						glowColor === 'teal' &&
-							'hover:shadow-[0_0_20px_-5px_var(--teal)] hover:border-[var(--teal)]',
+							'hover:shadow-[0_0_20px_-5px_var(--teal)] hover:border-(--teal)',
 						glowColor === 'rose' &&
-							'hover:shadow-[0_0_20px_-5px_var(--rose)] hover:border-[var(--rose)]',
+							'hover:shadow-[0_0_20px_-5px_var(--rose)] hover:border-(--rose)',
 						glowColor === 'amber' &&
-							'hover:shadow-[0_0_20px_-5px_var(--amber)] hover:border-[var(--amber)]',
+							'hover:shadow-[0_0_20px_-5px_var(--amber)] hover:border-(--amber)',
 						glowColor === 'pink' &&
-							'hover:shadow-[0_0_20px_-5px_var(--pink)] hover:border-[var(--pink)]',
+							'hover:shadow-[0_0_20px_-5px_var(--pink)] hover:border-(--pink)',
 						glowColor === 'copper' &&
-							'hover:shadow-[0_0_20px_-5px_var(--copper)] hover:border-[var(--copper)]',
+							'hover:shadow-[0_0_20px_-5px_var(--copper)] hover:border-(--copper)',
 						className,
 					)}
 					{...props}
