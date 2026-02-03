@@ -19,7 +19,21 @@ interface SetupOrganizationResult {
  */
 export const setupOrganization = createServerFn({ method: 'POST' })
 	// Validate input data DO NOT CHANGE to 'validator' as it breaks the type inference
-	.inputValidator((data: { orgId: string }) => data)
+	.inputValidator(
+		(data: {
+			orgId: string
+			orgNumber?: string
+			address?: {
+				street?: string[]
+				postalCode?: string
+				city?: string
+				country?: string
+				countryCode?: string
+			}
+			orgForm?: string
+			website?: string
+		}) => data,
+	)
 	.handler(async ({ data }): Promise<SetupOrganizationResult> => {
 		try {
 			// Get authenticated user
@@ -29,8 +43,40 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				return { success: false, error: 'Not authenticated' }
 			}
 
-			if (!orgId || orgId !== data.orgId) {
-				return { success: false, error: 'Organization mismatch' }
+			// Check if authorized (Active in session OR Admin of target org)
+			let isAuthorized = false
+			if (orgId === data.orgId) {
+				isAuthorized = true
+			} else {
+				// Fallback: Verify via Clerk if user is a member/admin of the target org
+				try {
+					const client = await clerkClient()
+					const memberships = await client.users.getOrganizationMembershipList({
+						userId,
+						limit: 100,
+					})
+					const membership = memberships.data.find(
+						(m) => m.organization.id === data.orgId,
+					)
+
+					// Allow if user is an admin of the organization
+					if (membership && membership.role === 'org:admin') {
+						isAuthorized = true
+					}
+				} catch (error) {
+					console.error('Failed to verify membership:', error)
+				}
+			}
+
+			if (!isAuthorized) {
+				console.error('Auth Check Failed', {
+					sessionOrgId: orgId,
+					targetOrgId: data.orgId,
+				})
+				return {
+					success: false,
+					error: 'Organization mismatch or insufficient permissions',
+				}
 			}
 
 			// Get Clerk client
@@ -41,17 +87,35 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 
 			// Fetch organization details from Clerk
 			const organization = await client.organizations.getOrganization({
-				organizationId: orgId,
+				organizationId: data.orgId,
 			})
 
 			// Initialize Convex client (server-side)
 			const convex = new ConvexHttpClient(CONVEX_URL)
 
+			// Set auth token if available to act as the user
+			try {
+				// @ts-ignore - auth() returns different types in different environments, but getToken exists
+				const { getToken } = await auth()
+				const token = await getToken({ template: 'convex' })
+				if (token) {
+					convex.setAuth(token)
+				}
+			} catch (err) {
+				console.warn('Failed to set auth token for Convex:', err)
+			}
+
 			// Step 1: Upsert organization in Convex (create or update with correct data)
 			await convex.mutation(api.organizations.upsertOrganization, {
-				clerkOrgId: orgId,
+				clerkOrgId: data.orgId,
 				name: organization.name,
-				slug: organization.slug || organization.name.toLowerCase().replace(/\s+/g, '-'),
+				slug:
+					organization.slug ||
+					organization.name.toLowerCase().replace(/\s+/g, '-'),
+				orgNumber: data.orgNumber,
+				address: data.address,
+				orgForm: data.orgForm,
+				website: data.website,
 			})
 
 			// Step 2: Upsert user in Convex
@@ -80,11 +144,13 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 			})
 
 			return { success: true }
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error('Setup organization error:', error)
+			const message =
+				error instanceof Error ? error.message : 'Failed to set up organization'
 			return {
 				success: false,
-				error: error.message || 'Failed to set up organization',
+				error: message,
 			}
 		}
 	})

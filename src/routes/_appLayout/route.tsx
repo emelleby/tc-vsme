@@ -94,8 +94,8 @@ function RouteComponent() {
 								<BreadcrumbItem>
 									<BreadcrumbPage>
 										{needsOrgSetup
-											? `Org setup = ${needsOrgSetup}`
-											: `Org setup = ${needsOrgSetup}`}
+											? `Needs setup? = ${needsOrgSetup}`
+											: `Needs setup? = ${needsOrgSetup}`}
 									</BreadcrumbPage>
 								</BreadcrumbItem>
 								<BreadcrumbSeparator className="hidden md:block" />

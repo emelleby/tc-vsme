@@ -15,15 +15,15 @@
 'use client'
 
 import {
-	OrganizationSwitcher,
 	SignedIn,
 	SignedOut,
 	SignInButton,
 	SignUpButton,
 	UserButton,
+	useAuth,
 	useOrganization,
 	useUser,
-} from '@clerk/clerk-react'
+} from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight } from 'lucide-react'
 import { getLocale, setLocale } from '@/paraglide/runtime'
@@ -37,23 +37,11 @@ const languages: Language[] = [
 ]
 
 export function HeaderButtons() {
-	const { user, isLoaded: userLoaded } = useUser()
-	const { organization, isLoaded: orgLoaded } = useOrganization()
 	const currentLocale = getLocale()
-
-	// Don't render until Clerk data is loaded
-	if (!userLoaded || !orgLoaded) {
-		return null
-	}
-
-	// Extract permission flags from metadata
-	const hasVsme = Boolean(user?.publicMetadata?.hasVsme)
-	const orgHasVsme = Boolean(organization?.publicMetadata?.hasVsme)
-	const vsmeDb = Boolean(organization?.publicMetadata?.vsmeDb)
 
 	return (
 		<div className="flex items-center gap-4">
-			{/* Signed Out Users: Show Sign Up and Sign In buttons */}
+			{/* Public Access: Show Sign Up and Sign In buttons */}
 			<SignedOut>
 				<div className="flex items-center gap-2">
 					<SignUpButton mode="modal" fallbackRedirectUrl="/app">
@@ -68,53 +56,72 @@ export function HeaderButtons() {
 				</div>
 			</SignedOut>
 
-			{/* Signed In Users: Show auth-aware buttons */}
+			{/* Authenticated Access: Logged-in specific controls */}
 			<SignedIn>
-				<div className="flex items-center gap-4">
-					{/* No VSME access: Show "Get Access" link */}
-					{!hasVsme && !orgHasVsme && (
-						<Link
-							to="/#contact"
-							className="text-sm font-medium text-foreground hover:text-accent transition-colors"
-						>
-							Get access
-						</Link>
-					)}
-
-					{/* Has VSME but no org/db: Show "Create Organization" link */}
-					{hasVsme && (!orgHasVsme || !vsmeDb) && (
-						<Link
-							to="/create-organization"
-							className="text-sm font-medium text-foreground hover:text-accent transition-colors"
-						>
-							Create Organization
-						</Link>
-					)}
-
-					{/* Full Access: Show Dashboard button and OrganizationSwitcher */}
-					{orgHasVsme && vsmeDb && (
-						<>
-							<Button asChild variant="outline" size="sm">
-								<Link to="/app">
-									Dashboard
-									<ArrowRight className="ml-2 h-4 w-4" />
-								</Link>
-							</Button>
-						</>
-					)}
-
-					{/* Always show UserButton for signed-in users */}
-					<LanguageSwitcher
-						languages={languages}
-						value={currentLocale}
-						onChange={(code) => setLocale(code as typeof currentLocale)}
-						variant="ghost"
-						showIcon={true}
-					/>
-					<ThemeSwitcher />
-					<UserButton />
-				</div>
+				<SignedInButtons />
+				<LanguageSwitcher
+					languages={languages}
+					value={currentLocale}
+					onChange={(code) => setLocale(code as typeof currentLocale)}
+					variant="ghost"
+					showIcon={true}
+				/>
+				<ThemeSwitcher />
+				<UserButton />
 			</SignedIn>
+		</div>
+	)
+}
+
+function SignedInButtons() {
+	const { user, isLoaded: userLoaded } = useUser()
+	const { organization, isLoaded: orgLoaded } = useOrganization()
+	const { isLoaded: authLoaded } = useAuth()
+
+	// While we wait for client-side data, we can render nothing or a specialized skeleton.
+	// Returning null here is safe inside <SignedIn> because the parent structure is already established.
+	if (!userLoaded || !orgLoaded || !authLoaded) {
+		return null
+	}
+
+	// Extract permission flags from metadata
+	const hasVsme = Boolean(user?.publicMetadata?.hasVsme)
+	const orgHasVsme = Boolean(organization?.publicMetadata?.hasVsme)
+	const vsmeDb = Boolean(organization?.publicMetadata?.vsmeDb)
+
+	return (
+		<div className="flex items-center gap-4">
+			<p>{hasVsme}</p>
+			{/* No VSME access: Show "Get Access" link */}
+			{!hasVsme && !orgHasVsme && (
+				<Link
+					to="/"
+					hash="contact"
+					className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+				>
+					Get started! {orgHasVsme}
+				</Link>
+			)}
+
+			{/* Has VSME but no org/db: Show "Create Organization" link */}
+			{(orgHasVsme || hasVsme) && !vsmeDb && (
+				<Link
+					to="/create-organization"
+					className="text-sm font-medium text-foreground hover:text-accent transition-colors"
+				>
+					Setup Organization
+				</Link>
+			)}
+
+			{/* Full Access: Show Dashboard button */}
+			{orgHasVsme && vsmeDb && (
+				<Button asChild variant="outline" size="sm">
+					<Link to="/app">
+						Dashboard
+						<ArrowRight className="ml-2 h-4 w-4" />
+					</Link>
+				</Button>
+			)}
 		</div>
 	)
 }

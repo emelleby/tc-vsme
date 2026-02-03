@@ -17,9 +17,22 @@ export default defineSchema({
     clerkOrgId: v.string(),
     name: v.string(),
     slug: v.string(),
+    orgNumber: v.optional(v.string()),
+    address: v.optional(
+      v.object({
+        street: v.optional(v.array(v.string())),
+        postalCode: v.optional(v.string()),
+        city: v.optional(v.string()),
+        country: v.optional(v.string()),
+        countryCode: v.optional(v.string()),
+      }),
+    ),
+    orgForm: v.optional(v.string()),
+    website: v.optional(v.string()),
   })
     .index('by_clerkOrgId', ['clerkOrgId'])
-    .index('by_slug', ['slug']),
+    .index('by_slug', ['slug'])
+    .index('by_orgNumber', ['orgNumber']),
 
   // Users table
   users: defineTable({
