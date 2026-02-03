@@ -35,7 +35,7 @@ export const Route = createFileRoute('/create-organization')({
 		}
 
 		// Check 2: User must have hasVsme permission
-		if (!authContext.hasVsme) {
+		if (!authContext.hasVsme && !authContext.orgHasVsme) {
 			throw redirect({ to: '/' })
 		}
 

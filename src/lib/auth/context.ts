@@ -72,7 +72,8 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 
 		// Compute derived properties
 		const canAccessDashboard = orgHasVsme && vsmeDb
-		const needsOrgSetup = hasVsme && (!orgId || !vsmeDb)
+		// const needsOrgSetup = hasVsme && (!orgId || !vsmeDb)
+		const needsOrgSetup = orgHasVsme && !vsmeDb
 
 		return {
 			isAuthenticated: true,
@@ -86,4 +87,3 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 		}
 	},
 )
-
