@@ -1,7 +1,4 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
 	Sheet,
 	SheetClose,
@@ -15,34 +12,34 @@ import {
 interface HelpSheetProps {
 	open: boolean
 	onOpenChange: (open: boolean) => void
+	title: string
+	description: string
+	children?: React.ReactNode
 }
 
-export function HelpSheet({ open, onOpenChange }: HelpSheetProps) {
+export function HelpSheet({
+	open,
+	onOpenChange,
+	title,
+	description,
+	children,
+}: HelpSheetProps) {
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
-			<SheetContent showClose={true}>
+			<SheetContent
+				showClose={true}
+				className="sm:max-w-md md:max-w-2xl lg:max-w-3xl xl:max-w-4xl"
+			>
 				<SheetHeader>
-					<SheetTitle>Edit profile</SheetTitle>
-					<SheetDescription>
-						Make changes to your profile here.
-					</SheetDescription>
+					<SheetTitle>{title}</SheetTitle>
+					<SheetDescription>{description}</SheetDescription>
 				</SheetHeader>
-				<div className="grid flex-1 auto-rows-min gap-6 px-4">
-					<div className="grid gap-3">
-						<Label htmlFor="sheet-demo-name">Name</Label>
-						<Input id="sheet-demo-name" defaultValue="Shaban" />
-					</div>
-					<div className="grid gap-3">
-						<Label htmlFor="sheet-demo-username">Username</Label>
-						<Input id="sheet-demo-username" defaultValue="@shaban" />
-					</div>
+				<div className="grid flex-1 auto-rows-min gap-6 px-4 overflow-y-auto">
+					{children}
 				</div>
 				<SheetFooter>
 					<SheetClose asChild>
-						<Button variant="outline">Cancel</Button>
-					</SheetClose>
-					<SheetClose asChild>
-						<Button onClick={() => onOpenChange(false)}>Save changes</Button>
+						<Button variant="outline">Close</Button>
 					</SheetClose>
 				</SheetFooter>
 			</SheetContent>

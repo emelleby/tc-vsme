@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { GeneralHelp } from '@/components/general-help'
 import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 
@@ -17,30 +18,33 @@ function GeneralPage() {
 				Grunnleggende informasjon om din organisasjon
 			</h3>
 			<FormCard
-				title="Design System"
-				progress={65}
-				updatedDate="Dec 31, 2023"
-				toolTip="Hover to learn more"
-				contributor={{ name: 'Emma' }}
-				onClick={() => {
-					console.log('Opening HelpSheet...')
-					setIsSheetOpen(true)
-				}}
-				openIssues={0}
-				buttonText="Hjelp"
-			/>
-
-			<FormCard
-				title="Analytics Dashboard"
+				title="Company information"
 				progress={45}
 				updatedDate="Mar 1, 2024"
 				toolTip="Click to learn more"
 				contributor={{ name: 'Ana' }}
 				openIssues={8}
 			/>
+			<FormCard
+				title="Sustainability initiatives"
+				progress={65}
+				updatedDate="Dec 31, 2023"
+				toolTip="Hover to learn more"
+				contributor={{ name: 'Emma' }}
+				onClick={() => setIsSheetOpen(true)}
+				openIssues={0}
+				buttonText="Hjelp"
+			/>
 
 			{/* Shared Help Sheet */}
-			<HelpSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} />
+			<HelpSheet
+				open={isSheetOpen}
+				onOpenChange={setIsSheetOpen}
+				title="Hjelp"
+				description="Hjelp til Design System"
+			>
+				<GeneralHelp />
+			</HelpSheet>
 		</div>
 	)
 }

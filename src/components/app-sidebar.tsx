@@ -58,6 +58,10 @@ const data = {
 					url: '/app',
 				},
 				{
+					title: 'General Information',
+					url: '/app/general',
+				},
+				{
 					title: 'Demo',
 					url: '/demo',
 				},
