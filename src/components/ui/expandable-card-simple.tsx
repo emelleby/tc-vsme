@@ -1,18 +1,8 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import {
-	CheckCircle2,
-	Clock,
-	GitBranch,
-	Github,
-	MessageSquare,
-	StepForwardIcon as Progress,
-	Star,
-	Users,
-} from 'lucide-react'
+import { BadgeQuestionMarkIcon, ChevronRightIcon } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
@@ -24,25 +14,28 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
 import { useExpandable } from '@/hooks/use-expandable'
+import { cn } from '@/lib/utils'
 
 interface FormCardProps {
 	title: string
 	progress: number
-	dueDate: string
-	contributors: Array<{ name: string; image?: string }>
-	tasks: Array<{ title: string; completed: boolean }>
-	githubStars: number
+	updatedDate: string
+	contributor: { name: string; image?: string }
+	onClick?: () => void
 	openIssues: number
+	toolTip: string
+	buttonText?: string
 }
 
 export function FormCard({
 	title,
 	progress,
-	dueDate,
-	contributors,
-	tasks,
-	githubStars,
+	updatedDate,
+	contributor,
+	onClick = () => {},
 	openIssues,
+	toolTip,
+	buttonText,
 }: FormCardProps) {
 	const { isExpanded, toggleExpand, animatedHeight } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
@@ -54,46 +47,75 @@ export function FormCard({
 	}, [isExpanded, animatedHeight])
 
 	return (
-		<Card
-			className="w-full max-w-md cursor-pointer transition-all duration-300 hover:shadow-lg"
-			onClick={toggleExpand}
-		>
-			<CardHeader className="space-y-1">
+		<Card className="mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg">
+			<CardHeader
+				className="space-y-1 cursor-pointer"
+				onClick={toggleExpand}
+				role="button"
+				tabIndex={0}
+				onKeyDown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault()
+						toggleExpand()
+					}
+				}}
+			>
 				<div className="flex justify-between items-start w-full">
-					<div className="space-y-2">
-						<Badge
-							variant="secondary"
-							className={
-								progress === 100
-									? 'bg-green-100 text-green-600'
-									: 'bg-blue-100 text-blue-600'
-							}
-						>
-							{progress === 100 ? 'Completed' : 'In Progress'}
-						</Badge>
-						<h3 className="text-2xl font-semibold">{title}</h3>
+					<div className="flex gap-2">
+						<h3 className="text-xl font-semibold">{title}</h3>
+						<ChevronRightIcon
+							className={cn(
+								'h-6 w-6 transition-transform duration-200',
+								isExpanded && 'rotate-90',
+							)}
+						/>
 					</div>
-					<TooltipProvider>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Button size="icon" variant="outline" className="h-8 w-8">
-									<Github className="h-4 w-4" />
-								</Button>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>View on GitHub</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
+					<div className="flex gap-2">
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Button
+										type="button"
+										className="flex gap-2"
+										variant="ghost"
+										size="default"
+										onClick={(e) => {
+											e.stopPropagation()
+											console.log('Button clicked in FormCard')
+											onClick()
+										}}
+										onPointerDown={(e) => e.stopPropagation()}
+									>
+										<BadgeQuestionMarkIcon className="h-6 w-6" />
+										<span>{buttonText}</span>
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>{toolTip}</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+					</div>
 				</div>
 			</CardHeader>
 
 			<CardContent>
 				<div className="space-y-4">
 					<div className="space-y-2">
-						<div className="flex justify-between text-sm text-gray-600">
-							<span>Progress</span>
-							<span>{progress}%</span>
+						<div className="flex justify-between">
+							<Badge
+								variant="secondary"
+								className={
+									progress === 100
+										? 'bg-green-100 text-emerald-600'
+										: 'bg-blue-100 text-sky-600'
+								}
+							>
+								{progress === 100 ? 'Completed' : 'In Progress'}
+							</Badge>
+							<span className="text-sm text-muted-foreground">
+								{progress} %
+							</span>
 						</div>
 						<ProgressBar value={progress} className="h-2" />
 					</div>
@@ -112,75 +134,8 @@ export function FormCard({
 										exit={{ opacity: 0 }}
 										className="space-y-4 pt-2"
 									>
-										<div className="flex items-center justify-between text-sm text-gray-600">
-											<div className="flex items-center">
-												<Clock className="h-4 w-4 mr-2" />
-												<span>Due {dueDate}</span>
-											</div>
-											<div className="flex items-center gap-4">
-												<div className="flex items-center">
-													<Star className="h-4 w-4 mr-1 text-yellow-400" />
-													<span>{githubStars}</span>
-												</div>
-												<div className="flex items-center">
-													<GitBranch className="h-4 w-4 mr-1" />
-													<span>{openIssues} issues</span>
-												</div>
-											</div>
-										</div>
-
 										<div className="space-y-2">
-											<h4 className="font-medium text-sm flex items-center">
-												<Users className="h-4 w-4 mr-2" />
-												Contributors
-											</h4>
-											<div className="flex -space-x-2">
-												{contributors.map((contributor, index) => (
-													<TooltipProvider key={index}>
-														<Tooltip>
-															<TooltipTrigger asChild>
-																<Avatar className="border-2 border-white">
-																	<AvatarImage
-																		src={
-																			contributor.image ||
-																			`/placeholder.svg?height=32&width=32&text=${contributor.name[0]}`
-																		}
-																		alt={contributor.name}
-																	/>
-																	<AvatarFallback>
-																		{contributor.name[0]}
-																	</AvatarFallback>
-																</Avatar>
-															</TooltipTrigger>
-															<TooltipContent>
-																<p>{contributor.name}</p>
-															</TooltipContent>
-														</Tooltip>
-													</TooltipProvider>
-												))}
-											</div>
-										</div>
-
-										<div className="space-y-2">
-											<h4 className="font-medium text-sm">Recent Tasks</h4>
-											{tasks.map((task, index) => (
-												<div
-													key={index}
-													className="flex items-center justify-between text-sm"
-												>
-													<span className="text-gray-600">{task.title}</span>
-													{task.completed && (
-														<CheckCircle2 className="h-4 w-4 text-green-500" />
-													)}
-												</div>
-											))}
-										</div>
-
-										<div className="space-y-2">
-											<Button className="w-full">
-												<MessageSquare className="h-4 w-4 mr-2" />
-												View Discussion
-											</Button>
+											<h4 className="font-medium">Content here</h4>
 										</div>
 									</motion.div>
 								)}
@@ -191,8 +146,10 @@ export function FormCard({
 			</CardContent>
 
 			<CardFooter>
-				<div className="flex items-center justify-between w-full text-sm text-gray-600">
-					<span>Last updated: 2 hours ago</span>
+				<div className="flex items-center justify-between w-full text-sm text-muted-foreground">
+					<span>
+						Last updated by {contributor.name}: {updatedDate}
+					</span>
 					<span>{openIssues} open issues</span>
 				</div>
 			</CardFooter>

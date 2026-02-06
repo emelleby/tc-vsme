@@ -1,4 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
+import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 
 export const Route = createFileRoute('/_appLayout/app/general/')({
@@ -6,47 +8,39 @@ export const Route = createFileRoute('/_appLayout/app/general/')({
 })
 
 function GeneralPage() {
+	const [isSheetOpen, setIsSheetOpen] = useState(false)
+
 	return (
-		<div className="grid gap-4 md:grid-cols-2">
+		<div className="grid gap-4 md:grid-cols-1 mt-4 max-w-6xl w-full mx-auto">
+			<h1 className="text-2xl font-bold">General information</h1>
+			<h3 className="text-lg text-muted-foreground">
+				Grunnleggende informasjon om din organisasjon
+			</h3>
 			<FormCard
 				title="Design System"
-				progress={100}
-				dueDate="Dec 31, 2023"
-				contributors={[
-					{ name: 'Emma' },
-					{ name: 'John' },
-					{ name: 'Lisa' },
-					{ name: 'David' },
-				]}
-				tasks={[
-					{ title: 'Create Component Library', completed: true },
-					{ title: 'Implement Design Tokens', completed: true },
-					{ title: 'Write Style Guide', completed: true },
-					{ title: 'Set up Documentation', completed: true },
-				]}
-				githubStars={256}
+				progress={65}
+				updatedDate="Dec 31, 2023"
+				toolTip="Hover to learn more"
+				contributor={{ name: 'Emma' }}
+				onClick={() => {
+					console.log('Opening HelpSheet...')
+					setIsSheetOpen(true)
+				}}
 				openIssues={0}
+				buttonText="Hjelp"
 			/>
 
 			<FormCard
 				title="Analytics Dashboard"
 				progress={45}
-				dueDate="Mar 1, 2024"
-				contributors={[
-					{ name: 'Michael' },
-					{ name: 'Sophie' },
-					{ name: 'James' },
-				]}
-				tasks={[
-					{ title: 'Design Dashboard Layout', completed: true },
-					{ title: 'Implement Data Fetching', completed: true },
-					{ title: 'Create Visualization Components', completed: false },
-					{ title: 'Add Export Features', completed: false },
-					{ title: 'User Testing', completed: false },
-				]}
-				githubStars={89}
+				updatedDate="Mar 1, 2024"
+				toolTip="Click to learn more"
+				contributor={{ name: 'Ana' }}
 				openIssues={8}
 			/>
+
+			{/* Shared Help Sheet */}
+			<HelpSheet open={isSheetOpen} onOpenChange={setIsSheetOpen} />
 		</div>
 	)
 }
