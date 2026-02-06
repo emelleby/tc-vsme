@@ -111,17 +111,6 @@ export function GeneralHelp() {
 	return (
 		<div className="space-y-8 max-w-7xl mx-auto p-4">
 			{/* Header Section */}
-			<section className="bg-muted/50 border-l-4 border-primary p-6 rounded-r-lg">
-				<h2 className="text-xl font-bold text-foreground mb-2">
-					Hva er bærekraftsinitiativ?
-				</h2>
-				<p className="text-muted-foreground leading-relaxed">
-					Bærekraftsinitiativ er konkrete tiltak og programmer som virksomheten
-					gjennomfører for å forbedre sin miljømessige, sosiale og økonomiske
-					påvirkning. Velg de områdene hvor virksomheten aktivt jobber med
-					forbedringer.
-				</p>
-			</section>
 
 			{/* Cards Grid */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">

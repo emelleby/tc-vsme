@@ -40,8 +40,11 @@ function GeneralPage() {
 			<HelpSheet
 				open={isSheetOpen}
 				onOpenChange={setIsSheetOpen}
-				title="Hjelp"
-				description="Hjelp til Design System"
+				title="Hva er bærekraftsinitiativ?"
+				description="Bærekraftsinitiativ er konkrete tiltak og programmer som virksomheten
+					gjennomfører for å forbedre sin miljømessige, sosiale og økonomiske
+					påvirkning. Velg de områdene hvor virksomheten aktivt jobber med
+					forbedringer."
 			>
 				<GeneralHelp />
 			</HelpSheet>
