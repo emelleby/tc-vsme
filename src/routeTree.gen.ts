@@ -39,6 +39,7 @@ import { Route as AppLayoutAppOrderRouteImport } from './routes/_appLayout/app/o
 import { Route as AppLayoutAppEmissionsRouteImport } from './routes/_appLayout/app/emissions'
 import { Route as DemoLayoutDemoGuitarsIndexRouteImport } from './routes/_demoLayout/demo/guitars/index'
 import { Route as AppLayoutAppSettingsIndexRouteImport } from './routes/_appLayout/app/settings/index'
+import { Route as AppLayoutAppGeneralIndexRouteImport } from './routes/_appLayout/app/general/index'
 import { Route as DemoLayoutDemoStartServerFuncsRouteImport } from './routes/_demoLayout/demo/start.server-funcs'
 import { Route as DemoLayoutDemoStartApiRequestRouteImport } from './routes/_demoLayout/demo/start.api-request'
 import { Route as DemoLayoutDemoSentryTestingRouteImport } from './routes/_demoLayout/demo/sentry.testing'
@@ -209,6 +210,12 @@ const AppLayoutAppSettingsIndexRoute =
     path: '/app/settings/',
     getParentRoute: () => AppLayoutRouteRoute,
   } as any)
+const AppLayoutAppGeneralIndexRoute =
+  AppLayoutAppGeneralIndexRouteImport.update({
+    id: '/app/general/',
+    path: '/app/general/',
+    getParentRoute: () => AppLayoutRouteRoute,
+  } as any)
 const DemoLayoutDemoStartServerFuncsRoute =
   DemoLayoutDemoStartServerFuncsRouteImport.update({
     id: '/demo/start/server-funcs',
@@ -344,6 +351,7 @@ export interface FileRoutesByFullPath {
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
   '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
@@ -391,6 +399,7 @@ export interface FileRoutesByTo {
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
   '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
@@ -441,6 +450,7 @@ export interface FileRoutesById {
   '/_demoLayout/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/_demoLayout/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/_demoLayout/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/_appLayout/app/general/': typeof AppLayoutAppGeneralIndexRoute
   '/_appLayout/app/settings/': typeof AppLayoutAppSettingsIndexRoute
   '/_demoLayout/demo/guitars/': typeof DemoLayoutDemoGuitarsIndexRoute
   '/_demoLayout/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
@@ -490,6 +500,7 @@ export interface FileRouteTypes {
     | '/demo/sentry/testing'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app/general'
     | '/app/settings'
     | '/demo/guitars'
     | '/demo/api/ai/chat'
@@ -537,6 +548,7 @@ export interface FileRouteTypes {
     | '/demo/sentry/testing'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app/general'
     | '/app/settings'
     | '/demo/guitars'
     | '/demo/api/ai/chat'
@@ -586,6 +598,7 @@ export interface FileRouteTypes {
     | '/_demoLayout/demo/sentry/testing'
     | '/_demoLayout/demo/start/api-request'
     | '/_demoLayout/demo/start/server-funcs'
+    | '/_appLayout/app/general/'
     | '/_appLayout/app/settings/'
     | '/_demoLayout/demo/guitars/'
     | '/_demoLayout/demo/api/ai/chat'
@@ -828,6 +841,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutAppSettingsIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
+    '/_appLayout/app/general/': {
+      id: '/_appLayout/app/general/'
+      path: '/app/general'
+      fullPath: '/app/general'
+      preLoaderRoute: typeof AppLayoutAppGeneralIndexRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
     '/_demoLayout/demo/start/server-funcs': {
       id: '/_demoLayout/demo/start/server-funcs'
       path: '/demo/start/server-funcs'
@@ -954,6 +974,7 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutAppEmissionsRoute: typeof AppLayoutAppEmissionsRoute
   AppLayoutAppOrderRoute: typeof AppLayoutAppOrderRoute
   AppLayoutAppIndexRoute: typeof AppLayoutAppIndexRoute
+  AppLayoutAppGeneralIndexRoute: typeof AppLayoutAppGeneralIndexRoute
   AppLayoutAppSettingsIndexRoute: typeof AppLayoutAppSettingsIndexRoute
 }
 
@@ -961,6 +982,7 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutAppEmissionsRoute: AppLayoutAppEmissionsRoute,
   AppLayoutAppOrderRoute: AppLayoutAppOrderRoute,
   AppLayoutAppIndexRoute: AppLayoutAppIndexRoute,
+  AppLayoutAppGeneralIndexRoute: AppLayoutAppGeneralIndexRoute,
   AppLayoutAppSettingsIndexRoute: AppLayoutAppSettingsIndexRoute,
 }
 
