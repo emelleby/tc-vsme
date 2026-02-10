@@ -1,11 +1,5 @@
 import { revalidateLogic, useStore } from '@tanstack/react-form'
 import { toast } from 'sonner'
-import {
-	CountryField,
-	RadioGroupField,
-	SubmitButton,
-	TextField,
-} from '@/components/form-fields'
 import { useAppForm } from '@/hooks/form'
 import { focusFirstError } from '@/hooks/use-form'
 import {
@@ -24,7 +18,7 @@ export function ReportForm() {
 			balanceSheetTotal: undefined, // Optional
 			employees: 0,
 			country: 'NOR', // Defaulting to Norway (Alpha3) as per image "Norge"
-			reportType: 'individuell',
+			reportType: false,
 			contactPersonName: 'Eivind',
 			contactPersonEmail: 'e@scope321', // Intentionally invalid as per image? Or just placeholder.
 		} as B1GeneralFormValues,
@@ -141,13 +135,9 @@ export function ReportForm() {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<form.AppField name="reportType">
 							{(field) => (
-								<RadioGroupField
-									field={field}
-									label="Rapporttype"
-									options={[
-										{ label: 'Individuell', value: 'individuell' },
-										{ label: 'Konsolidert', value: 'konsolidert' },
-									]}
+								<field.SwitchField
+									label="Konsolidert rapport"
+									description="Velg om rapporten skal være konsolidert eller individuell."
 								/>
 							)}
 						</form.AppField>

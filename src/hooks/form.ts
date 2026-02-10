@@ -11,9 +11,11 @@ import {
 	CountryField,
 	SelectField,
 	SubmitButton,
+	SwitchField,
 	TextareaField,
 	TextField,
 } from '@/components/form-fields'
+
 import { fieldContext, formContext } from './form-context'
 
 export const { useAppForm, withForm, withFieldGroup } = createFormHook({
@@ -22,6 +24,7 @@ export const { useAppForm, withForm, withFieldGroup } = createFormHook({
 		SelectField: SelectField,
 		TextareaField: TextareaField,
 		CountryField: CountryField,
+		SwitchField: SwitchField,
 	},
 	formComponents: {
 		SubmitButton: SubmitButton,
