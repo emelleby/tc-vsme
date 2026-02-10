@@ -1,8 +1,8 @@
 'use client'
 
-import { AnimatePresence, motion, useTransform } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { BadgeQuestionMarkIcon, ChevronRightIcon } from 'lucide-react'
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
@@ -39,20 +39,8 @@ export function FormCard({
 	buttonText,
 	children,
 }: FormCardProps) {
-	const { isExpanded, toggleExpand, animatedHeight } = useExpandable()
+	const { isExpanded, toggleExpand } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
-
-	// Create a derived MotionValue that adds 32px padding to the animated height
-	const animatedHeightWithPadding = useTransform(
-		animatedHeight,
-		(value) => value + 32,
-	)
-
-	useEffect(() => {
-		if (contentRef.current) {
-			animatedHeight.set(isExpanded ? contentRef.current.scrollHeight : 0)
-		}
-	}, [isExpanded, animatedHeight])
 
 	return (
 		<Card className="mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg">
@@ -129,12 +117,13 @@ export function FormCard({
 					</div>
 
 					<motion.div
-						style={{ height: animatedHeightWithPadding }}
+						initial={false}
+						animate={{ height: isExpanded ? 'auto' : 0 }}
 						transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 						className="overflow-hidden"
 					>
-						<div ref={contentRef}>
-							<AnimatePresence>
+						<div ref={contentRef} className="pb-4">
+							<AnimatePresence mode="wait">
 								{isExpanded && (
 									<motion.div
 										initial={{ opacity: 0 }}

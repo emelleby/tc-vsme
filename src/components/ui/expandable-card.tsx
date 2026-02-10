@@ -7,11 +7,10 @@ import {
 	GitBranch,
 	Github,
 	MessageSquare,
-	StepForwardIcon as Progress,
 	Star,
 	Users,
 } from 'lucide-react'
-import React, { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -44,14 +43,8 @@ export function FormCard({
 	githubStars,
 	openIssues,
 }: FormCardProps) {
-	const { isExpanded, toggleExpand, animatedHeight } = useExpandable()
+	const { isExpanded, toggleExpand } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
-
-	useEffect(() => {
-		if (contentRef.current) {
-			animatedHeight.set(isExpanded ? contentRef.current.scrollHeight : 0)
-		}
-	}, [isExpanded, animatedHeight])
 
 	return (
 		<Card
@@ -99,12 +92,13 @@ export function FormCard({
 					</div>
 
 					<motion.div
-						style={{ height: animatedHeight }}
+						initial={false}
+						animate={{ height: isExpanded ? 'auto' : 0 }}
 						transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 						className="overflow-hidden"
 					>
-						<div ref={contentRef}>
-							<AnimatePresence>
+						<div ref={contentRef} className="pb-4">
+							<AnimatePresence mode="wait">
 								{isExpanded && (
 									<motion.div
 										initial={{ opacity: 0 }}
@@ -135,8 +129,8 @@ export function FormCard({
 												Contributors
 											</h4>
 											<div className="flex -space-x-2">
-												{contributors.map((contributor, index) => (
-													<TooltipProvider key={index}>
+												{contributors.map((contributor) => (
+													<TooltipProvider key={contributor.name}>
 														<Tooltip>
 															<TooltipTrigger asChild>
 																<Avatar className="border-2 border-white">
@@ -163,9 +157,9 @@ export function FormCard({
 
 										<div className="space-y-2">
 											<h4 className="font-medium text-sm">Recent Tasks</h4>
-											{tasks.map((task, index) => (
+											{tasks.map((task) => (
 												<div
-													key={index}
+													key={task.title}
 													className="flex items-center justify-between text-sm"
 												>
 													<span className="text-gray-600">{task.title}</span>
