@@ -10,6 +10,15 @@ export const b1GeneralSchema = z.object({
 	employees: z.any().pipe(z.coerce.number().min(0)),
 	country: z.string().min(1, 'Country is required'),
 	reportType: z.boolean(),
+	subsidiaries: z
+		.array(
+			z.object({
+				id: z.string(),
+				name: z.string().min(1, 'Navn er påkrevd'),
+				address: z.string().min(1, 'Adresse er påkrevd'),
+			}),
+		)
+		.optional(),
 	contactPersonName: z.string().min(1, 'Contact name is required'),
 	contactPersonEmail: z.email('Invalid email address').optional(),
 })

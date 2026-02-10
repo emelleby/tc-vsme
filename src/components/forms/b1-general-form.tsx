@@ -1,5 +1,7 @@
 import { revalidateLogic, useStore } from '@tanstack/react-form'
+import { Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import { useAppForm } from '@/hooks/form'
 import { focusFirstError } from '@/hooks/use-form'
 import {
@@ -19,6 +21,7 @@ export function ReportForm() {
 			employees: 0,
 			country: 'NOR', // Defaulting to Norway (Alpha3) as per image "Norge"
 			reportType: false,
+			subsidiaries: [],
 			contactPersonName: 'Eivind',
 			contactPersonEmail: 'e@scope321', // Intentionally invalid as per image? Or just placeholder.
 		} as B1GeneralFormValues,
@@ -38,7 +41,6 @@ export function ReportForm() {
 	})
 
 	const isDefault = useStore(form.store, (state) => state.isDefaultValue)
-
 	return (
 		<div className="w-full bg-white p-4 border border-gray-200 rounded-lg">
 			<div className="mb-8">
@@ -144,6 +146,61 @@ export function ReportForm() {
 						{/* Empty column to match image layout if needed, or just full width */}
 						<div></div>
 					</div>
+
+					<form.Subscribe selector={(state) => state.values.reportType}>
+						{(reportType) =>
+							reportType ? (
+								<div className="pt-4 border-t border-border">
+									<h2 className="text-lg font-medium mb-4">Datterselskaper</h2>
+									<form.AppField name="subsidiaries">
+										{(field) => (
+											<div className="space-y-6">
+												{field.state.value?.map((item, i) => (
+													<div
+														key={item.id}
+														className="grid grid-cols-1 md:grid-cols-[1fr,1fr,auto] gap-6 items-end"
+													>
+														<form.AppField name={`subsidiaries[${i}].name`}>
+															{(f) => (
+																<f.TextField label="Navn på datterselskap" />
+															)}
+														</form.AppField>
+														<form.AppField name={`subsidiaries[${i}].address`}>
+															{(f) => <f.TextField label="Adresse" />}
+														</form.AppField>
+														<Button
+															type="button"
+															variant="ghost"
+															size="icon"
+															className="text-destructive hover:text-destructive hover:bg-destructive/10 mb-1"
+															onClick={() => field.removeValue(i)}
+														>
+															<Trash2 className="h-4 w-4" />
+														</Button>
+													</div>
+												))}
+												<Button
+													type="button"
+													variant="outline"
+													className="w-full md:w-auto"
+													onClick={() =>
+														field.pushValue({
+															id: crypto.randomUUID(),
+															name: '',
+															address: '',
+														})
+													}
+												>
+													<Plus className="h-4 w-4 mr-2" />
+													Legg til datterselskap
+												</Button>
+											</div>
+										)}
+									</form.AppField>
+								</div>
+							) : null
+						}
+					</form.Subscribe>
 
 					<div className="flex justify-end pt-6">
 						<form.SubmitButton label="Neste" />
