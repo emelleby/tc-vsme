@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import type * as z from 'zod'
 import { FieldDescription, FieldSeparator } from '@/components/ui/field'
 import { useAppForm } from '@/components/ui/tanstack-form'
-import { orderFormSchema } from '@/lib/orderFormSchema'
+import { orderFormSchema } from '@/lib/forms/schemas/orderFormSchema'
 
 export const Route = createFileRoute('/_appLayout/app/order')({
 	component: OrderForm,

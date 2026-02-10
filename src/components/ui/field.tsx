@@ -112,7 +112,7 @@ function FieldLabel({
 		<Label
 			data-slot="field-label"
 			className={cn(
-				'group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50',
+				'font-bold group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50',
 				'has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4',
 				'has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10',
 				className,
@@ -223,7 +223,7 @@ function FieldError({
 		<div
 			role="alert"
 			data-slot="field-error"
-			className={cn('text-destructive text-sm font-normal', className)}
+			className={cn('text-destructive text-sm font-normal -mt-2.5', className)}
 			{...props}
 		>
 			{content}

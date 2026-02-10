@@ -158,7 +158,7 @@ export const { fieldContext, useFieldContext, formContext, useFormContext } =
   createFormHookContexts()
 ```
 
-### `src/components/demo.FormComponents.tsx`
+### `src/components/FormComponents.tsx`
 These are wrappers around your UI library (e.g., Shadcn) that connect to the form state.
 
 ```tsx

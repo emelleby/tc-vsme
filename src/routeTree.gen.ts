@@ -45,6 +45,7 @@ import { Route as DemoLayoutDemoStartApiRequestRouteImport } from './routes/_dem
 import { Route as DemoLayoutDemoSentryTestingRouteImport } from './routes/_demoLayout/demo/sentry.testing'
 import { Route as DemoLayoutDemoGuitarsGuitarIdRouteImport } from './routes/_demoLayout/demo/guitars/$guitarId'
 import { Route as DemoLayoutDemoFormSimpleRouteImport } from './routes/_demoLayout/demo/form.simple'
+import { Route as DemoLayoutDemoFormContactRouteImport } from './routes/_demoLayout/demo/form.contact'
 import { Route as DemoLayoutDemoFormAddressRouteImport } from './routes/_demoLayout/demo/form.address'
 import { Route as DemoLayoutDemoApiTqTodosRouteImport } from './routes/_demoLayout/demo/api.tq-todos'
 import { Route as DemoLayoutDemoApiNamesRouteImport } from './routes/_demoLayout/demo/api.names'
@@ -246,6 +247,12 @@ const DemoLayoutDemoFormSimpleRoute =
     path: '/demo/form/simple',
     getParentRoute: () => DemoLayoutRouteRoute,
   } as any)
+const DemoLayoutDemoFormContactRoute =
+  DemoLayoutDemoFormContactRouteImport.update({
+    id: '/demo/form/contact',
+    path: '/demo/form/contact',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
 const DemoLayoutDemoFormAddressRoute =
   DemoLayoutDemoFormAddressRouteImport.update({
     id: '/demo/form/address',
@@ -346,6 +353,7 @@ export interface FileRoutesByFullPath {
   '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/demo/form/contact': typeof DemoLayoutDemoFormContactRoute
   '/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
   '/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
@@ -394,6 +402,7 @@ export interface FileRoutesByTo {
   '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/demo/form/contact': typeof DemoLayoutDemoFormContactRoute
   '/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
   '/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
@@ -445,6 +454,7 @@ export interface FileRoutesById {
   '/_demoLayout/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/_demoLayout/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/_demoLayout/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/_demoLayout/demo/form/contact': typeof DemoLayoutDemoFormContactRoute
   '/_demoLayout/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
   '/_demoLayout/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
   '/_demoLayout/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
@@ -495,6 +505,7 @@ export interface FileRouteTypes {
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
+    | '/demo/form/contact'
     | '/demo/form/simple'
     | '/demo/guitars/$guitarId'
     | '/demo/sentry/testing'
@@ -543,6 +554,7 @@ export interface FileRouteTypes {
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
+    | '/demo/form/contact'
     | '/demo/form/simple'
     | '/demo/guitars/$guitarId'
     | '/demo/sentry/testing'
@@ -593,6 +605,7 @@ export interface FileRouteTypes {
     | '/_demoLayout/demo/api/names'
     | '/_demoLayout/demo/api/tq-todos'
     | '/_demoLayout/demo/form/address'
+    | '/_demoLayout/demo/form/contact'
     | '/_demoLayout/demo/form/simple'
     | '/_demoLayout/demo/guitars/$guitarId'
     | '/_demoLayout/demo/sentry/testing'
@@ -883,6 +896,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoLayoutDemoFormSimpleRouteImport
       parentRoute: typeof DemoLayoutRouteRoute
     }
+    '/_demoLayout/demo/form/contact': {
+      id: '/_demoLayout/demo/form/contact'
+      path: '/demo/form/contact'
+      fullPath: '/demo/form/contact'
+      preLoaderRoute: typeof DemoLayoutDemoFormContactRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
     '/_demoLayout/demo/form/address': {
       id: '/_demoLayout/demo/form/address'
       path: '/demo/form/address'
@@ -1005,6 +1025,7 @@ interface DemoLayoutRouteRouteChildren {
   DemoLayoutDemoApiNamesRoute: typeof DemoLayoutDemoApiNamesRoute
   DemoLayoutDemoApiTqTodosRoute: typeof DemoLayoutDemoApiTqTodosRoute
   DemoLayoutDemoFormAddressRoute: typeof DemoLayoutDemoFormAddressRoute
+  DemoLayoutDemoFormContactRoute: typeof DemoLayoutDemoFormContactRoute
   DemoLayoutDemoFormSimpleRoute: typeof DemoLayoutDemoFormSimpleRoute
   DemoLayoutDemoGuitarsGuitarIdRoute: typeof DemoLayoutDemoGuitarsGuitarIdRoute
   DemoLayoutDemoSentryTestingRoute: typeof DemoLayoutDemoSentryTestingRoute
@@ -1037,6 +1058,7 @@ const DemoLayoutRouteRouteChildren: DemoLayoutRouteRouteChildren = {
   DemoLayoutDemoApiNamesRoute: DemoLayoutDemoApiNamesRoute,
   DemoLayoutDemoApiTqTodosRoute: DemoLayoutDemoApiTqTodosRoute,
   DemoLayoutDemoFormAddressRoute: DemoLayoutDemoFormAddressRoute,
+  DemoLayoutDemoFormContactRoute: DemoLayoutDemoFormContactRoute,
   DemoLayoutDemoFormSimpleRoute: DemoLayoutDemoFormSimpleRoute,
   DemoLayoutDemoGuitarsGuitarIdRoute: DemoLayoutDemoGuitarsGuitarIdRoute,
   DemoLayoutDemoSentryTestingRoute: DemoLayoutDemoSentryTestingRoute,

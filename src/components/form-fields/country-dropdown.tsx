@@ -4,7 +4,7 @@
 import { countries } from 'country-data-list'
 // assets
 import { CheckIcon, ChevronDown, Globe } from 'lucide-react'
-import React, { forwardRef, useCallback, useEffect, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useState } from 'react'
 import { CircleFlag } from 'react-circle-flags'
 // shadcn
 import {
@@ -145,10 +145,10 @@ const CountryDropdownComponent = (
 						<CommandGroup>
 							{options
 								.filter((x) => x.name)
-								.map((option, key: number) => (
+								.map((option) => (
 									<CommandItem
 										className="flex items-center w-full gap-2"
-										key={key}
+										key={option.alpha3}
 										onSelect={() => handleSelect(option)}
 									>
 										<div className="flex flex-grow w-0 space-x-2 overflow-hidden">

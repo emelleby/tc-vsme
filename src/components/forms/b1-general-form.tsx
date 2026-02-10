@@ -1,0 +1,165 @@
+import { revalidateLogic, useStore } from '@tanstack/react-form'
+import { toast } from 'sonner'
+import {
+	CountryField,
+	RadioGroupField,
+	SubmitButton,
+	TextField,
+} from '@/components/form-fields'
+import { useAppForm } from '@/hooks/form'
+import { focusFirstError } from '@/hooks/use-form'
+import {
+	type B1GeneralFormValues,
+	b1GeneralSchema,
+} from '@/lib/forms/schemas/b1-general-schema'
+
+export function ReportForm() {
+	const form = useAppForm({
+		defaultValues: {
+			reportingYear: '2028',
+			organizationName: 'Lodestar',
+			organizationNumber: '891755562',
+			naceCode: '77.123',
+			revenue: 100000,
+			balanceSheetTotal: undefined, // Optional
+			employees: 0,
+			country: 'NOR', // Defaulting to Norway (Alpha3) as per image "Norge"
+			reportType: 'individuell',
+			contactPersonName: 'Eivind',
+			contactPersonEmail: 'e@scope321', // Intentionally invalid as per image? Or just placeholder.
+		} as B1GeneralFormValues,
+		validationLogic: revalidateLogic(),
+		validators: {
+			onDynamic: b1GeneralSchema,
+		},
+		canSubmitWhenInvalid: false,
+		onSubmitInvalid: ({ formApi }) => {
+			focusFirstError(formApi)
+		},
+		onSubmit: ({ value }) => {
+			console.log('Form submitted:', value)
+			alert(JSON.stringify(value, null, 2))
+			toast.success('Form submitted successfully')
+		},
+	})
+
+	const isDefault = useStore(form.store, (state) => state.isDefaultValue)
+
+	return (
+		<div className="w-full bg-white p-4 border border-gray-200 rounded-lg">
+			<div className="mb-8">
+				<div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm mb-4">
+					B12
+				</div>
+				<h1 className="text-2xl font-semibold text-gray-900 inline-block ml-3 align-middle">
+					Grunnleggende informasjon
+				</h1>
+			</div>
+			<form.AppForm>
+				<form
+					onSubmit={(e) => {
+						e.preventDefault()
+						e.stopPropagation()
+						form.handleSubmit()
+					}}
+					className="space-y-8"
+				>
+					{/* Row 1: Reporting Year & Org Name */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<form.AppField name="reportingYear">
+							{(field) => (
+								<field.TextField label="Rapporteringsår" placeholder="YYYY" />
+							)}
+						</form.AppField>
+
+						<form.AppField name="organizationName">
+							{(field) => <field.TextField label="Organisasjonsnavn" />}
+						</form.AppField>
+					</div>
+
+					{/* Row 2: Org Number & NACE */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<form.AppField name="organizationNumber">
+							{(field) => <field.TextField label="Organisasjonsnummer" />}
+						</form.AppField>
+
+						<form.AppField name="naceCode">
+							{(field) => (
+								<field.TextField
+									label="NACE-kode"
+									description="Europeisk bransjeklassifiseringskode"
+								/>
+							)}
+						</form.AppField>
+					</div>
+
+					{/* Row 3: Revenue & Balance */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<form.AppField name="revenue">
+							{(field) => (
+								<field.TextField label="Omsetning (NOK)" type="number" />
+							)}
+						</form.AppField>
+
+						<form.AppField name="balanceSheetTotal">
+							{(field) => (
+								<field.TextField label="Balansesum (NOK)" type="number" />
+							)}
+						</form.AppField>
+					</div>
+
+					{/* Row 4: Employees & Country */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<form.AppField name="employees">
+							{(field) => (
+								<field.TextField type="number" label="Totalt antall ansatte" />
+							)}
+						</form.AppField>
+
+						<form.AppField name="country">
+							{(field) => <field.CountryField label="Land" />}
+						</form.AppField>
+					</div>
+
+					{/* Row 5: Contact Person */}
+					<div className="pt-4 border-t border-border">
+						<h2 className="text-lg font-medium mb-4">Kontaktperson</h2>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<form.AppField name="contactPersonName">
+								{(field) => <field.TextField label="Navn på kontaktperson" />}
+							</form.AppField>
+
+							<form.AppField name="contactPersonEmail">
+								{(field) => (
+									<field.TextField label="E-post til kontaktperson" />
+								)}
+							</form.AppField>
+						</div>
+					</div>
+
+					{/* Row 6: Report Type */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+						<form.AppField name="reportType">
+							{(field) => (
+								<RadioGroupField
+									field={field}
+									label="Rapporttype"
+									options={[
+										{ label: 'Individuell', value: 'individuell' },
+										{ label: 'Konsolidert', value: 'konsolidert' },
+									]}
+								/>
+							)}
+						</form.AppField>
+						{/* Empty column to match image layout if needed, or just full width */}
+						<div></div>
+					</div>
+
+					<div className="flex justify-end pt-6">
+						<form.SubmitButton label="Neste" />
+					</div>
+				</form>
+			</form.AppForm>
+		</div>
+	)
+}

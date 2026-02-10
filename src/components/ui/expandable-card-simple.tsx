@@ -1,6 +1,6 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useTransform } from 'framer-motion'
 import { BadgeQuestionMarkIcon, ChevronRightIcon } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
@@ -25,6 +25,7 @@ interface FormCardProps {
 	openIssues: number
 	toolTip: string
 	buttonText?: string
+	children?: React.ReactNode
 }
 
 export function FormCard({
@@ -36,9 +37,16 @@ export function FormCard({
 	openIssues,
 	toolTip,
 	buttonText,
+	children,
 }: FormCardProps) {
 	const { isExpanded, toggleExpand, animatedHeight } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
+
+	// Create a derived MotionValue that adds 32px padding to the animated height
+	const animatedHeightWithPadding = useTransform(
+		animatedHeight,
+		(value) => value + 32,
+	)
 
 	useEffect(() => {
 		if (contentRef.current) {
@@ -121,7 +129,7 @@ export function FormCard({
 					</div>
 
 					<motion.div
-						style={{ height: animatedHeight }}
+						style={{ height: animatedHeightWithPadding }}
 						transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 						className="overflow-hidden"
 					>
@@ -134,9 +142,7 @@ export function FormCard({
 										exit={{ opacity: 0 }}
 										className="space-y-4 pt-2"
 									>
-										<div className="space-y-2">
-											<h4 className="font-medium">Content here</h4>
-										</div>
+										<div className="space-y-2">{children}</div>
 									</motion.div>
 								)}
 							</AnimatePresence>
