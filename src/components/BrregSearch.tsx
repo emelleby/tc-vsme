@@ -23,6 +23,12 @@ export interface BrregUnit {
 		land: string
 	}
 	hjemmeside?: string
+	naeringskode1?: {
+		kode: string
+		beskrivelse: string
+	}
+	antallAnsatte?: number
+	aktivitet?: string[]
 }
 
 interface BrregSearchProps {

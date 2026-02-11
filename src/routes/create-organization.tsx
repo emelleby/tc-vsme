@@ -120,6 +120,10 @@ function CreateOrganizationPage() {
 						: undefined,
 					orgForm: selectedOrg.organisasjonsform?.kode,
 					website: selectedOrg.hjemmeside,
+					naceCode: selectedOrg.naeringskode1?.kode,
+					industry: selectedOrg.naeringskode1?.beskrivelse,
+					numberEmployees: selectedOrg.antallAnsatte,
+					businessModel: selectedOrg.aktivitet?.join(' '),
 				},
 			})
 

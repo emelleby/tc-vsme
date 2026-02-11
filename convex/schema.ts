@@ -29,6 +29,10 @@ export default defineSchema({
     ),
     orgForm: v.optional(v.string()),
     website: v.optional(v.string()),
+    naceCode: v.optional(v.string()),
+    industry: v.optional(v.string()),
+    numberEmployees: v.optional(v.number()),
+    businessModel: v.optional(v.string()),
   })
     .index('by_clerkOrgId', ['clerkOrgId'])
     .index('by_slug', ['slug'])

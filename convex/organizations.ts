@@ -57,6 +57,10 @@ export const upsertOrganization = mutation({
     ),
     orgForm: v.optional(v.string()),
     website: v.optional(v.string()),
+    naceCode: v.optional(v.string()),
+    industry: v.optional(v.string()),
+    numberEmployees: v.optional(v.number()),
+    businessModel: v.optional(v.string()),
   },
   returns: v.id('organizations'),
   handler: async (ctx, args) => {
@@ -90,6 +94,10 @@ export const upsertOrganization = mutation({
         address: args.address,
         orgForm: args.orgForm,
         website: args.website,
+        naceCode: args.naceCode,
+        industry: args.industry,
+        numberEmployees: args.numberEmployees,
+        businessModel: args.businessModel,
       })
       return existing._id
     }
@@ -103,6 +111,10 @@ export const upsertOrganization = mutation({
       address: args.address,
       orgForm: args.orgForm,
       website: args.website,
+      naceCode: args.naceCode,
+      industry: args.industry,
+      numberEmployees: args.numberEmployees,
+      businessModel: args.businessModel,
     })
   },
 })
@@ -134,6 +146,10 @@ export const getByClerkOrgId = query({
       ),
       orgForm: v.optional(v.string()),
       website: v.optional(v.string()),
+      naceCode: v.optional(v.string()),
+      industry: v.optional(v.string()),
+      numberEmployees: v.optional(v.number()),
+      businessModel: v.optional(v.string()),
     }),
     v.null()
   ),

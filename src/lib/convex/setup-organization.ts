@@ -32,6 +32,10 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 			}
 			orgForm?: string
 			website?: string
+			naceCode?: string
+			industry?: string
+			numberEmployees?: number
+			businessModel?: string
 		}) => data,
 	)
 	.handler(async ({ data }): Promise<SetupOrganizationResult> => {
@@ -116,6 +120,10 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				address: data.address,
 				orgForm: data.orgForm,
 				website: data.website,
+				naceCode: data.naceCode,
+				industry: data.industry,
+				numberEmployees: data.numberEmployees,
+				businessModel: data.businessModel,
 			})
 
 			// Step 2: Upsert user in Convex
