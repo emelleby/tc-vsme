@@ -10,6 +10,14 @@
 
 import type * as _utils_auth from "../_utils/auth.js";
 import type * as emissions from "../emissions.js";
+import type * as forms__utils from "../forms/_utils.js";
+import type * as forms_debug from "../forms/debug.js";
+import type * as forms_get from "../forms/get.js";
+import type * as forms_getAll from "../forms/getAll.js";
+import type * as forms_reopen from "../forms/reopen.js";
+import type * as forms_rollback from "../forms/rollback.js";
+import type * as forms_save from "../forms/save.js";
+import type * as forms_submit from "../forms/submit.js";
 import type * as mongodb_client from "../mongodb/client.js";
 import type * as mongodb_queries from "../mongodb/queries.js";
 import type * as organizations from "../organizations.js";
@@ -25,6 +33,14 @@ import type {
 declare const fullApi: ApiFromModules<{
   "_utils/auth": typeof _utils_auth;
   emissions: typeof emissions;
+  "forms/_utils": typeof forms__utils;
+  "forms/debug": typeof forms_debug;
+  "forms/get": typeof forms_get;
+  "forms/getAll": typeof forms_getAll;
+  "forms/reopen": typeof forms_reopen;
+  "forms/rollback": typeof forms_rollback;
+  "forms/save": typeof forms_save;
+  "forms/submit": typeof forms_submit;
   "mongodb/client": typeof mongodb_client;
   "mongodb/queries": typeof mongodb_queries;
   organizations: typeof organizations;

@@ -50,4 +50,69 @@ export default defineSchema({
   })
     .index('by_clerkId', ['clerkId'])
     .index('by_email', ['email']),
+
+  // Form tables
+  formGeneral: defineTable({
+    orgId: v.string(),
+    orgNumber: v.string(),
+    reportingYear: v.number(),
+    data: v.any(),               // Form-specific data
+    status: v.string(),          // "draft" | "submitted"
+    versions: v.array(v.any()),  // Version history
+    createdBy: v.string(),
+    createdAt: v.number(),
+    lastModifiedBy: v.string(),
+    lastModifiedAt: v.number(),
+  })
+    .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
+    .index("by_orgId", ["orgId"]),
+
+  formEnvironmental: defineTable({
+    orgId: v.string(),
+    orgNumber: v.string(),
+    reportingYear: v.number(),
+    data: v.any(),
+    status: v.string(),
+    versions: v.array(v.any()),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    lastModifiedBy: v.string(),
+    lastModifiedAt: v.number(),
+  })
+    .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
+    .index("by_orgId", ["orgId"]),
+
+  formSocial: defineTable({
+    orgId: v.string(),
+    orgNumber: v.string(),
+    reportingYear: v.number(),
+    data: v.any(),
+    status: v.string(),
+    versions: v.array(v.any()),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    lastModifiedBy: v.string(),
+    lastModifiedAt: v.number(),
+  })
+    .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
+    .index("by_orgId", ["orgId"]),
+
+  formGovernance: defineTable({
+    orgId: v.string(),
+    orgNumber: v.string(),
+    reportingYear: v.number(),
+    data: v.any(),
+    status: v.string(),
+    versions: v.array(v.any()),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    lastModifiedBy: v.string(),
+    lastModifiedAt: v.number(),
+  })
+    .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
+    .index("by_orgId", ["orgId"]),
 })
