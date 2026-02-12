@@ -1,9 +1,4 @@
-import {
-	createFormHook,
-	createFormHookContexts,
-	revalidateLogic,
-	useStore,
-} from '@tanstack/react-form'
+import { createFormHook, revalidateLogic, useStore } from '@tanstack/react-form'
 import type { VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import {
@@ -13,7 +8,11 @@ import {
 	TextareaField,
 	TextField,
 } from '@/components/form-fields'
-import { Button, type buttonVariants } from '@/components/ui/button'
+import {
+	FormButtons,
+	StepButton,
+	SubmitButton,
+} from '@/components/form-fields/form-buttons'
 import {
 	Field as DefaultField,
 	FieldError as DefaultFieldError,
@@ -32,15 +31,13 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from '@/components/ui/input-group'
-import { Spinner } from '@/components/ui/spinner'
-import { cn } from '@/lib/utils'
-
-const {
+import {
+	useFieldContext as _useFieldContext,
 	fieldContext,
 	formContext,
-	useFieldContext: _useFieldContext,
 	useFormContext,
-} = createFormHookContexts()
+} from '@/hooks/form-context'
+import { cn } from '@/lib/utils'
 
 const { useAppForm, withForm, withFieldGroup } = createFormHook({
 	fieldContext,
@@ -103,7 +100,7 @@ const useFieldContext = () => {
 	const { id } = React.useContext(FormItemContext)
 	const { name, store, ...fieldContext } = _useFieldContext()
 
-	const errors = useStore(store, (state) => state.meta.errors)
+	const errors = useStore(store, (state: any) => state.meta.errors)
 	if (!fieldContext) {
 		throw new Error('useFieldContext should be used within <FormItem>')
 	}
@@ -132,7 +129,7 @@ function Field({
 		handleBlur,
 		store,
 	} = useFieldContext()
-	const isTouched = useStore(store, (state) => state.meta.isTouched)
+	const isTouched = useStore(store, (state: any) => state.meta.isTouched)
 	const hasVisibleErrors = !!errors.length && isTouched
 
 	return (
@@ -155,7 +152,7 @@ function Field({
 
 function FieldError({ className, ...props }: React.ComponentProps<'p'>) {
 	const { errors, formMessageId, store } = useFieldContext()
-	const isTouched = useStore(store, (state) => state.meta.isTouched)
+	const isTouched = useStore(store, (state: any) => state.meta.isTouched)
 	const body = errors.length ? String(errors.at(0)?.message ?? '') : ''
 	if (!body || !isTouched) return null
 	return (
@@ -199,55 +196,7 @@ function Form({
 	)
 }
 
-function SubmitButton({
-	label,
-	className,
-	size,
-	...props
-}: React.ComponentProps<'button'> &
-	VariantProps<typeof buttonVariants> & {
-		label: string
-	}) {
-	const form = useFormContext()
-	return (
-		<form.Subscribe selector={(state) => state.isSubmitting}>
-			{(isSubmitting) => (
-				<Button
-					className={className}
-					size={size}
-					type="submit"
-					disabled={isSubmitting}
-					{...props}
-				>
-					{isSubmitting && <Spinner />}
-					{label}
-				</Button>
-			)}
-		</form.Subscribe>
-	)
-}
-
-function StepButton({
-	label,
-	handleMovement,
-	...props
-}: React.ComponentProps<'button'> &
-	VariantProps<typeof buttonVariants> & {
-		label: React.ReactNode | string
-		handleMovement: () => void
-	}) {
-	return (
-		<Button
-			size="sm"
-			variant="ghost"
-			type="button"
-			onClick={handleMovement}
-			{...props}
-		>
-			{label}
-		</Button>
-	)
-}
+export { FormButtons, StepButton, SubmitButton }
 
 export {
 	revalidateLogic,

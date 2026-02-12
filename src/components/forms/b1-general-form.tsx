@@ -3,8 +3,8 @@ import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useQuery } from 'convex/react'
 import { History, Plus, Trash2 } from 'lucide-react'
-import { FormButtons } from '@/components/form-buttons'
 import { Button } from '@/components/ui/button'
+import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
 	type B1GeneralFormValues,
@@ -103,12 +103,18 @@ export function ReportForm() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<form.AppField name="reportingYear">
 								{(field) => (
-									<field.TextField label="Rapporteringsår" placeholder="YYYY" />
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
 								)}
 							</form.AppField>
 
 							<form.AppField name="organizationNumber">
-								{(field) => <field.TextField label="Organisasjonsnummer" />}
+								{(field) => (
+									<field.TextField label="Organisasjonsnummer" hidden />
+								)}
 							</form.AppField>
 						</div>
 
@@ -181,7 +187,16 @@ export function ReportForm() {
 
 						{/* Row 6: Report Type */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							<form.AppField name="reportType">
+							<form.AppField
+								name="reportType"
+								listeners={{
+									onChange: ({ value, fieldApi }) => {
+										if (!value) {
+											fieldApi.form.setFieldValue('subsidiaries', [])
+										}
+									},
+								}}
+							>
 								{(field) => (
 									<field.SwitchField
 										label="Konsolidert rapport"
