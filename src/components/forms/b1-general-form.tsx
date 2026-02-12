@@ -51,7 +51,7 @@ export function B1GeneralForm() {
 			naceCode: orgData?.naceCode || '',
 			revenue: 0,
 			balanceSheetTotal: 0,
-			employees: 0,
+			employees: 0n,
 			country: 'NOR',
 			reportType: false,
 			subsidiaries: [],
@@ -313,21 +313,19 @@ export function B1GeneralForm() {
 													<div className="font-medium">
 														Version {version.version}
 													</div>
-													<div className="flex gap-2 items-center">
-														<div className="text-muted-foreground text-xs">
+													<div className="flex gap-3 items-center ml-auto">
+														<div className="text-muted-foreground text-xs font-mono">
 															{new Date(version.changedAt).toLocaleString()}
 														</div>
-														{status !== 'submitted' && (
-															<Button
-																variant="outline"
-																size="sm"
-																className="h-7 text-xs"
-																onClick={() => rollback(version.version)}
-																disabled={isSaving}
-															>
-																Rull tilbake
-															</Button>
-														)}
+														<Button
+															variant="secondary"
+															size="sm"
+															className="h-7 px-3 text-xs font-semibold"
+															onClick={() => rollback(version.version)}
+															disabled={isSaving || status === 'submitted'}
+														>
+															Rull tilbake
+														</Button>
 													</div>
 												</div>
 												<div className="text-muted-foreground">
