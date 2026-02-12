@@ -6,7 +6,7 @@ export const b1GeneralSchema = z.object({
 	organizationNumber: z.string().min(1, 'Organization number is required'),
 	naceCode: z.string().min(1, 'NACE code is required'),
 	revenue: z.any().pipe(z.coerce.number().min(0)),
-	balanceSheetTotal: z.any().pipe(z.coerce.number().min(0)).optional(),
+	balanceSheetTotal: z.any().pipe(z.coerce.number().min(0)),
 	employees: z.any().pipe(z.coerce.number().min(0)),
 	country: z.string().min(1, 'Country is required'),
 	reportType: z.boolean(),

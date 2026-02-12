@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { ReportForm } from '@/components/forms/b1-general-form'
+import { B1GeneralForm } from '@/components/forms/b1-general-form'
 import { GeneralHelp } from '@/components/general-help'
 import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
@@ -26,7 +26,7 @@ function GeneralPage() {
 				contributor={{ name: 'Ana' }}
 				openIssues={8}
 			>
-				<ReportForm />
+				<B1GeneralForm />
 			</FormCard>
 			<FormCard
 				title="Sustainability initiatives"

@@ -58,7 +58,7 @@ export function FormCard({
 			>
 				<div className="flex justify-between items-start w-full">
 					<div className="flex gap-2">
-						<h3 className="text-xl font-semibold">{title}</h3>
+						<h3 className="text-xl font-semibold text-secondary">{title}</h3>
 						<ChevronRightIcon
 							className={cn(
 								'h-6 w-6 transition-transform duration-200',

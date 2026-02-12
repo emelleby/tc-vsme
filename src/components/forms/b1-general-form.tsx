@@ -21,7 +21,7 @@ import {
 } from '../ui/accordion'
 import { FieldGroup } from '../ui/field'
 
-export function ReportForm() {
+export function B1GeneralForm() {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
 
 	const { organization } = useOrganization()
