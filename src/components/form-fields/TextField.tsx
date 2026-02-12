@@ -1,4 +1,3 @@
-import * as React from 'react'
 import {
 	Field,
 	FieldDescription,
@@ -39,7 +38,12 @@ export function TextField({
 				type={type}
 				value={field.state.value}
 				onBlur={field.handleBlur}
-				onChange={(e) => field.handleChange(e.target.value)}
+				onChange={(e) => {
+					const rawValue = e.target.value
+					const value =
+						type === 'number' && rawValue !== '' ? Number(rawValue) : rawValue
+					field.handleChange(value as any)
+				}}
 				aria-invalid={isInvalid}
 				placeholder={placeholder}
 				disabled={disabled}

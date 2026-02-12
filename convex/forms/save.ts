@@ -25,8 +25,8 @@ export const saveForm = mutation({
     const existing = await getFormRecord(ctx, args.table, orgId, args.reportingYear)
     
     if (existing) {
-      // Calculate changes
-      const changes = detectChanges(existing.data, args.data)
+      // Calculate changes - check against draftData
+      const changes = detectChanges(existing.draftData || existing.data, args.data)
       
       // If no changes, return early
       if (changes.length === 0) {
@@ -37,7 +37,7 @@ export const saveForm = mutation({
       const currentVersion = existing.versions.length > 0 ? existing.versions[existing.versions.length - 1].version : 0
       const newVersion: FormVersion = {
         version: currentVersion + 1,
-        data: args.data,
+        data: args.data, // This is the draft data being saved
         changes,
         changedBy: userId,
         changedAt: Date.now(),
@@ -48,7 +48,7 @@ export const saveForm = mutation({
       
       // Update document
       await ctx.db.patch(existing._id, {
-        data: args.data,
+        draftData: args.data,
         versions,
         lastModifiedBy: userId,
         lastModifiedAt: Date.now(),
@@ -69,7 +69,7 @@ export const saveForm = mutation({
         orgId,
         orgNumber: org.orgNumber ?? "",
         reportingYear: args.reportingYear,
-        data: args.data,
+        draftData: args.data,
         status: "draft",
         versions: [initialVersion],
         createdBy: userId,

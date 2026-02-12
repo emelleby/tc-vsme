@@ -34,7 +34,9 @@ export function useFormSubmission<TData>({
 
 	// Initialize form
 	const form = useAppForm({
-		defaultValues: (existingData?.data || defaultValues) as TData,
+		defaultValues: (existingData?.draftData ||
+			existingData?.data ||
+			defaultValues) as TData,
 		validators: {
 			onSubmit: schema,
 		},
@@ -121,10 +123,10 @@ export function useFormSubmission<TData>({
 
 	// Update form values when data is loaded
 	useEffect(() => {
-		if (existingData?.data) {
-			form.reset({ values: existingData.data as TData })
+		if (existingData?.draftData || existingData?.data) {
+			form.reset((existingData.draftData || existingData.data) as TData)
 		}
-	}, [existingData?.data, form])
+	}, [existingData?.draftData, existingData?.data, form])
 
 	const isLoading = existingData === undefined
 	const status = existingData?.status || 'draft'

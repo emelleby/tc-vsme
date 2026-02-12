@@ -19,8 +19,21 @@ export const submitForm = mutation({
         throw new Error("Form not found")
     }
     
-    // Update status to submitted
+    // Move draftData to strict data field and update status
+    // This will trigger schema validation in Convex
+    const rawData = existing.draftData || existing.data || {}
+    const dataToSubmit = { ...rawData }
+
+    // Explicit coercion for financial fields to ensure they match v.number()
+    const numericFields = ['revenue', 'balanceSheetTotal', 'employees']
+    for (const key of numericFields) {
+      if (typeof dataToSubmit[key] === 'string' && dataToSubmit[key] !== '') {
+        dataToSubmit[key] = Number(dataToSubmit[key])
+      }
+    }
+
     await ctx.db.patch(existing._id, {
+        data: dataToSubmit,
         status: "submitted",
         lastModifiedBy: userId,
         lastModifiedAt: Date.now(),

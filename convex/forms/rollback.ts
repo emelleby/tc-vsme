@@ -51,7 +51,8 @@ export const rollbackToVersion = mutation({
 
     // Update document
     await ctx.db.patch(existing._id, {
-        data: targetVersion.data,
+        draftData: targetVersion.data, // Update the draft to reflect the rollback
+        data: existing.status === 'submitted' ? targetVersion.data : existing.data, // If submitted, update the strict data too
         versions,
         lastModifiedBy: userId,
         lastModifiedAt: Date.now(),

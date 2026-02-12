@@ -1,6 +1,30 @@
 import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
 
+// Form data validators
+const formGeneralDataValidator = v.object({
+  reportingYear: v.string(),
+  organizationName: v.string(),
+  organizationNumber: v.string(),
+  naceCode: v.string(),
+  revenue: v.number(),
+  balanceSheetTotal: v.number(),
+  employees: v.number(),
+  country: v.string(),
+  reportType: v.boolean(),
+  subsidiaries: v.optional(
+    v.array(
+      v.object({
+        id: v.string(),
+        name: v.string(),
+        address: v.string(),
+      }),
+    ),
+  ),
+  contactPersonName: v.string(),
+  contactPersonEmail: v.string(),
+})
+
 export default defineSchema({
   products: defineTable({
     title: v.string(),
@@ -56,7 +80,8 @@ export default defineSchema({
     orgId: v.string(),
     orgNumber: v.string(),
     reportingYear: v.number(),
-    data: v.any(),               // Form-specific data
+    draftData: v.any(), // Flexible storage for drafts
+    data: v.optional(formGeneralDataValidator), // Strict storage for submitted data
     status: v.string(),          // "draft" | "submitted"
     versions: v.array(v.any()),  // Version history
     createdBy: v.string(),
