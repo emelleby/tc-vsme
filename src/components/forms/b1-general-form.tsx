@@ -13,6 +13,12 @@ import {
 import { yearStore } from '@/lib/year-store'
 import { api } from '../../../convex/_generated/api'
 import type { FieldChange, FormVersion } from '../../../convex/forms/_utils'
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from '../ui/accordion'
 import { FieldGroup } from '../ui/field'
 
 export function ReportForm() {
@@ -33,6 +39,7 @@ export function ReportForm() {
 		saveDraft,
 		submit,
 		reopen,
+		rollback,
 	} = useFormSubmission<B1GeneralFormValues>({
 		table: 'formGeneral',
 		reportingYear,
@@ -238,7 +245,7 @@ export function ReportForm() {
 																	type="button"
 																	variant="ghost"
 																	size="icon"
-																	className="text-destructive hover:text-destructive hover:bg-destructive/10 mb-4 self-end"
+																	className="text-destructive hover:text-destructive hover:bg-destructive/10 self-end"
 																	onClick={() => field.removeValue(i)}
 																	disabled={status === 'submitted'}
 																>
@@ -285,44 +292,67 @@ export function ReportForm() {
 			{/* Version History Panel */}
 			{existingData?.versions && existingData.versions.length > 0 && (
 				<div className="mt-8 pt-8 border-t border-border">
-					<h3 className="text-lg font-medium mb-4 flex items-center gap-2">
-						<History className="h-5 w-5" />
-						Version History
-					</h3>
-					<div className="space-y-4">
-						{[...existingData.versions]
-							.reverse()
-							.map((version: FormVersion) => (
-								<div
-									key={version.version}
-									className="bg-muted/30 p-4 rounded-md text-sm"
-								>
-									<div className="flex justify-between items-start mb-2">
-										<div className="font-medium">Version {version.version}</div>
-										<div className="text-muted-foreground text-xs">
-											{new Date(version.changedAt).toLocaleString()}
-										</div>
-									</div>
-									<div className="text-muted-foreground">
-										{version.changes.length > 0 ? (
-											<ul className="list-disc list-inside">
-												{version.changes.map(
-													(change: FieldChange, i: number) => (
-														<li key={`${change.field}-${i}`}>
-															{change.field === '_rollback'
-																? `Rolled back to version ${change.newValue}`
-																: `Changed ${change.field}`}
-														</li>
-													),
-												)}
-											</ul>
-										) : (
-											<span className="italic">No changes recorded</span>
-										)}
-									</div>
+					<Accordion type="single" collapsible>
+						<AccordionItem value="history" className="border-none">
+							<AccordionTrigger className="hover:no-underline py-0">
+								<h3 className="text-lg font-medium flex items-center gap-2">
+									<History className="h-5 w-5" />
+									Version History
+								</h3>
+							</AccordionTrigger>
+							<AccordionContent className="pt-4">
+								<div className="space-y-4">
+									{[...existingData.versions]
+										.reverse()
+										.map((version: FormVersion) => (
+											<div
+												key={version.version}
+												className="bg-muted/30 p-4 rounded-md text-sm"
+											>
+												<div className="flex justify-between items-start mb-2">
+													<div className="font-medium">
+														Version {version.version}
+													</div>
+													<div className="flex gap-2 items-center">
+														<div className="text-muted-foreground text-xs">
+															{new Date(version.changedAt).toLocaleString()}
+														</div>
+														{status !== 'submitted' && (
+															<Button
+																variant="outline"
+																size="sm"
+																className="h-7 text-xs"
+																onClick={() => rollback(version.version)}
+																disabled={isSaving}
+															>
+																Rull tilbake
+															</Button>
+														)}
+													</div>
+												</div>
+												<div className="text-muted-foreground">
+													{version.changes.length > 0 ? (
+														<ul className="list-disc list-inside">
+															{version.changes.map(
+																(change: FieldChange, i: number) => (
+																	<li key={`${change.field}-${i}`}>
+																		{change.field === '_rollback'
+																			? `Rolled back to version ${change.newValue}`
+																			: `Changed ${change.field}`}
+																	</li>
+																),
+															)}
+														</ul>
+													) : (
+														<span className="italic">No changes recorded</span>
+													)}
+												</div>
+											</div>
+										))}
 								</div>
-							))}
-					</div>
+							</AccordionContent>
+						</AccordionItem>
+					</Accordion>
 				</div>
 			)}
 		</div>

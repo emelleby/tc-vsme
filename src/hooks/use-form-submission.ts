@@ -30,6 +30,7 @@ export function useFormSubmission<TData>({
 
 	const submitFormMutation = useMutation(api.forms.submit.submitForm)
 	const reopenFormMutation = useMutation(api.forms.reopen.reopenForm)
+	const rollbackMutation = useMutation(api.forms.rollback.rollbackToVersion)
 
 	// Initialize form
 	const form = useAppForm({
@@ -101,6 +102,23 @@ export function useFormSubmission<TData>({
 		}
 	}
 
+	const handleRollback = async (targetVersion: number) => {
+		try {
+			setIsSaving(true)
+			await rollbackMutation({
+				table,
+				reportingYear,
+				targetVersion,
+			})
+			toast.success(`Rolled back to version ${targetVersion}`)
+		} catch (error) {
+			toast.error('Failed to rollback')
+			console.error(error)
+		} finally {
+			setIsSaving(false)
+		}
+	}
+
 	// Update form values when data is loaded
 	useEffect(() => {
 		if (existingData?.data) {
@@ -120,5 +138,6 @@ export function useFormSubmission<TData>({
 		saveDraft: () => handleSaveDraft(),
 		submit: () => form.handleSubmit(),
 		reopen: handleReopen,
+		rollback: handleRollback,
 	}
 }
