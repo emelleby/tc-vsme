@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { useFieldContext } from '@/hooks/form-context'
 
 interface TextFieldProps {
+	hidden?: boolean
 	label: string
 	description?: string
 	placeholder?: string
@@ -18,6 +19,7 @@ interface TextFieldProps {
 }
 
 export function TextField({
+	hidden,
 	label,
 	description,
 	placeholder,
@@ -29,7 +31,7 @@ export function TextField({
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
 
 	return (
-		<Field data-invalid={isInvalid}>
+		<Field data-invalid={isInvalid} hidden={hidden}>
 			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
 			<Input
 				id={field.name}

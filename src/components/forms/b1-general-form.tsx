@@ -2,7 +2,8 @@ import { revalidateLogic, useStore } from '@tanstack/react-form'
 import { Plus, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { useAppForm } from '@/hooks/form'
+// import { useAppForm } from '@/hooks/form'
+import { useAppForm } from '@/hooks/tanstack-form'
 import { focusFirstError } from '@/hooks/use-form'
 import {
 	type B1GeneralFormValues,
@@ -13,18 +14,18 @@ import { FieldGroup } from '../ui/field'
 export function ReportForm() {
 	const form = useAppForm({
 		defaultValues: {
-			reportingYear: '2028',
-			organizationName: 'Lodestar',
-			organizationNumber: '891755562',
-			naceCode: '77.123',
-			revenue: 100000,
-			balanceSheetTotal: undefined, // Optional
+			reportingYear: '',
+			organizationName: '',
+			organizationNumber: '',
+			naceCode: '',
+			revenue: 0,
+			balanceSheetTotal: 0, // Optional
 			employees: 0,
 			country: 'NOR', // Defaulting to Norway (Alpha3) as per image "Norge"
 			reportType: false,
 			subsidiaries: [],
-			contactPersonName: 'Eivind',
-			contactPersonEmail: 'e@scope321', // Intentionally invalid as per image? Or just placeholder.
+			contactPersonName: '',
+			contactPersonEmail: '', // Intentionally invalid as per image? Or just placeholder.
 		} as B1GeneralFormValues,
 		validationLogic: revalidateLogic(),
 		validators: {
@@ -44,12 +45,12 @@ export function ReportForm() {
 	const isDefault = useStore(form.store, (state) => state.isDefaultValue)
 	const reportType2 = useStore(form.store, (state) => state.values.reportType)
 	return (
-		<div className="w-full bg-white p-4 border border-gray-200 rounded-lg">
+		<div className="w-full bg-card/50 p-4 border border-border rounded-lg shadow-sm">
 			<div className="mb-8">
-				<div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-bold text-sm mb-4">
-					B12
+				<div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm mb-4">
+					B1
 				</div>
-				<h1 className="text-2xl font-semibold text-gray-900 inline-block ml-3 align-middle">
+				<h1 className="text-2xl font-semibold text-foreground inline-block ml-3 align-middle">
 					Grunnleggende informasjon
 				</h1>
 			</div>
@@ -60,26 +61,32 @@ export function ReportForm() {
 						e.stopPropagation()
 						form.handleSubmit()
 					}}
-					className="space-y-8"
+					className="space-y-6"
 				>
-					{/* Row 1: Reporting Year & Org Name */}
-					<p>ReportType: {reportType2}</p>
+					{/* Row 1: Reporting Year & Org Number is hidden */}
+					<p>ReportType: {reportType2 ? 'True' : 'False'}</p>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<form.AppField name="reportingYear">
 							{(field) => (
-								<field.TextField label="Rapporteringsår" placeholder="YYYY" />
+								<field.TextField
+									label="Rapporteringsår"
+									placeholder="YYYY"
+									hidden
+								/>
 							)}
 						</form.AppField>
 
-						<form.AppField name="organizationName">
-							{(field) => <field.TextField label="Organisasjonsnavn" />}
+						<form.AppField name="organizationNumber">
+							{(field) => (
+								<field.TextField label="Organisasjonsnummer" hidden />
+							)}
 						</form.AppField>
 					</div>
 
-					{/* Row 2: Org Number & NACE */}
+					{/* Row 2: Org Name & NACE */}
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<form.AppField name="organizationNumber">
-							{(field) => <field.TextField label="Organisasjonsnummer" />}
+						<form.AppField name="organizationName">
+							{(field) => <field.TextField label="Organisasjonsnavn" />}
 						</form.AppField>
 
 						<form.AppField name="naceCode">
@@ -214,7 +221,7 @@ export function ReportForm() {
 					</form.Subscribe>
 
 					<div className="flex justify-end pt-6">
-						<form.SubmitButton label="Neste" />
+						<form.SubmitButton label="Submit" />
 					</div>
 				</form>
 			</form.AppForm>
