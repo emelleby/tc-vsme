@@ -4,6 +4,7 @@ import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { B1GeneralForm } from '@/components/forms/b1-general-form'
 import { B2SustainabilityInitiativesForm } from '@/components/forms/b2-sustainability-initiatives-form'
+import { C1BusinessModelForm } from '@/components/forms/c1-business-model-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -42,6 +43,7 @@ function GeneralPage() {
 	// Extract section-specific data
 	const companyInfo = formSections?.companyInfo
 	const sustainability = formSections?.sustainabilityInitiatives
+	const businessModel = formSections?.businessModel
 
 	// Show loading state during organization switching
 	if (isOrgLoading) {
@@ -75,6 +77,17 @@ function GeneralPage() {
 				contributor={sustainability?.contributor || { name: 'Unknown' }}
 			>
 				<B2SustainabilityInitiativesForm />
+			</FormCard>
+			<hr />
+			<FormCard
+				title="Business model"
+				updatedDate={formatDate(businessModel?.lastModifiedAt)}
+				toolTip="Click to expand"
+				status={businessModel?.status ?? 'draft'}
+				contributor={businessModel?.contributor || { name: 'Unknown' }}
+				module="Utvidet modul"
+			>
+				<C1BusinessModelForm />
 			</FormCard>
 		</div>
 	)

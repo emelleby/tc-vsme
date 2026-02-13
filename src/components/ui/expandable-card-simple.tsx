@@ -24,6 +24,7 @@ interface FormCardProps {
 	toolTip: string
 	buttonText?: string
 	children?: React.ReactNode
+	module?: 'Grunnmodul' | 'Utvidet modul'
 }
 
 export function FormCard({
@@ -35,12 +36,18 @@ export function FormCard({
 	toolTip,
 	buttonText,
 	children,
+	module,
 }: FormCardProps) {
 	const { isExpanded, toggleExpand } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
 
 	return (
-		<Card className="mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg">
+		<Card
+			className={cn(
+				'mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg',
+				module === 'Utvidet modul' && 'bg-accent/20',
+			)}
+		>
 			<CardHeader
 				className="space-y-1 cursor-pointer"
 				onClick={toggleExpand}
@@ -94,16 +101,26 @@ export function FormCard({
 
 			<CardContent>
 				<div className="space-y-4">
-					<Badge
-						variant="secondary"
-						className={
-							status === 'submitted'
-								? 'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300'
-								: 'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300'
-						}
-					>
-						{status === 'submitted' ? 'Completed' : 'In Progress'}
-					</Badge>
+					<div className="flex gap-2">
+						<Badge
+							variant="secondary"
+							className={
+								status === 'submitted'
+									? 'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300'
+									: 'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300'
+							}
+						>
+							{status === 'submitted' ? 'Completed' : 'In Progress'}
+						</Badge>
+						{module && (
+							<Badge
+								variant="secondary"
+								className="bg-blue-100 border-blue-600 text-blue-600 dark:bg-blue-800 dark:text-blue-300"
+							>
+								{module}
+							</Badge>
+						)}
+					</div>
 
 					<motion.div
 						initial={false}

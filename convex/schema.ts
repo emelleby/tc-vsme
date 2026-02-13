@@ -5,6 +5,7 @@ import { v } from 'convex/values'
 const formSectionValidator = v.union(
   v.literal("companyInfo"),
   v.literal("sustainabilityInitiatives"),
+  v.literal("businessModel"),
 )
 
 // Form data validators for each section
@@ -45,10 +46,16 @@ const sustainabilityInitiativesDataValidator = v.object({
   ),
 })
 
+const businessModelDataValidator = v.object({
+  reportingYear: v.string(),
+  businessModel: v.optional(v.string()),
+})
+
 // Union validator for all general form sections
 const formGeneralDataValidator = v.union(
   companyInfoDataValidator,
   sustainabilityInitiativesDataValidator,
+  businessModelDataValidator,
 )
 
 export default defineSchema({
