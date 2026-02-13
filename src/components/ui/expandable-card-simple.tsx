@@ -1,6 +1,6 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { BadgeQuestionMarkIcon, ChevronRightIcon } from 'lucide-react'
 import React, { useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
@@ -98,8 +98,8 @@ export function FormCard({
 						variant="secondary"
 						className={
 							status === 'submitted'
-								? 'bg-green-100 text-emerald-600'
-								: 'bg-blue-100 text-sky-600'
+								? 'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300'
+								: 'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300'
 						}
 					>
 						{status === 'submitted' ? 'Completed' : 'In Progress'}
@@ -107,23 +107,18 @@ export function FormCard({
 
 					<motion.div
 						initial={false}
-						animate={{ height: isExpanded ? 'auto' : 0 }}
+						animate={{
+							height: isExpanded ? 'auto' : 0,
+							opacity: isExpanded ? 1 : 0,
+						}}
 						transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 						className="overflow-hidden"
 					>
 						<div ref={contentRef} className="pb-4">
-							<AnimatePresence mode="wait">
-								{isExpanded && (
-									<motion.div
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}
-										className="space-y-4 pt-2"
-									>
-										<div className="space-y-2">{children}</div>
-									</motion.div>
-								)}
-							</AnimatePresence>
+							{/* Children kept mounted to preserve Convex subscriptions */}
+							<div className="space-y-4 pt-2">
+								<div className="space-y-2">{children}</div>
+							</div>
 						</div>
 					</motion.div>
 				</div>

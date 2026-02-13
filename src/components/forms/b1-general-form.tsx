@@ -53,7 +53,7 @@ export function B1GeneralForm() {
 			naceCode: orgData?.naceCode || '',
 			revenue: 0,
 			balanceSheetTotal: 0,
-			employees: 0,
+			employees: 0n,
 			country: 'NOR',
 			reportType: false,
 			subsidiaries: [],
