@@ -6,6 +6,7 @@ const formSectionValidator = v.union(
   v.literal("companyInfo"),
   v.literal("sustainabilityInitiatives"),
   v.literal("businessModel"),
+  v.literal("energyEmissions"),
 )
 
 // Form data validators for each section
@@ -51,11 +52,22 @@ const businessModelDataValidator = v.object({
   businessModel: v.optional(v.string()),
 })
 
+const energyEmissionsDataValidator = v.object({
+  reportingYear: v.string(),
+  renewableElectricity: v.number(),
+  nonRenewableElectricity: v.number(),
+  emissionsIntensity: v.number(),
+  scope1Emissions: v.number(),
+  scope2EmissionsLocationBased: v.number(),
+  scope2EmissionsMarketBased: v.number(),
+})
+
 // Union validator for all general form sections
 const formGeneralDataValidator = v.union(
   companyInfoDataValidator,
   sustainabilityInitiativesDataValidator,
   businessModelDataValidator,
+  energyEmissionsDataValidator,
 )
 
 export default defineSchema({

@@ -4,6 +4,7 @@ import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { B1GeneralForm } from '@/components/forms/b1-general-form'
 import { B2SustainabilityInitiativesForm } from '@/components/forms/b2-sustainability-initiatives-form'
+
 import { C1BusinessModelForm } from '@/components/forms/c1-business-model-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
@@ -78,6 +79,7 @@ function GeneralPage() {
 			>
 				<B2SustainabilityInitiativesForm />
 			</FormCard>
+
 			<hr />
 			<FormCard
 				title="Business model"

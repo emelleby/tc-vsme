@@ -4,6 +4,7 @@ import * as React from 'react'
 import {
 	ComboboxField,
 	CountryField,
+	NumberField,
 	SelectField,
 	SwitchField,
 	TextareaField,
@@ -63,6 +64,7 @@ const { useAppForm, withForm, withFieldGroup } = createFormHook({
 		CountryField,
 		SwitchField,
 		ComboboxField,
+		NumberField,
 	},
 	formComponents: {
 		SubmitButton,
