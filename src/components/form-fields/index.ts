@@ -1,3 +1,4 @@
+export { ComboboxField } from './ComboboxField'
 export { CountryField } from './CountryField'
 export { SubmitButton } from './form-buttons'
 export { ImageField } from './ImageField'

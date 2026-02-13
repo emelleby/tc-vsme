@@ -2,10 +2,8 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
-import { useState } from 'react'
 import { B1GeneralForm } from '@/components/forms/b1-general-form'
-import { GeneralHelp } from '@/components/general-help'
-import { HelpSheet } from '@/components/sheet'
+import { B2SustainabilityInitiativesForm } from '@/components/forms/b2-sustainability-initiatives-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -27,7 +25,6 @@ function formatDate(timestamp: number | undefined): string {
 }
 
 function GeneralPage() {
-	const [isSheetOpen, setIsSheetOpen] = useState(false)
 	const reportingYear = useStore(yearStore, (state) => state.selectedYear)
 
 	// Guard against race conditions during org switching
@@ -73,25 +70,12 @@ function GeneralPage() {
 			<FormCard
 				title="Sustainability initiatives"
 				updatedDate={formatDate(sustainability?.lastModifiedAt)}
-				toolTip="Hover to learn more"
+				toolTip="Click to expand"
 				status={sustainability?.status ?? 'draft'}
 				contributor={sustainability?.contributor || { name: 'Unknown' }}
-				onClick={() => setIsSheetOpen(true)}
-				buttonText="Hjelp"
-			/>
-
-			{/* Shared Help Sheet */}
-			<HelpSheet
-				open={isSheetOpen}
-				onOpenChange={setIsSheetOpen}
-				title="Hva er bærekraftsinitiativ?"
-				description="Bærekraftsinitiativ er konkrete tiltak og programmer som virksomheten
-					gjennomfører for å forbedre sin miljømessige, sosiale og økonomiske
-					påvirkning. Velg de områdene hvor virksomheten aktivt jobber med
-					forbedringer."
 			>
-				<GeneralHelp />
-			</HelpSheet>
+				<B2SustainabilityInitiativesForm />
+			</FormCard>
 		</div>
 	)
 }

@@ -7,8 +7,8 @@ const formSectionValidator = v.union(
   v.literal("sustainabilityInitiatives"),
 )
 
-// Form data validators
-const formGeneralDataValidator = v.object({
+// Form data validators for each section
+const companyInfoDataValidator = v.object({
   reportingYear: v.string(),
   organizationName: v.string(),
   organizationNumber: v.string(),
@@ -30,6 +30,26 @@ const formGeneralDataValidator = v.object({
   contactPersonName: v.string(),
   contactPersonEmail: v.string(),
 })
+
+const sustainabilityInitiativesDataValidator = v.object({
+  reportingYear: v.string(),
+  initiatives: v.array(
+    v.object({
+      id: v.string(),
+      title: v.string(),
+      description: v.string(),
+      goals: v.string(),
+      responsiblePerson: v.string(),
+      status: v.string(),
+    })
+  ),
+})
+
+// Union validator for all general form sections
+const formGeneralDataValidator = v.union(
+  companyInfoDataValidator,
+  sustainabilityInitiativesDataValidator,
+)
 
 export default defineSchema({
   products: defineTable({

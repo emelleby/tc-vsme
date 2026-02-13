@@ -1,21 +1,20 @@
-import * as React from 'react'
 import {
 	Field,
 	FieldContent,
 	FieldDescription,
 	FieldError,
-	FieldLabel
+	FieldLabel,
 } from '@/components/ui/field'
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
-	SelectValue
+	SelectValue,
 } from '@/components/ui/select'
+import { useFieldContext } from '@/hooks/form-context'
 
 interface SelectFieldProps {
-	field: any
 	label: string
 	description?: string
 	placeholder?: string
@@ -25,14 +24,14 @@ interface SelectFieldProps {
 }
 
 export function SelectField({
-	field,
 	label,
 	description,
 	placeholder = 'Select',
 	disabled,
 	options,
-	orientation = 'vertical'
+	orientation = 'vertical',
 }: SelectFieldProps) {
+	const field = useFieldContext<string>()
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
 
 	return (
