@@ -1,12 +1,13 @@
 import { mutation } from "../_generated/server"
 import { v } from "convex/values"
 import { requireUserId, requireOrgId } from "../_utils/auth"
-import { formTableValidator, detectChanges, type FormVersion, getFormRecord } from "./_utils"
+import { formTableValidator, formSectionValidator, detectChanges, type FormVersion, getFormRecordBySection } from "./_utils"
 
 export const saveForm = mutation({
   args: {
     table: formTableValidator,
     reportingYear: v.number(),
+    section: formSectionValidator,  // Required
     data: v.any(),
   },
   handler: async (ctx, args) => {
@@ -21,8 +22,8 @@ export const saveForm = mutation({
     
     if (!org) throw new Error("Organization not found")
     
-    // Find existing submission
-    const existing = await getFormRecord(ctx, args.table, orgId, args.reportingYear)
+    // Find existing submission by section
+    const existing = await getFormRecordBySection(ctx, args.table, orgId, args.reportingYear, args.section)
     
     if (existing) {
       // Calculate changes - check against draftData
@@ -69,6 +70,7 @@ export const saveForm = mutation({
         orgId,
         orgNumber: org.orgNumber ?? "",
         reportingYear: args.reportingYear,
+        section: args.section,  // NEW
         draftData: args.data,
         status: "draft",
         versions: [initialVersion],

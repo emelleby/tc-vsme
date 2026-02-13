@@ -1,6 +1,12 @@
 import { defineSchema, defineTable } from 'convex/server'
 import { v } from 'convex/values'
 
+// Section enum validator
+const formSectionValidator = v.union(
+  v.literal("companyInfo"),
+  v.literal("sustainabilityInitiatives"),
+)
+
 // Form data validators
 const formGeneralDataValidator = v.object({
   reportingYear: v.string(),
@@ -80,6 +86,7 @@ export default defineSchema({
     orgId: v.string(),
     orgNumber: v.string(),
     reportingYear: v.number(),
+    section: formSectionValidator,  // NEW: Identifies which FormCard
     draftData: v.any(), // Flexible storage for drafts
     data: v.optional(formGeneralDataValidator), // Strict storage for submitted data
     status: v.string(),          // "draft" | "submitted"
@@ -90,6 +97,7 @@ export default defineSchema({
     lastModifiedAt: v.number(),
   })
     .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_org_year_section", ["orgId", "reportingYear", "section"])  // NEW
     .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
     .index("by_orgId", ["orgId"]),
 

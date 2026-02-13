@@ -1,25 +1,21 @@
 import { mutation } from "../_generated/server"
 import { v } from "convex/values"
 import { requireOrgId, requireUserId } from "../_utils/auth"
-import { formTableValidator, type FormVersion } from "./_utils"
+import { formTableValidator, formSectionValidator, getFormRecordBySection, type FormVersion } from "./_utils"
 
 export const rollbackToVersion = mutation({
   args: {
     table: formTableValidator,
     reportingYear: v.number(),
+    section: formSectionValidator,  // Required
     targetVersion: v.number(),
   },
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx)
     const orgId = await requireOrgId(ctx)
     
-    // Find existing submission
-    const existing = await ctx.db
-      .query(args.table)
-      .withIndex("by_org_year", q =>
-        q.eq("orgId", orgId).eq("reportingYear", args.reportingYear)
-      )
-      .first()
+    // Find existing submission by section
+    const existing = await getFormRecordBySection(ctx, args.table, orgId, args.reportingYear, args.section)
       
     if (!existing) {
         throw new Error("Form not found")

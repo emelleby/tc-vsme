@@ -2,28 +2,38 @@ import { useMutation, useQuery } from 'convex/react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { api } from '../../convex/_generated/api'
-import type { FormTable } from '../../convex/forms/_utils'
+import type { FormSection, FormTable } from '../../convex/forms/_utils'
 import { useAppForm } from './tanstack-form'
 import { focusFirstError } from './use-form'
+import { useOrgGuard } from './use-org-guard'
 
 interface UseFormSubmissionProps<TData> {
 	table: FormTable
 	reportingYear: number
+	section: FormSection // NEW
 	defaultValues: TData
-	schema: any
+	schema: import('zod').ZodType<TData>
 }
 
 export function useFormSubmission<TData>({
 	table,
 	reportingYear,
+	section, // NEW
 	defaultValues,
 	schema,
 }: UseFormSubmissionProps<TData>) {
+	// Guard against race conditions during org switching
+	const { skipQuery } = useOrgGuard()
+
 	// Fetch existing data
-	const existingData = useQuery(api.forms.get.getForm, {
-		table,
-		reportingYear,
-	})
+	const existingData = useQuery(
+		api.forms.get.getForm,
+		skipQuery || {
+			table,
+			reportingYear,
+			section, // NEW
+		},
+	)
 
 	const saveForm = useMutation(api.forms.save.saveForm)
 	const [isSaving, setIsSaving] = useState(false)
@@ -54,6 +64,7 @@ export function useFormSubmission<TData>({
 			await saveForm({
 				table,
 				reportingYear,
+				section, // NEW
 				data: data || form.state.values,
 			})
 			toast.success('Draft saved successfully')
@@ -72,12 +83,14 @@ export function useFormSubmission<TData>({
 			await saveForm({
 				table,
 				reportingYear,
+				section, // NEW
 				data: values,
 			})
 			// Then submit
 			await submitFormMutation({
 				table,
 				reportingYear,
+				section, // NEW
 			})
 			toast.success('Form submitted successfully')
 		} catch (error) {
@@ -94,6 +107,7 @@ export function useFormSubmission<TData>({
 			await reopenFormMutation({
 				table,
 				reportingYear,
+				section, // NEW
 			})
 			toast.success('Form reopened')
 		} catch (error) {
@@ -110,6 +124,7 @@ export function useFormSubmission<TData>({
 			await rollbackMutation({
 				table,
 				reportingYear,
+				section, // NEW
 				targetVersion,
 			})
 			toast.success(`Rolled back to version ${targetVersion}`)

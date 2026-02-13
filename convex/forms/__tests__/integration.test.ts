@@ -10,6 +10,7 @@ describe('Form Integration Tests', () => {
   const USER_ID = 'user_123'
   const TABLE = 'formGeneral'
   const YEAR = 2024
+  const SECTION = 'companyInfo'  // NEW
 
   beforeEach(async () => {
     t = convexTest(schema, modules)
@@ -35,13 +36,15 @@ describe('Form Integration Tests', () => {
       .mutation(api.forms.save.saveForm, {
         table: TABLE,
         reportingYear: YEAR,
+        section: SECTION,  // NEW
         data
       })
 
     const form = await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
       .query(api.forms.get.getForm, {
         table: TABLE,
-        reportingYear: YEAR
+        reportingYear: YEAR,
+        section: SECTION  // NEW
       })
 
     expect(form).toBeDefined()
@@ -57,6 +60,7 @@ describe('Form Integration Tests', () => {
       .mutation(api.forms.save.saveForm, {
         table: TABLE,
         reportingYear: YEAR,
+        section: SECTION,  // NEW
         data: { revenue: 1000 }
       })
 
@@ -65,13 +69,15 @@ describe('Form Integration Tests', () => {
       .mutation(api.forms.save.saveForm, {
         table: TABLE,
         reportingYear: YEAR,
+        section: SECTION,  // NEW
         data: { revenue: 2000 }
       })
 
     const form = await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
       .query(api.forms.get.getForm, {
         table: TABLE,
-        reportingYear: YEAR
+        reportingYear: YEAR,
+        section: SECTION  // NEW
       })
 
     expect(form?.data.revenue).toBe(2000)
@@ -90,6 +96,7 @@ describe('Form Integration Tests', () => {
       .mutation(api.forms.save.saveForm, {
         table: TABLE,
         reportingYear: YEAR,
+        section: SECTION,  // NEW
         data: { revenue: 1000 }
       })
 
@@ -97,13 +104,15 @@ describe('Form Integration Tests', () => {
     await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
       .mutation(api.forms.submit.submitForm, {
         table: TABLE,
-        reportingYear: YEAR
+        reportingYear: YEAR,
+        section: SECTION  // NEW
       })
 
     const form = await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
       .query(api.forms.get.getForm, {
         table: TABLE,
-        reportingYear: YEAR
+        reportingYear: YEAR,
+        section: SECTION  // NEW
       })
 
     expect(form?.status).toBe('submitted')
@@ -115,26 +124,30 @@ describe('Form Integration Tests', () => {
       .mutation(api.forms.save.saveForm, {
         table: TABLE,
         reportingYear: YEAR,
+        section: SECTION,  // NEW
         data: { revenue: 1000 }
       })
     
     await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
       .mutation(api.forms.submit.submitForm, {
         table: TABLE,
-        reportingYear: YEAR
+        reportingYear: YEAR,
+        section: SECTION  // NEW
       })
 
     // Reopen
     await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
       .mutation(api.forms.reopen.reopenForm, {
         table: TABLE,
-        reportingYear: YEAR
+        reportingYear: YEAR,
+        section: SECTION  // NEW
       })
 
     const form = await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
       .query(api.forms.get.getForm, {
         table: TABLE,
-        reportingYear: YEAR
+        reportingYear: YEAR,
+        section: SECTION  // NEW
       })
 
     expect(form?.status).toBe('draft')
@@ -147,6 +160,7 @@ describe('Form Integration Tests', () => {
         .mutation(api.forms.save.saveForm, {
           table: TABLE,
           reportingYear: YEAR,
+          section: SECTION,  // NEW
           data: { revenue: i * 1000 }
         })
      }
@@ -154,7 +168,8 @@ describe('Form Integration Tests', () => {
      const form = await t.withIdentity({ subject: USER_ID, org_id: CLERK_ORG_ID })
      .query(api.forms.get.getForm, {
        table: TABLE,
-       reportingYear: YEAR
+       reportingYear: YEAR,
+       section: SECTION  // NEW
      })
 
      expect(form?.versions).toHaveLength(4)

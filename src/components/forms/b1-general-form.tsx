@@ -1,4 +1,3 @@
-import { useOrganization } from '@clerk/clerk-react'
 import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useQuery } from 'convex/react'
@@ -6,6 +5,7 @@ import { History, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
+import { useOrgGuard } from '@/hooks/use-org-guard'
 import {
 	type B1GeneralFormValues,
 	b1GeneralSchema,
@@ -24,10 +24,11 @@ import { FieldGroup } from '../ui/field'
 export function B1GeneralForm() {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
 
-	const { organization } = useOrganization()
+	// Guard against race conditions during org switching
+	const { organization, skipQuery } = useOrgGuard()
 	const orgData = useQuery(
 		api.organizations.getByClerkOrgId,
-		organization?.id ? { clerkOrgId: organization.id } : 'skip',
+		skipQuery || { clerkOrgId: organization?.id ?? '' },
 	)
 
 	const {
@@ -43,6 +44,7 @@ export function B1GeneralForm() {
 	} = useFormSubmission<B1GeneralFormValues>({
 		table: 'formGeneral',
 		reportingYear,
+		section: 'companyInfo', // NEW
 		schema: b1GeneralSchema,
 		defaultValues: {
 			reportingYear: reportingYear.toString(),
@@ -51,7 +53,7 @@ export function B1GeneralForm() {
 			naceCode: orgData?.naceCode || '',
 			revenue: 0,
 			balanceSheetTotal: 0,
-			employees: 0n,
+			employees: 0,
 			country: 'NOR',
 			reportType: false,
 			subsidiaries: [],

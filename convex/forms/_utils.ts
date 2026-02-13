@@ -1,12 +1,18 @@
 import { v } from "convex/values"
 
 export type FormTable = "formGeneral" | "formEnvironmental" | "formSocial" | "formGovernance"
+export type FormSection = "companyInfo" | "sustainabilityInitiatives"
 
 export const formTableValidator = v.union(
   v.literal("formGeneral"),
   v.literal("formEnvironmental"),
   v.literal("formSocial"),
   v.literal("formGovernance")
+)
+
+export const formSectionValidator = v.union(
+  v.literal("companyInfo"),
+  v.literal("sustainabilityInitiatives"),
 )
 
 export interface FieldChange {
@@ -79,4 +85,25 @@ export async function getFormRecord(ctx: any, table: FormTable, orgId: string, r
     const timeB = b.lastModifiedAt ?? b._creationTime
     return timeB - timeA
   })[0]
+}
+
+/**
+ * Helper to get form record by section.
+ * Returns the form record for a specific section within a reporting year.
+ */
+export async function getFormRecordBySection(
+  ctx: any,
+  table: FormTable,
+  orgId: string,
+  reportingYear: number,
+  section: FormSection
+) {
+  return await ctx.db
+    .query(table)
+    .withIndex("by_org_year_section", (q: any) =>
+      q.eq("orgId", orgId)
+       .eq("reportingYear", reportingYear)
+       .eq("section", section)
+    )
+    .first()
 }

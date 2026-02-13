@@ -6,7 +6,6 @@ import React, { useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Progress as ProgressBar } from '@/components/ui/progress'
 import {
 	Tooltip,
 	TooltipContent,
@@ -18,11 +17,10 @@ import { cn } from '@/lib/utils'
 
 interface FormCardProps {
 	title: string
-	progress: number
+	status: string
 	updatedDate: string
 	contributor: { name: string; image?: string }
 	onClick?: () => void
-	openIssues: number
 	toolTip: string
 	buttonText?: string
 	children?: React.ReactNode
@@ -30,11 +28,10 @@ interface FormCardProps {
 
 export function FormCard({
 	title,
-	progress,
+	status,
 	updatedDate,
 	contributor,
 	onClick = () => {},
-	openIssues,
 	toolTip,
 	buttonText,
 	children,
@@ -97,24 +94,16 @@ export function FormCard({
 
 			<CardContent>
 				<div className="space-y-4">
-					<div className="space-y-2">
-						<div className="flex justify-between">
-							<Badge
-								variant="secondary"
-								className={
-									progress === 100
-										? 'bg-green-100 text-emerald-600'
-										: 'bg-blue-100 text-sky-600'
-								}
-							>
-								{progress === 100 ? 'Completed' : 'In Progress'}
-							</Badge>
-							<span className="text-sm text-muted-foreground">
-								{progress} %
-							</span>
-						</div>
-						<ProgressBar value={progress} className="h-2" />
-					</div>
+					<Badge
+						variant="secondary"
+						className={
+							status === 'submitted'
+								? 'bg-green-100 text-emerald-600'
+								: 'bg-blue-100 text-sky-600'
+						}
+					>
+						{status === 'submitted' ? 'Completed' : 'In Progress'}
+					</Badge>
 
 					<motion.div
 						initial={false}
@@ -141,11 +130,8 @@ export function FormCard({
 			</CardContent>
 
 			<CardFooter>
-				<div className="flex items-center justify-between w-full text-sm text-muted-foreground">
-					<span>
-						Last updated by {contributor.name}: {updatedDate}
-					</span>
-					<span>{openIssues} open issues</span>
+				<div className="w-full text-sm text-muted-foreground">
+					Last updated by {contributor.name}: {updatedDate}
 				</div>
 			</CardFooter>
 		</Card>
