@@ -1,7 +1,8 @@
 import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
-import { useQuery } from 'convex/react'
+import { useAction, useQuery } from 'convex/react'
 import { History, Plus, Trash2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -31,6 +32,46 @@ export function B1GeneralForm() {
 		skipQuery || { clerkOrgId: organization?.id ?? '' },
 	)
 
+	// Fetch MongoDB emissions data for revenue default
+	const getEmissions = useAction(api.emissions.getEmissionsByOrgId)
+	const [mongoDefaults, setMongoDefaults] = useState<{ revenue?: number }>({})
+	const [isFetchingMongo, setIsFetchingMongo] = useState(true)
+	const [mongoFetched, setMongoFetched] = useState(false)
+
+	// Fetch emissions data from MongoDB on mount
+	useEffect(() => {
+		const fetchMongoData = async () => {
+			if (!organization?.id) {
+				setIsFetchingMongo(false)
+				setMongoFetched(true)
+				return
+			}
+
+			setIsFetchingMongo(true)
+			try {
+				const result = await getEmissions({
+					orgIdToUse: organization.id,
+					year: reportingYear,
+				})
+
+				if (result.success && result.data) {
+					// MongoDB uses 'Revenue' (capitalized)
+					const emissionsData = result.data as { Revenue?: number }
+					if (emissionsData.Revenue !== undefined) {
+						setMongoDefaults({ revenue: emissionsData.Revenue })
+					}
+				}
+			} catch (error) {
+				console.error('Failed to fetch MongoDB emissions data:', error)
+			} finally {
+				setIsFetchingMongo(false)
+				setMongoFetched(true)
+			}
+		}
+
+		fetchMongoData()
+	}, [organization?.id, reportingYear, getEmissions])
+
 	const {
 		form,
 		status,
@@ -51,7 +92,7 @@ export function B1GeneralForm() {
 			organizationName: orgData?.name || '',
 			organizationNumber: orgData?.orgNumber || '',
 			naceCode: orgData?.naceCode || '',
-			revenue: 0,
+			revenue: mongoDefaults.revenue || 0,
 			balanceSheetTotal: 0,
 			employees: 0n,
 			country: 'NOR',
@@ -62,9 +103,18 @@ export function B1GeneralForm() {
 		} as B1GeneralFormValues,
 	})
 
+	// Update form revenue when MongoDB defaults are fetched and there's no existing data
+	useEffect(() => {
+		if (mongoFetched && !existingData?.data && !existingData?.draftData) {
+			if (mongoDefaults.revenue !== undefined) {
+				form.setFieldValue('revenue', mongoDefaults.revenue)
+			}
+		}
+	}, [mongoFetched, mongoDefaults, existingData, form])
+
 	const reportType2 = useStore(form.store, (state) => state.values.reportType)
 
-	if (isLoading) {
+	if (isLoading || isFetchingMongo) {
 		return (
 			<div className="p-8 text-center text-muted-foreground">
 				Loading form data...
@@ -146,27 +196,18 @@ export function B1GeneralForm() {
 						{/* Row 3: Revenue & Balance */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<form.AppField name="revenue">
-								{(field) => (
-									<field.TextField label="Omsetning (NOK)" type="number" />
-								)}
+								{(field) => <field.NumberField label="Omsetning" unit="NOK" />}
 							</form.AppField>
 
 							<form.AppField name="balanceSheetTotal">
-								{(field) => (
-									<field.TextField label="Balansesum (NOK)" type="number" />
-								)}
+								{(field) => <field.NumberField label="Balansesum" unit="NOK" />}
 							</form.AppField>
 						</div>
 
 						{/* Row 4: Employees & Country */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<form.AppField name="employees">
-								{(field) => (
-									<field.TextField
-										type="number"
-										label="Totalt antall ansatte"
-									/>
-								)}
+								{(field) => <field.NumberField label="Totalt antall ansatte" />}
 							</form.AppField>
 
 							<form.AppField name="country">

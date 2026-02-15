@@ -34,8 +34,14 @@ export function NumberField({
 	min,
 	max,
 }: NumberFieldProps) {
-	const field = useFieldContext<number>()
+	const field = useFieldContext<number | undefined>()
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+
+	const handleChange = (rawValue: string) => {
+		// Convert empty string to undefined, otherwise to number
+		const value = rawValue === '' ? undefined : Number(rawValue)
+		field.handleChange(value)
+	}
 
 	return (
 		<Field data-invalid={isInvalid} hidden={hidden}>
@@ -49,13 +55,9 @@ export function NumberField({
 						step={step}
 						min={min}
 						max={max}
-						value={field.state.value}
+						value={field.state.value ?? ''}
 						onBlur={field.handleBlur}
-						onChange={(e) => {
-							const rawValue = e.target.value
-							const value = rawValue !== '' ? Number(rawValue) : rawValue
-							field.handleChange(value as any)
-						}}
+						onChange={(e) => handleChange(e.target.value)}
 						aria-invalid={isInvalid}
 						placeholder={placeholder}
 						disabled={disabled}
@@ -75,13 +77,9 @@ export function NumberField({
 					step={step}
 					min={min}
 					max={max}
-					value={field.state.value}
+					value={field.state.value ?? ''}
 					onBlur={field.handleBlur}
-					onChange={(e) => {
-						const rawValue = e.target.value
-						const value = rawValue !== '' ? Number(rawValue) : rawValue
-						field.handleChange(value as any)
-					}}
+					onChange={(e) => handleChange(e.target.value)}
 					aria-invalid={isInvalid}
 					placeholder={placeholder}
 					disabled={disabled}

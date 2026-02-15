@@ -5,9 +5,15 @@ export const b1GeneralSchema = z.object({
 	organizationName: z.string().min(1, 'Organization name is required'),
 	organizationNumber: z.string().min(1, 'Organization number is required'),
 	naceCode: z.string().min(1, 'NACE code is required'),
-	revenue: z.coerce.number().min(0, 'Må være 0 eller mer'),
-	balanceSheetTotal: z.coerce.number().min(0, 'Må være 0 eller mer'),
-	employees: z.coerce.bigint().nonnegative('Må være 0 eller mer!'),
+	revenue: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	balanceSheetTotal: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	employees: z.coerce.bigint().refine((val) => val >= 0n, {
+		message: 'Må være 0 eller mer!',
+	}),
 	country: z.string().min(1, 'Country is required'),
 	reportType: z.boolean(),
 	subsidiaries: z

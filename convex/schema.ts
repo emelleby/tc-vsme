@@ -52,6 +52,14 @@ const businessModelDataValidator = v.object({
   businessModel: v.optional(v.string()),
 })
 
+// Union validator for all general form sections
+const formGeneralDataValidator = v.union(
+  companyInfoDataValidator,
+  sustainabilityInitiativesDataValidator,
+  businessModelDataValidator,
+)
+
+// Environmental form data validators
 const energyEmissionsDataValidator = v.object({
   reportingYear: v.string(),
   renewableElectricity: v.number(),
@@ -62,13 +70,16 @@ const energyEmissionsDataValidator = v.object({
   scope2EmissionsMarketBased: v.number(),
 })
 
-// Union validator for all general form sections
-const formGeneralDataValidator = v.union(
-  companyInfoDataValidator,
-  sustainabilityInitiativesDataValidator,
-  businessModelDataValidator,
+// Union validator for all environmental form sections
+const formEnvironmentalDataValidator = v.union(
   energyEmissionsDataValidator,
+  // Add more environmental sections here as they are created
 )
+
+// Placeholder validators for social and governance forms
+// These will be expanded as new forms are added
+const formSocialDataValidator = v.any()
+const formGovernanceDataValidator = v.any()
 
 export default defineSchema({
   products: defineTable({
@@ -144,15 +155,18 @@ export default defineSchema({
     orgId: v.string(),
     orgNumber: v.string(),
     reportingYear: v.number(),
-    data: v.any(),
-    status: v.string(),
-    versions: v.array(v.any()),
+    section: formSectionValidator,  // Identifies which FormCard (e.g., energyEmissions)
+    draftData: v.any(), // Flexible storage for drafts
+    data: v.optional(formEnvironmentalDataValidator), // Strict storage for submitted data
+    status: v.string(),          // "draft" | "submitted"
+    versions: v.array(v.any()),  // Version history
     createdBy: v.string(),
     createdAt: v.number(),
     lastModifiedBy: v.string(),
     lastModifiedAt: v.number(),
   })
     .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_org_year_section", ["orgId", "reportingYear", "section"])
     .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
     .index("by_orgId", ["orgId"]),
 
@@ -160,15 +174,18 @@ export default defineSchema({
     orgId: v.string(),
     orgNumber: v.string(),
     reportingYear: v.number(),
-    data: v.any(),
-    status: v.string(),
-    versions: v.array(v.any()),
+    section: formSectionValidator,  // Identifies which FormCard
+    draftData: v.any(), // Flexible storage for drafts
+    data: v.optional(formSocialDataValidator), // Strict storage for submitted data
+    status: v.string(),          // "draft" | "submitted"
+    versions: v.array(v.any()),  // Version history
     createdBy: v.string(),
     createdAt: v.number(),
     lastModifiedBy: v.string(),
     lastModifiedAt: v.number(),
   })
     .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_org_year_section", ["orgId", "reportingYear", "section"])
     .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
     .index("by_orgId", ["orgId"]),
 
@@ -176,15 +193,18 @@ export default defineSchema({
     orgId: v.string(),
     orgNumber: v.string(),
     reportingYear: v.number(),
-    data: v.any(),
-    status: v.string(),
-    versions: v.array(v.any()),
+    section: formSectionValidator,  // Identifies which FormCard
+    draftData: v.any(), // Flexible storage for drafts
+    data: v.optional(formGovernanceDataValidator), // Strict storage for submitted data
+    status: v.string(),          // "draft" | "submitted"
+    versions: v.array(v.any()),  // Version history
     createdBy: v.string(),
     createdAt: v.number(),
     lastModifiedBy: v.string(),
     lastModifiedAt: v.number(),
   })
     .index("by_org_year", ["orgId", "reportingYear"])
+    .index("by_org_year_section", ["orgId", "reportingYear", "section"])
     .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
     .index("by_orgId", ["orgId"]),
 })

@@ -1,13 +1,17 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { useAction } from 'convex/react'
 import { History } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
+import { useOrgGuard } from '@/hooks/use-org-guard'
 import {
 	type B3EnergyEmissionsFormValues,
 	b3EnergyEmissionsSchema,
 } from '@/lib/forms/schemas/b3-energy-emissions-schema'
 import { yearStore } from '@/lib/year-store'
+import { api } from '../../../convex/_generated/api'
 import type { FieldChange, FormVersion } from '../../../convex/forms/_utils'
 import {
 	Accordion,
@@ -16,8 +20,58 @@ import {
 	AccordionTrigger,
 } from '../ui/accordion'
 
+type MongoEmissionsData = {
+	renewable?: number
+	'non-renewable'?: number
+	co2Intensity?: number
+	[key: string]: unknown
+}
+
 export function B3EnergyEmissionsForm() {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
+	const { organization } = useOrgGuard()
+	const getEmissions = useAction(api.emissions.getEmissionsByOrgId)
+	const [mongoDefaults, setMongoDefaults] = useState<
+		Partial<B3EnergyEmissionsFormValues>
+	>({})
+	const [isFetchingMongo, setIsFetchingMongo] = useState(true)
+	const [mongoFetched, setMongoFetched] = useState(false)
+
+	// Fetch emissions data from MongoDB on mount
+	useEffect(() => {
+		const fetchMongoData = async () => {
+			if (!organization?.id) {
+				setIsFetchingMongo(false)
+				setMongoFetched(true)
+				return
+			}
+
+			setIsFetchingMongo(true)
+			try {
+				const result = await getEmissions({
+					orgIdToUse: organization.id,
+					year: reportingYear,
+				})
+
+				if (result.success && result.data) {
+					// Map MongoDB fields to form fields
+					const emissionsData = result.data as MongoEmissionsData
+					setMongoDefaults({
+						renewableElectricity: emissionsData.renewable || 0,
+						nonRenewableElectricity: emissionsData['non-renewable'] || 0,
+						emissionsIntensity: emissionsData.co2Intensity || 0,
+					})
+				}
+			} catch (error) {
+				console.error('Failed to fetch MongoDB emissions data:', error)
+			} finally {
+				setIsFetchingMongo(false)
+				setMongoFetched(true)
+			}
+		}
+
+		fetchMongoData()
+	}, [organization?.id, reportingYear, getEmissions])
 
 	const {
 		form,
@@ -30,22 +84,47 @@ export function B3EnergyEmissionsForm() {
 		reopen,
 		rollback,
 	} = useFormSubmission<B3EnergyEmissionsFormValues>({
-		table: 'formGeneral',
+		table: 'formEnvironmental',
 		reportingYear,
 		section: 'energyEmissions',
 		schema: b3EnergyEmissionsSchema,
 		defaultValues: {
 			reportingYear: reportingYear.toString(),
-			renewableElectricity: 0,
-			nonRenewableElectricity: 0,
-			emissionsIntensity: 0,
+			renewableElectricity: mongoDefaults.renewableElectricity || 0,
+			nonRenewableElectricity: mongoDefaults.nonRenewableElectricity || 0,
+			emissionsIntensity: mongoDefaults.emissionsIntensity || 0,
 			scope1Emissions: 0,
 			scope2EmissionsLocationBased: 0,
 			scope2EmissionsMarketBased: 0,
 		} as B3EnergyEmissionsFormValues,
 	})
 
-	if (isLoading) {
+	// Update form values when MongoDB defaults are fetched and there's no existing data
+	useEffect(() => {
+		if (mongoFetched && !existingData?.data && !existingData?.draftData) {
+			// Only set defaults if form hasn't been saved yet
+			if (mongoDefaults.renewableElectricity !== undefined) {
+				form.setFieldValue(
+					'renewableElectricity',
+					mongoDefaults.renewableElectricity,
+				)
+			}
+			if (mongoDefaults.nonRenewableElectricity !== undefined) {
+				form.setFieldValue(
+					'nonRenewableElectricity',
+					mongoDefaults.nonRenewableElectricity,
+				)
+			}
+			if (mongoDefaults.emissionsIntensity !== undefined) {
+				form.setFieldValue(
+					'emissionsIntensity',
+					mongoDefaults.emissionsIntensity,
+				)
+			}
+		}
+	}, [mongoFetched, mongoDefaults, existingData, form])
+
+	if (isLoading || isFetchingMongo) {
 		return (
 			<div className="p-8 text-center text-muted-foreground">
 				Loading form data...
