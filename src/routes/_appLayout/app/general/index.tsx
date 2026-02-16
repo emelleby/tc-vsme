@@ -67,6 +67,13 @@ function GeneralPage() {
 				status={companyInfo?.status ?? 'draft'}
 				toolTip="Click to learn more"
 				contributor={companyInfo?.contributor || { name: 'Unknown' }}
+				code="B1"
+				module="Grunnmodul"
+				version={
+					companyInfo?.versions?.length
+						? companyInfo.versions[companyInfo.versions.length - 1].version
+						: undefined
+				}
 			>
 				<B1GeneralForm />
 			</FormCard>
@@ -76,6 +83,13 @@ function GeneralPage() {
 				toolTip="Click to expand"
 				status={sustainability?.status ?? 'draft'}
 				contributor={sustainability?.contributor || { name: 'Unknown' }}
+				code="B2"
+				version={
+					sustainability?.versions?.length
+						? sustainability.versions[sustainability.versions.length - 1]
+								.version
+						: undefined
+				}
 			>
 				<B2SustainabilityInitiativesForm />
 			</FormCard>
@@ -87,7 +101,13 @@ function GeneralPage() {
 				toolTip="Click to expand"
 				status={businessModel?.status ?? 'draft'}
 				contributor={businessModel?.contributor || { name: 'Unknown' }}
+				code="C1"
 				module="Utvidet modul"
+				version={
+					businessModel?.versions?.length
+						? businessModel.versions[businessModel.versions.length - 1].version
+						: undefined
+				}
 			>
 				<C1BusinessModelForm />
 			</FormCard>
