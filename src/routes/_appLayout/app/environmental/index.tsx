@@ -88,7 +88,7 @@ function EnvironmentalPage() {
 				<B4PollutionForm />
 			</FormCard>
 			<FormCard
-				title="Environmental Section 3"
+				title="Biodiversity"
 				updatedDate={formatDate(section3?.lastModifiedAt)}
 				toolTip="Click to expand"
 				status={section3?.status ?? 'draft'}
