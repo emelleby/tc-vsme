@@ -7,42 +7,28 @@ The project uses a custom form system built on TanStack Form with integrated fie
 ## Architecture
 
 ```
-src/components/ui/form/
-├── index.tsx                           # useAppForm hook, contexts, and exports
-├── types.ts                            # Shared types (FocusRef)
-├── field-components/
-│   ├── checkbox-field.tsx
-│   ├── combobox-field.tsx
-│   ├── select-field.tsx
-│   ├── switch-field.tsx
-│   ├── tag-field.tsx
-│   ├── text-field.tsx
-│   ├── textarea-field.tsx
-│   ├── field-error.tsx
-│   ├── field-description.tsx
-│   ├── field-item.tsx
-│   ├── field-aria.tsx
-│   ├── field-aria-provider.tsx
-│   ├── field-error-border.tsx
-│   └── use-field-aria.ts
-├── form-components/
-│   └── submit-button.tsx
-└── focus-management/
-    ├── focus-context.tsx
-    ├── with-focus-management.tsx
-    └── use-focus-management.ts
+src/hooks/
+├── tanstack-form.tsx                   # Main useAppForm hook, AppField, and provided components
+├── use-form.tsx                        # focusFirstError utility and focus management
+└── form-context.ts                     # Form and Field contexts
+src/components/form-fields/             # Bound field components
+│   ├── TextField.tsx
+│   ├── SelectField.tsx
+│   ├── SwitchField.tsx
+│   ├── TextareaField.tsx
+│   └── CountryField.tsx
+src/components/ui/field/                # Layout and semantic field components
+│   └── index.tsx                       # FieldGroup, FieldLabel, FieldError, etc.
 ```
 
 ## Core Imports
 
 ```typescript
-import { formOptions, revalidateLogic } from '@tanstack/form-core';
-import { useStore } from '@tanstack/react-form';
-
-import { useAppForm, useFieldContext, useFormContext } from '@/components/ui/form';
-import { useFocusContext } from '@/components/ui/form/focus-management/focus-context';
-import { withFocusManagement } from '@/components/ui/form/focus-management/with-focus-management';
-import { useServerAction } from '@/hooks/use-server-action';
+import { revalidateLogic, useStore } from '@tanstack/react-form';
+import { useAppForm } from '@/hooks/tanstack-form';
+import { focusFirstError } from '@/hooks/use-form';
+// Optional: If using FieldGroup directly from UI
+import { FieldGroup } from '@/components/ui/field';
 ```
 
 ## Complete Form Pattern
@@ -50,199 +36,238 @@ import { useServerAction } from '@/hooks/use-server-action';
 ```typescript
 'use client';
 
-import { revalidateLogic } from '@tanstack/form-core';
+import { revalidateLogic, useStore } from '@tanstack/react-form';
+import { useAppForm } from '@/hooks/tanstack-form';
+import { focusFirstError } from '@/hooks/use-form';
+import { FieldGroup } from '@/components/ui/field';
+import { entitySchema, type EntityValues } from '@/lib/forms/schemas/entity-schema';
 
-import { useAppForm } from '@/components/ui/form';
-import { useFocusContext } from '@/components/ui/form/focus-management/focus-context';
-import { withFocusManagement } from '@/components/ui/form/focus-management/with-focus-management';
-import { Button } from '@/components/ui/button';
-import { useServerAction } from '@/hooks/use-server-action';
-import { createEntityAction } from '@/lib/actions/entity/entity.actions';
-import { insertEntitySchema } from '@/lib/validations/entity.validation';
-
-interface CreateFormProps {
-  onClose: () => void;
-  onSuccess?: (data: EntityData) => void;
-}
-
-export const CreateForm = withFocusManagement(({ onClose, onSuccess }: CreateFormProps) => {
-  const { focusFirstError } = useFocusContext();
-
-  // 1. Setup server action with toast messages
-  const { executeAsync, isExecuting } = useServerAction(createEntityAction, {
-    onSuccess: ({ data }) => {
-      onSuccess?.(data.data);
-      onClose();
-    },
-    toastMessages: {
-      error: 'Failed to create. Please try again.',
-      loading: 'Creating...',
-      success: 'Created successfully!',
-    },
-  });
-
-  // 2. Setup form with useAppForm
+export function EntityForm() {
   const form = useAppForm({
-    canSubmitWhenInvalid: true,
     defaultValues: {
+      name: '',
       description: '',
       isPublic: true,
-      name: '',
-    },
-    onSubmit: async ({ value }) => {
-      await executeAsync(value);
+      tags: [],
+    } as EntityValues,
+    validationLogic: revalidateLogic(),
+    validators: {
+      onDynamic: entitySchema, // or onSubmit: entitySchema
     },
     onSubmitInvalid: ({ formApi }) => {
       focusFirstError(formApi);
     },
-    validationLogic: revalidateLogic({
-      mode: 'submit',
-      modeAfterSubmission: 'change',
-    }),
-    validators: {
-      onSubmit: zodSchema,
+    onSubmit: ({ value }) => {
+      console.log('Submitted:', value);
     },
   });
 
-  // 3. Form submission handler
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    void form.handleSubmit();
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
-      {/* Text Field */}
-      <form.AppField name={'name'}>
-        {(field) => (
-          <field.TextField
-            isRequired
-            label={'Name'}
-            placeholder={'Enter name'}
-          />
-        )}
-      </form.AppField>
+    <form.AppForm>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+        className="space-y-6"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form.AppField name="name">
+            {(field) => <field.TextField label="Entity Name" placeholder="Enter name" />}
+          </form.AppField>
 
-      {/* Textarea Field */}
-      <form.AppField name={'description'}>
-        {(field) => (
-          <field.TextareaField
-            description={'Optional description'}
-            label={'Description'}
-            placeholder={'Enter description'}
-          />
-        )}
-      </form.AppField>
+          <form.AppField name="description">
+            {(field) => <field.TextField label="Short Description" />}
+          </form.AppField>
+        </div>
 
-      {/* Switch Field */}
-      <form.AppField name={'isPublic'}>
-        {(field) => (
-          <field.SwitchField
-            description={'Make this visible to everyone'}
-            label={'Public'}
-          />
-        )}
-      </form.AppField>
+        <FieldGroup>
+          <form.AppField name="isPublic">
+            {(field) => (
+              <field.SwitchField
+                label="Public Access"
+                description="Make this visible to everyone"
+              />
+            )}
+          </form.AppField>
+        </FieldGroup>
 
-      {/* Submit Button with SubmitButton component */}
-      <form.AppForm>
-        <form.SubmitButton isDisabled={isExecuting}>
-          {isExecuting ? 'Creating...' : 'Create'}
-        </form.SubmitButton>
-      </form.AppForm>
-    </form>
+        <div className="flex justify-end">
+          <form.SubmitButton label="Save Entity" />
+        </div>
+      </form>
+    </form.AppForm>
   );
-});
+}
 ```
 
 ## useAppForm Configuration
 
-### Required Options
+### Common Options
 
 ```typescript
 const form = useAppForm({
-  // Allow form submission even with errors (for proper error display)
-  canSubmitWhenInvalid: true,
-
-  // Initial form values
   defaultValues: {
     fieldName: 'default value',
-  },
-
-  // Async submission handler
+  } as FormValues,
+  
   onSubmit: async ({ value }) => {
-    await executeAsync(value);
+    // Handling submission
   },
 
-  // Handle invalid submission (focus first error)
   onSubmitInvalid: ({ formApi }) => {
-    focusFirstError(formApi);
+    focusFirstError(formApi); // Focus first error for UX
   },
 
-  // Validation timing configuration
-  validationLogic: revalidateLogic({
-    mode: 'submit', // Validate on submit
-    modeAfterSubmission: 'change', // Re-validate on change after first submit
-  }),
+  validationLogic: revalidateLogic(), // Default revalidation logic
 
-  // Zod schema for validation
   validators: {
-    onSubmit: zodSchema,
+    onDynamic: zodSchema, // Validate as you type/change
+    onSubmit: zodSchema,  // Validate on submit
   },
 });
 ```
 
-## Exported Hooks and Utilities
+## Form Components
 
-The form system exports these from `@/components/ui/form`:
+### AppForm Wrapper
 
-```typescript
-// Contexts - for building custom field components
-export const { fieldContext, formContext, useFieldContext, useFormContext } = createFormHookContexts();
-
-// Form hook and HOCs
-export const { useAppForm, withFieldGroup, withForm } = createFormHook({
-  fieldComponents: {
-    /* all field components */
-  },
-  formComponents: { SubmitButton },
-  fieldContext,
-  formContext,
-});
-```
-
-## SubmitButton Component
-
-The `SubmitButton` component automatically handles loading state via form context:
+Every form must be wrapped in `form.AppForm` to provide context for sub-components like `SubmitButton`.
 
 ```typescript
-// Must be wrapped in form.AppForm to access form context
 <form.AppForm>
-  <form.SubmitButton isDisabled={isExecuting}>
-    {isExecuting ? 'Saving...' : 'Save'}
-  </form.SubmitButton>
+  <form>...</form>
 </form.AppForm>
-
-// Or use a regular Button if you need more control
-<Button disabled={isExecuting} type={'submit'}>
-  {isExecuting ? 'Saving...' : 'Save'}
-</Button>
 ```
 
-## Accessing Form Values with useStore
+### SubmitButton
 
-Use `useStore` from `@tanstack/react-form` to reactively access form values:
+The `form.SubmitButton` automatically handles the `isSubmitting` state (showing a spinner and disabling the button).
 
 ```typescript
-import { useStore } from '@tanstack/react-form';
+<div className="flex justify-end pt-6">
+  <form.SubmitButton label="Submit Changes" />
+</div>
+```
 
-// Inside your form component:
-const currentFieldValue = useStore(form.store, (state) => state.values.fieldName);
-const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
+## Field Components
 
-// Multiple values
-const [username, email] = useStore(form.store, (state) => [state.values.username, state.values.email]);
+Field components are accessed via the `field` object provided by `form.AppField`'s render prop.
+
+### Common Field Props
+
+All provided field components support:
+- `label`: String, required.
+- `description`: String, optional help text.
+- `hidden`: Boolean, hides the field (useful for internal IDs).
+- `type`: String, input type for `TextField` (text, number, email, etc.).
+
+### TextField
+```typescript
+<form.AppField name="email">
+  {(field) => <field.TextField label="Email Address" type="email" />}
+</form.AppField>
+```
+
+### SelectField
+```typescript
+<form.AppField name="category">
+  {(field) => (
+    <field.SelectField
+      label="Category"
+      options={[
+        { label: 'Option A', value: 'a' },
+        { label: 'Option B', value: 'b' },
+      ]}
+    />
+  )}
+</form.AppField>
+```
+
+### SwitchField
+```typescript
+<form.AppField name="isActive">
+  {(field) => <field.SwitchField label="Is Active?" />}
+</form.AppField>
+```
+
+### RadioGroupField
+```typescript
+<form.AppField name="preference">
+  {(field) => (
+    <field.RadioGroupField
+      label="Your Preference"
+      options={[
+        { label: 'Option 1', value: '1' },
+        { label: 'Option 2', value: '2' },
+      ]}
+    />
+  )}
+</form.AppField>
+```
+
+### ImageField
+Used for image selection/upload.
+```typescript
+<form.AppField name="avatar">
+  {(field) => <field.ImageField label="Avatar Image" />}
+</form.AppField>
+```
+
+### TextareaField
+```typescript
+<form.AppField name="bio">
+  {(field) => <field.TextareaField label="Biography" />}
+</form.AppField>
+```
+
+### CountryField
+Used for country selection, typically using ISO Alpha-3 codes.
+```typescript
+<form.AppField name="countryCode">
+  {(field) => <field.CountryField label="Country" />}
+</form.AppField>
+```
+
+## Dynamic Rendering & Subscriptions
+
+### form.Subscribe
+
+Use `form.Subscribe` to reactively render parts of the form based on field values.
+
+```typescript
+<form.Subscribe selector={(state) => state.values.showDetails}>
+  {(showDetails) => showDetails && (
+    <FieldGroup>
+      {/* Additional fields here */}
+    </FieldGroup>
+  )}
+</form.Subscribe>
+```
+
+### Array Fields (Field Arrays)
+
+Handle lists of items using `field.pushValue` and `field.removeValue`.
+
+```typescript
+<form.AppField name="items">
+  {(field) => (
+    <div className="space-y-4">
+      {field.state.value.map((item, index) => (
+        <div key={item.id} className="flex items-end gap-4">
+          <form.AppField name={`items[${index}].name`}>
+            {(f) => <f.TextField label="Item Name" />}
+          </form.AppField>
+          <Button onClick={() => field.removeValue(index)}>Delete</Button>
+        </div>
+      ))}
+      <Button onClick={() => field.pushValue({ id: crypto.randomUUID(), name: '' })}>
+        Add Item
+      </Button>
+    </div>
+  )}
+</form.AppField>
 ```
 
 ## Extracting Reusable Form Options
@@ -345,445 +370,52 @@ interface CommonFieldProps {
 ```
 
 ### TextField
+## Server Action Integration
+
+Use the `useServerAction` hook to handle the submission lifecycle including loading states and toasts.
 
 ```typescript
-<form.AppField name={'fieldName'}>
-  {(field) => (
-    <field.TextField
-      autoFocus           // Optional: focus on mount
-      description={'Help text'}
-      disabled={isDisabled}
-      focusRef={customRef}
-      isRequired
-      label={'Field Label'}
-      placeholder={'Placeholder'}
-      type={'text'}       // 'text' | 'email' | 'password' | 'number' | etc.
-    />
-  )}
-</form.AppField>
+const { executeAsync, isExecuting } = useServerAction(submitAction, {
+  onSuccess: ({ data }) => {
+    toast.success('Saved!');
+  },
+  toastMessages: {
+    loading: 'Saving...',
+    error: 'Failed to save',
+  }
+});
+
+const form = useAppForm({
+  onSubmit: async ({ value }) => {
+    await executeAsync(value);
+  },
+  // ...
+});
 ```
 
-### TextareaField
+## Form Layout & Spacing
 
-```typescript
-<form.AppField name={'description'}>
-  {(field) => (
-    <field.TextareaField
-      description={'Optional help text'}
-      label={'Description'}
-      placeholder={'Enter description...'}
-      rows={4}
-    />
-  )}
-</form.AppField>
-```
+Consistent spacing is key to the form system's "good design":
 
-### SelectField
-
-```typescript
-<form.AppField name={'category'}>
-  {(field) => (
-    <field.SelectField
-      isRequired
-      label={'Category'}
-      options={[
-        { label: 'Option 1', value: 'option1' },
-        { label: 'Option 2', value: 'option2' },
-      ]}
-      placeholder={'Select category'}
-    />
-  )}
-</form.AppField>
-```
-
-### CheckboxField
-
-```typescript
-<form.AppField name={'agreeToTerms'}>
-  {(field) => (
-    <field.CheckboxField
-      description={'You must agree to continue'}
-      label={'I agree to the terms and conditions'}
-    />
-  )}
-</form.AppField>
-```
-
-### SwitchField
-
-```typescript
-<form.AppField name={'isPublic'}>
-  {(field) => (
-    <field.SwitchField
-      description={'Make visible to all users'}
-      label={'Public'}
-    />
-  )}
-</form.AppField>
-```
-
-### ComboboxField
-
-```typescript
-<form.AppField name={'userId'}>
-  {(field) => (
-    <field.ComboboxField
-      isRequired
-      label={'User'}
-      options={users.map((u) => ({ label: u.name, value: u.id }))}
-      placeholder={'Search users...'}
-    />
-  )}
-</form.AppField>
-```
-
-### TagField
-
-```typescript
-<form.AppField name={'tags'}>
-  {(field) => (
-    <field.TagField
-      availableTags={allTags}
-      label={'Tags'}
-      placeholder={'Add tags...'}
-    />
-  )}
-</form.AppField>
-```
+- **Grid**: Use `grid grid-cols-1 md:grid-cols-2 gap-6` for two-column layouts.
+- **Grouping**: Use `FieldGroup` to wrap related fields with a top/bottom border if they form a logical section.
+- **Alignment**: Align the `SubmitButton` to the right using `flex justify-end pt-6`.
 
 ## Focus Management
 
-### Wrapping Components
+Focus management is handled by `focusFirstError` utility.
 
-```typescript
-// Always wrap form components with withFocusManagement
-export const MyForm = withFocusManagement(({ onClose }: Props) => {
-  const { focusFirstError } = useFocusContext();
+1.  Each field component uses `id={name}`.
+2.  `onSubmitInvalid` calls `focusFirstError(formApi)`.
+3.  `focusFirstError` finds the field name, finds the element by ID, and scrolls/focuses.
 
-  // ... form implementation
-});
+**Note**: You no longer need `withFocusManagement` HOC if you use the `focusFirstError` from `@/hooks/use-form`.
 
-// For generic components with type parameters
-export const MyForm = withFocusManagement<MyFormProps>(({ onClose, entityId }) => {
-  // ... form implementation
-});
-```
+## Anti-Patterns
 
-### Focus First Error
-
-```typescript
-const form = useAppForm({
-  onSubmitInvalid: ({ formApi }) => {
-    // Automatically focus the first field with an error
-    // Also scrolls the field into view
-    focusFirstError(formApi);
-  },
-  // ... other options
-});
-```
-
-### How Focus Management Works
-
-1. `withFocusManagement` wraps component with `FocusProvider`
-2. Each `FieldAria` component registers its field ref with the provider
-3. On invalid submit, `focusFirstError` finds fields with errors sorted by DOM position
-4. First errored field is focused and scrolled into view
-
-## Form Submission Handler
-
-Always use this pattern for form submission:
-
-```typescript
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  e.stopPropagation();
-  void form.handleSubmit();
-};
-
-return (
-  <form onSubmit={handleSubmit}>
-    {/* fields */}
-  </form>
-);
-```
-
-## Validation Logic Modes
-
-```typescript
-// Validate only on submit, then on change after first submit (RECOMMENDED)
-validationLogic: revalidateLogic({
-  mode: 'submit',
-  modeAfterSubmission: 'change',
-}),
-
-// Validate on blur - useful for real-time availability checks
-validationLogic: revalidateLogic({
-  mode: 'blur',
-  modeAfterSubmission: 'change',
-}),
-
-// Validate on every change (can be slow for complex validations)
-validationLogic: revalidateLogic({
-  mode: 'change',
-}),
-```
-
-## Server Action Integration
-
-### Standard Pattern with Toast Messages
-
-```typescript
-const { executeAsync, isExecuting } = useServerAction(createEntityAction, {
-  onSuccess: ({ data }) => {
-    onSuccess?.(data.data);
-    onClose();
-  },
-  toastMessages: {
-    error: 'Failed to create. Please try again.',
-    loading: 'Creating...',
-    success: 'Created successfully!',
-  },
-});
-```
-
-### Disable Toast for Background Operations
-
-```typescript
-// For operations like availability checks where toasts are distracting
-const { execute, isExecuting, result } = useServerAction(checkAvailabilityAction, {
-  isDisableToast: true, // Don't show toast for this action
-});
-```
-
-### Using Multiple Server Actions
-
-```typescript
-// For forms with create/update modes
-const { executeAsync: createAsync, isExecuting: isCreating } = useServerAction(createAction, {
-  toastMessages: {
-    /* ... */
-  },
-});
-
-const { executeAsync: updateAsync, isExecuting: isUpdating } = useServerAction(updateAction, {
-  toastMessages: {
-    /* ... */
-  },
-});
-
-const form = useAppForm({
-  // ...
-  onSubmit: async ({ value }) => {
-    if (entityId) await updateAsync({ ...value, id: entityId });
-    else await createAsync(value);
-  },
-});
-
-const _isSubmitting = isCreating || isUpdating;
-```
-
-## Edit Form Pattern
-
-For edit forms, populate with existing data:
-
-```typescript
-export const EditForm = withFocusManagement(({ entity, onClose, onSuccess }: Props) => {
-  const { focusFirstError } = useFocusContext();
-
-  const { executeAsync, isExecuting } = useServerAction(updateEntityAction, {
-    onSuccess: ({ data }) => {
-      onSuccess?.(data.data);
-      onClose();
-    },
-    toastMessages: {
-      error: 'Failed to update.',
-      loading: 'Updating...',
-      success: 'Updated successfully!',
-    },
-  });
-
-  const form = useAppForm({
-    canSubmitWhenInvalid: true,
-    defaultValues: {
-      // Populate with existing entity data
-      description: entity.description || '',
-      id: entity.id,
-      name: entity.name,
-    },
-    onSubmit: async ({ value }) => {
-      await executeAsync(value);
-    },
-    onSubmitInvalid: ({ formApi }) => {
-      focusFirstError(formApi);
-    },
-    validationLogic: revalidateLogic({
-      mode: 'submit',
-      modeAfterSubmission: 'change',
-    }),
-    validators: {
-      onSubmit: updateEntitySchema,
-    },
-  });
-
-  // ... render form
-});
-```
-
-## Edit Form with Async Data Loading
-
-For forms that load data asynchronously:
-
-```typescript
-export const EditForm = withFocusManagement(({ entityId, onClose }: Props) => {
-  const [isLoading, setIsLoading] = useToggle(!!entityId);
-  const { focusFirstError } = useFocusContext();
-  const { executeAsync: getEntity } = useAction(getEntityAction);
-
-  const form = useAppForm({
-    canSubmitWhenInvalid: true,
-    defaultValues: { name: '', description: '' },
-    // ... other options
-  });
-
-  // Fetch and populate form on mount
-  useEffect(() => {
-    if (!entityId) return;
-    setIsLoading.on();
-    getEntity({ id: entityId })
-      .then((result) => {
-        if (result?.data) {
-          const data = result.data.data;
-          form.setFieldValue('name', data.name);
-          form.setFieldValue('description', data.description || '');
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching entity:', error);
-        toast.error('Failed to load data');
-        onClose();
-      })
-      .finally(setIsLoading.off);
-  }, [entityId]);
-
-  if (isLoading) {
-    return <LoadingState />;
-  }
-
-  return <form>{ /* ... */ }</form>;
-});
-```
-
-## Dialog Form Pattern
-
-For forms in dialogs:
-
-```typescript
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-
-interface CreateDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess?: (data: EntityData) => void;
-}
-
-export const CreateDialog = ({ isOpen, onClose, onSuccess }: CreateDialogProps) => {
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create Entity</DialogTitle>
-        </DialogHeader>
-        <CreateForm onClose={onClose} onSuccess={onSuccess} />
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-// The form component is separate and wrapped with withFocusManagement
-const CreateForm = withFocusManagement(({ onClose, onSuccess }: FormProps) => {
-  // ... form implementation
-});
-```
-
-## Simple Form Pattern (Without useAppForm)
-
-For simple forms without complex validation, you can use a simpler pattern:
-
-```typescript
-'use client';
-
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-
-interface SimpleFormProps {
-  isSubmitting?: boolean;
-  onSubmit: (content: string) => Promise<void>;
-  placeholder?: string;
-}
-
-export const SimpleForm = ({
-  isSubmitting = false,
-  onSubmit,
-  placeholder = 'Enter content...',
-}: SimpleFormProps) => {
-  const [content, setContent] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (content.trim() && !isSubmitting) {
-      await onSubmit(content.trim());
-      setContent('');
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <Textarea
-        disabled={isSubmitting}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder={placeholder}
-        value={content}
-      />
-      <Button disabled={!content.trim() || isSubmitting} type={'submit'}>
-        Submit
-      </Button>
-    </form>
-  );
-};
-```
-
-Use this pattern when:
-
-- Form has only 1-2 fields
-- No complex validation needed
-- No focus management required
-- Submission state is managed externally
-
-## Test IDs
-
-Field components automatically generate test IDs:
-
-```typescript
-// Input: generateFormFieldTestId('name')
-// Output: 'form-field-name'
-
-// With suffix: generateFormFieldTestId('name', 'label')
-// Output: 'form-field-name-label'
-
-// Custom testId prop overrides automatic generation
-<field.TextField testId={'custom-name-input'} label={'Name'} />
-```
-
-## Anti-Patterns to Avoid
-
-1. **Never use raw TanStack Form hooks** - Always use `useAppForm`
-2. **Never skip `withFocusManagement`** - Always wrap form components
-3. **Never skip `onSubmitInvalid`** - Always handle invalid submissions
-4. **Never use inline validation** - Use Zod schemas in `validators.onSubmit`
-5. **Never call `form.handleSubmit()` directly** - Wrap in event handler
-6. **Never skip `canSubmitWhenInvalid: true`** - Required for proper error display
-7. **Never forget `e.preventDefault()`** - Always prevent default form submission
-8. **Never access form values directly** - Use `onSubmit: ({ value })` or `useStore`
-9. **Never use `form.SubmitButton` without `form.AppForm` wrapper** - Requires context
-10. **Never modify form values in render** - Use `useEffect` or event handlers
+1.  **Direct DOM Manipulation**: Don't try to focus elements manually; use `focusFirstError`.
+2.  **Hardcoded Options**: Move reusable field options to `schemas` or `constants`.
+3.  **Complex Inline Logic**: Use `form.Subscribe` for complex conditional field logic rather than nested ternaries in the main render.
+4.  **Implicit Submission**: Always wrap `form.handleSubmit()` in an explicit handler that prevents default events.
+5.  **Missing Field Names**: Ensure `name` on `AppField` matches the Zod schema exactly.
+6.  **Neglecting Mobile**: Always test forms with `grid-cols-1` for mobile responsiveness.

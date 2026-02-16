@@ -1,6 +1,8 @@
+export { ComboboxField } from './ComboboxField'
 export { CountryField } from './CountryField'
 export { SubmitButton } from './form-buttons'
 export { ImageField } from './ImageField'
+export { NumberField } from './NumberField'
 export { RadioGroupField } from './RadioGroupField'
 export { SelectField } from './SelectField'
 export { SwitchField } from './SwitchField'

@@ -77,6 +77,24 @@
   "pricing_faq_q4": "Hvordan fungerer prisingen deres?",
   "pricing_faq_a4": "Vi tilbyr fleksible prisplaner basert på bedriftsstørrelse og rapporteringsbehov. Tilpassede enterprise-planer er tilgjengelige for bedrifter med mer komplekse krav. Alle planer inkluderer regelmessige oppdateringer for å holde seg i samsvar med endrede forskrifter.",
   "pricing_faq_q5": "Kan jeg eksportere rapporter for å dele med interessenter?",
-  "pricing_faq_a5": "Ja, du kan enkelt eksportere dine fullstendige bærekraftsrapporter i flere formater inkludert PDF og Excel. Dette gjør det enkelt å dele med interessenter, investorer, banker eller kunder som krever dokumentasjon av dine bærekraftsinitiativer."
+  "pricing_faq_a5": "Ja, du kan enkelt eksportere dine fullstendige bærekraftsrapporter i flere formater inkludert PDF og Excel. Dette gjør det enkelt å dele med interessenter, investorer, banker eller kunder som krever dokumentasjon av dine bærekraftsinitiativer.",
+  "sustainability_initiatives_title": "Bærekraftsinitiativ",
+  "sustainability_initiatives_empty_title": "Ingen initiativ lagt til ennå",
+  "sustainability_initiatives_empty_description": "Det er greit om du ikke har noen bærekraftsinitiativ å rapportere. Du kan sende inn dette skjemaet tomt eller legge til initiativ nedenfor.",
+  "sustainability_initiatives_add_button": "Legg til initiativ",
+  "sustainability_initiatives_initiative_label": "Initiativ",
+  "sustainability_initiatives_title_label": "Initiativtittel",
+  "sustainability_initiatives_title_placeholder": "Velg fra listen eller skriv en egendefinert tittel...",
+  "sustainability_initiatives_title_helper": "💡 Tips: Du kan skrive en egendefinert tittel hvis ingen passer",
+  "sustainability_initiatives_description_label": "Beskrivelse",
+  "sustainability_initiatives_description_placeholder": "Beskriv initiativet...",
+  "sustainability_initiatives_goals_label": "Mål",
+  "sustainability_initiatives_goals_placeholder": "Hva er målene for dette initiativet?",
+  "sustainability_initiatives_responsible_label": "Ansvarlig person",
+  "sustainability_initiatives_responsible_placeholder": "Navn på ansvarlig person",
+  "sustainability_initiatives_status_label": "Status",
+  "sustainability_initiatives_status_not_started": "Ikke startet",
+  "sustainability_initiatives_status_in_progress": "Pågår",
+  "sustainability_initiatives_status_completed": "Fullført"
 }
 

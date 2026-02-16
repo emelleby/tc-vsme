@@ -40,6 +40,7 @@ import { Route as AppLayoutAppEmissionsRouteImport } from './routes/_appLayout/a
 import { Route as DemoLayoutDemoGuitarsIndexRouteImport } from './routes/_demoLayout/demo/guitars/index'
 import { Route as AppLayoutAppSettingsIndexRouteImport } from './routes/_appLayout/app/settings/index'
 import { Route as AppLayoutAppGeneralIndexRouteImport } from './routes/_appLayout/app/general/index'
+import { Route as AppLayoutAppEnvironmentalIndexRouteImport } from './routes/_appLayout/app/environmental/index'
 import { Route as DemoLayoutDemoStartServerFuncsRouteImport } from './routes/_demoLayout/demo/start.server-funcs'
 import { Route as DemoLayoutDemoStartApiRequestRouteImport } from './routes/_demoLayout/demo/start.api-request'
 import { Route as DemoLayoutDemoSentryTestingRouteImport } from './routes/_demoLayout/demo/sentry.testing'
@@ -217,6 +218,12 @@ const AppLayoutAppGeneralIndexRoute =
     path: '/app/general/',
     getParentRoute: () => AppLayoutRouteRoute,
   } as any)
+const AppLayoutAppEnvironmentalIndexRoute =
+  AppLayoutAppEnvironmentalIndexRouteImport.update({
+    id: '/app/environmental/',
+    path: '/app/environmental/',
+    getParentRoute: () => AppLayoutRouteRoute,
+  } as any)
 const DemoLayoutDemoStartServerFuncsRoute =
   DemoLayoutDemoStartServerFuncsRouteImport.update({
     id: '/demo/start/server-funcs',
@@ -359,6 +366,7 @@ export interface FileRoutesByFullPath {
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
   '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
@@ -408,6 +416,7 @@ export interface FileRoutesByTo {
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
   '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
@@ -460,6 +469,7 @@ export interface FileRoutesById {
   '/_demoLayout/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/_demoLayout/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/_demoLayout/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/_appLayout/app/environmental/': typeof AppLayoutAppEnvironmentalIndexRoute
   '/_appLayout/app/general/': typeof AppLayoutAppGeneralIndexRoute
   '/_appLayout/app/settings/': typeof AppLayoutAppSettingsIndexRoute
   '/_demoLayout/demo/guitars/': typeof DemoLayoutDemoGuitarsIndexRoute
@@ -511,6 +521,7 @@ export interface FileRouteTypes {
     | '/demo/sentry/testing'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app/environmental'
     | '/app/general'
     | '/app/settings'
     | '/demo/guitars'
@@ -560,6 +571,7 @@ export interface FileRouteTypes {
     | '/demo/sentry/testing'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app/environmental'
     | '/app/general'
     | '/app/settings'
     | '/demo/guitars'
@@ -611,6 +623,7 @@ export interface FileRouteTypes {
     | '/_demoLayout/demo/sentry/testing'
     | '/_demoLayout/demo/start/api-request'
     | '/_demoLayout/demo/start/server-funcs'
+    | '/_appLayout/app/environmental/'
     | '/_appLayout/app/general/'
     | '/_appLayout/app/settings/'
     | '/_demoLayout/demo/guitars/'
@@ -861,6 +874,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutAppGeneralIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
+    '/_appLayout/app/environmental/': {
+      id: '/_appLayout/app/environmental/'
+      path: '/app/environmental'
+      fullPath: '/app/environmental'
+      preLoaderRoute: typeof AppLayoutAppEnvironmentalIndexRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
     '/_demoLayout/demo/start/server-funcs': {
       id: '/_demoLayout/demo/start/server-funcs'
       path: '/demo/start/server-funcs'
@@ -994,6 +1014,7 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutAppEmissionsRoute: typeof AppLayoutAppEmissionsRoute
   AppLayoutAppOrderRoute: typeof AppLayoutAppOrderRoute
   AppLayoutAppIndexRoute: typeof AppLayoutAppIndexRoute
+  AppLayoutAppEnvironmentalIndexRoute: typeof AppLayoutAppEnvironmentalIndexRoute
   AppLayoutAppGeneralIndexRoute: typeof AppLayoutAppGeneralIndexRoute
   AppLayoutAppSettingsIndexRoute: typeof AppLayoutAppSettingsIndexRoute
 }
@@ -1002,6 +1023,7 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutAppEmissionsRoute: AppLayoutAppEmissionsRoute,
   AppLayoutAppOrderRoute: AppLayoutAppOrderRoute,
   AppLayoutAppIndexRoute: AppLayoutAppIndexRoute,
+  AppLayoutAppEnvironmentalIndexRoute: AppLayoutAppEnvironmentalIndexRoute,
   AppLayoutAppGeneralIndexRoute: AppLayoutAppGeneralIndexRoute,
   AppLayoutAppSettingsIndexRoute: AppLayoutAppSettingsIndexRoute,
 }

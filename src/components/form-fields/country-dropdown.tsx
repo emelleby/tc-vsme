@@ -50,7 +50,10 @@ const CountryDropdownComponent = (
 	{
 		options = countries.all.filter(
 			(country: Country) =>
-				country.emoji && country.status !== 'deleted' && country.ioc !== 'PRK',
+				country.emoji &&
+				country.status !== 'deleted' &&
+				country.ioc !== 'PRK' &&
+				country.alpha3,
 		),
 		onChange,
 		defaultValue,
@@ -94,7 +97,7 @@ const CountryDropdownComponent = (
 	)
 
 	const triggerClasses = cn(
-		'flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1',
+		'flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent dark:bg-input/30 px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 transition-[color,box-shadow]',
 		slim === true && 'w-20',
 	)
 
@@ -107,7 +110,7 @@ const CountryDropdownComponent = (
 				{...props}
 			>
 				{selectedCountry ? (
-					<div className="flex items-center flex-grow w-0 gap-2 overflow-hidden">
+					<div className="flex items-center grow w-0 gap-2 overflow-hidden">
 						<div className="inline-flex items-center justify-center w-5 h-5 shrink-0 overflow-hidden rounded-full">
 							<CircleFlag
 								countryCode={selectedCountry.alpha2.toLowerCase()}
@@ -134,7 +137,7 @@ const CountryDropdownComponent = (
 			<PopoverContent
 				collisionPadding={10}
 				side="bottom"
-				className="min-w-[--radix-popper-anchor-width] p-0"
+				className="min-w-[--radix-popper-anchor-width] p-0 border-primary/30"
 			>
 				<Command className="w-full max-h-[200px] sm:max-h-[270px]">
 					<CommandList>
@@ -148,10 +151,10 @@ const CountryDropdownComponent = (
 								.map((option) => (
 									<CommandItem
 										className="flex items-center w-full gap-2"
-										key={option.alpha3}
+										key={option.alpha2}
 										onSelect={() => handleSelect(option)}
 									>
-										<div className="flex flex-grow w-0 space-x-2 overflow-hidden">
+										<div className="flex grow w-0 space-x-2 overflow-hidden">
 											<div className="inline-flex items-center justify-center w-5 h-5 shrink-0 overflow-hidden rounded-full">
 												<CircleFlag
 													countryCode={option.alpha2.toLowerCase()}

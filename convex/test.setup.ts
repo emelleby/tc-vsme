@@ -8,6 +8,11 @@ import * as todos from './todos'
 import * as schema from './schema'
 import * as auth from './_utils/auth'
 import * as emissions from './emissions'
+import * as formsSave from './forms/save'
+import * as formsGet from './forms/get'
+import * as formsSubmit from './forms/submit'
+import * as formsReopen from './forms/reopen'
+import * as formsUtils from './forms/_utils'
 
 export const modules = {
   './organizations.ts': () => Promise.resolve(organizations),
@@ -16,6 +21,11 @@ export const modules = {
   './schema.ts': () => Promise.resolve(schema),
   './_utils/auth.ts': () => Promise.resolve(auth),
   './emissions.ts': () => Promise.resolve(emissions),
+  './forms/save.ts': () => Promise.resolve(formsSave),
+  './forms/get.ts': () => Promise.resolve(formsGet),
+  './forms/submit.ts': () => Promise.resolve(formsSubmit),
+  './forms/reopen.ts': () => Promise.resolve(formsReopen),
+  './forms/_utils.ts': () => Promise.resolve(formsUtils),
   './_generated/api.d.ts': () => Promise.resolve({}),
   './_generated/api.js': () => Promise.resolve({}),
   './_generated/dataModel.d.ts': () => Promise.resolve({}),

@@ -1,12 +1,11 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { BadgeQuestionMarkIcon, ChevronRightIcon } from 'lucide-react'
 import React, { useRef } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Progress as ProgressBar } from '@/components/ui/progress'
 import {
 	Tooltip,
 	TooltipContent,
@@ -18,32 +17,37 @@ import { cn } from '@/lib/utils'
 
 interface FormCardProps {
 	title: string
-	progress: number
+	status: string
 	updatedDate: string
 	contributor: { name: string; image?: string }
 	onClick?: () => void
-	openIssues: number
 	toolTip: string
 	buttonText?: string
 	children?: React.ReactNode
+	module?: 'Grunnmodul' | 'Utvidet modul'
 }
 
 export function FormCard({
 	title,
-	progress,
+	status,
 	updatedDate,
 	contributor,
 	onClick = () => {},
-	openIssues,
 	toolTip,
 	buttonText,
 	children,
+	module,
 }: FormCardProps) {
 	const { isExpanded, toggleExpand } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
 
 	return (
-		<Card className="mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg">
+		<Card
+			className={cn(
+				'mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg',
+				module === 'Utvidet modul' && 'bg-accent/20',
+			)}
+		>
 			<CardHeader
 				className="space-y-1 cursor-pointer"
 				onClick={toggleExpand}
@@ -58,7 +62,7 @@ export function FormCard({
 			>
 				<div className="flex justify-between items-start w-full">
 					<div className="flex gap-2">
-						<h3 className="text-xl font-semibold">{title}</h3>
+						<h3 className="text-xl font-semibold text-secondary">{title}</h3>
 						<ChevronRightIcon
 							className={cn(
 								'h-6 w-6 transition-transform duration-200',
@@ -97,55 +101,49 @@ export function FormCard({
 
 			<CardContent>
 				<div className="space-y-4">
-					<div className="space-y-2">
-						<div className="flex justify-between">
+					<div className="flex gap-2">
+						<Badge
+							variant="secondary"
+							className={
+								status === 'submitted'
+									? 'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300'
+									: 'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300'
+							}
+						>
+							{status === 'submitted' ? 'Completed' : 'In Progress'}
+						</Badge>
+						{module && (
 							<Badge
 								variant="secondary"
-								className={
-									progress === 100
-										? 'bg-green-100 text-emerald-600'
-										: 'bg-blue-100 text-sky-600'
-								}
+								className="bg-blue-100 border-blue-600 text-blue-600 dark:bg-blue-800 dark:text-blue-300"
 							>
-								{progress === 100 ? 'Completed' : 'In Progress'}
+								{module}
 							</Badge>
-							<span className="text-sm text-muted-foreground">
-								{progress} %
-							</span>
-						</div>
-						<ProgressBar value={progress} className="h-2" />
+						)}
 					</div>
 
 					<motion.div
 						initial={false}
-						animate={{ height: isExpanded ? 'auto' : 0 }}
+						animate={{
+							height: isExpanded ? 'auto' : 0,
+							opacity: isExpanded ? 1 : 0,
+						}}
 						transition={{ type: 'spring', stiffness: 300, damping: 30 }}
 						className="overflow-hidden"
 					>
 						<div ref={contentRef} className="pb-4">
-							<AnimatePresence mode="wait">
-								{isExpanded && (
-									<motion.div
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}
-										className="space-y-4 pt-2"
-									>
-										<div className="space-y-2">{children}</div>
-									</motion.div>
-								)}
-							</AnimatePresence>
+							{/* Children kept mounted to preserve Convex subscriptions */}
+							<div className="space-y-4 pt-2">
+								<div className="space-y-2">{children}</div>
+							</div>
 						</div>
 					</motion.div>
 				</div>
 			</CardContent>
 
 			<CardFooter>
-				<div className="flex items-center justify-between w-full text-sm text-muted-foreground">
-					<span>
-						Last updated by {contributor.name}: {updatedDate}
-					</span>
-					<span>{openIssues} open issues</span>
+				<div className="w-full text-sm text-muted-foreground">
+					Last updated by {contributor.name}: {updatedDate}
 				</div>
 			</CardFooter>
 		</Card>
