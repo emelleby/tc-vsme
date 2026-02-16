@@ -61,6 +61,13 @@ function EnvironmentalPage() {
 				toolTip="Click to expand"
 				status={energyEmissions?.status ?? 'draft'}
 				contributor={energyEmissions?.contributor || { name: 'Unknown' }}
+				code="B3"
+				version={
+					energyEmissions?.versions?.length
+						? energyEmissions.versions[energyEmissions.versions.length - 1]
+								.version
+						: undefined
+				}
 			>
 				<B3EnergyEmissionsForm />
 			</FormCard>
@@ -71,6 +78,12 @@ function EnvironmentalPage() {
 				toolTip="Document your organization's emissions to air, water, and soil, including types and quantities of pollutants."
 				status={pollution?.status ?? 'draft'}
 				contributor={pollution?.contributor || { name: 'Unknown' }}
+				code="B4"
+				version={
+					pollution?.versions?.length
+						? pollution.versions[pollution.versions.length - 1].version
+						: undefined
+				}
 			>
 				<B4PollutionForm />
 			</FormCard>
@@ -80,6 +93,12 @@ function EnvironmentalPage() {
 				toolTip="Click to expand"
 				status={section3?.status ?? 'draft'}
 				contributor={section3?.contributor || { name: 'Unknown' }}
+				code="B5"
+				version={
+					section3?.versions?.length
+						? section3.versions[section3.versions.length - 1].version
+						: undefined
+				}
 			>
 				{/* Content will be added later */}
 			</FormCard>

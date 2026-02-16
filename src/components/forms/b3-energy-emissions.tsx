@@ -135,31 +135,7 @@ export function B3EnergyEmissionsForm() {
 	}
 
 	return (
-		<div className="w-full bg-card/50 p-4 border border-border rounded-lg shadow-sm">
-			<div className="mb-8 flex justify-between items-start">
-				<div>
-					<div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm mb-4">
-						B3
-					</div>
-					<h1 className="text-2xl font-semibold text-foreground inline-block ml-3 align-middle">
-						Energi og klimagassutslipp
-					</h1>
-				</div>
-				{existingData && (
-					<div className="text-sm text-muted-foreground text-right">
-						<div>
-							Status: <span className="font-medium capitalize">{status}</span>
-						</div>
-						<div>
-							Version:{' '}
-							{existingData.versions.length
-								? existingData.versions[existingData.versions.length - 1]
-										.version
-								: 1}
-						</div>
-					</div>
-				)}
-			</div>
+		<>
 			<form.AppForm>
 				<form
 					onSubmit={(e) => {
@@ -342,6 +318,6 @@ export function B3EnergyEmissionsForm() {
 					</Accordion>
 				</div>
 			)}
-		</div>
+		</>
 	)
 }
