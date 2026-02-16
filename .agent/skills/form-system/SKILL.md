@@ -13,17 +13,14 @@ This skill enforces the project form system conventions automatically during for
 
 This skill activates when:
 
-- Creating forms with `useAppForm` hook
-- Using field components (`TextField`, `TextareaField`, `SelectField`, `SwitchField`, `CheckboxField`, `ComboboxField`, `TagField`)
-- Implementing focus management with `withFocusManagement`
-- Setting up form validation with Zod schemas
-- Creating custom form dialogs or form-based features
-- Using `form.AppField` for field rendering
+- Creating forms with `useAppForm` hook from `@/hooks/tanstack-form`
+- Using field components (`TextField`, `TextareaField`, `SelectField`, `SwitchField`, `CountryField`, `ImageField`, `RadioGroupField`)
+- Implementing focus management with `focusFirstError` from `@/hooks/use-form`
+- Setting up form validation with Zod schemas and `b1GeneralSchema`
+- Using `form.AppField` for field rendering which provides pre-bound field components
 - Using `form.SubmitButton` or `form.AppForm` wrappers
-- Using `useStore` from `@tanstack/react-form` for form value access
-- Using `formOptions` from `@tanstack/form-core` for reusable form configurations
-- Implementing field listeners or programmatic field operations
-- Integrating forms with `useServerAction` hook
+- Using `form.Subscribe` for conditional fields or derived values
+- Implementing array fields with `field.pushValue` and `field.removeValue`
 
 ## Workflow
 
@@ -38,42 +35,29 @@ This skill activates when:
 
 ### Form Setup
 
-- Use `useAppForm` hook from `@/components/ui/form`
-- Wrap form components with `withFocusManagement` HOC
-- Configure validation with `validators: { onSubmit: zodSchema }`
-- Use `revalidateLogic` for validation timing
-- Handle invalid submissions with `onSubmitInvalid` and `focusFirstError`
-- Always set `canSubmitWhenInvalid: true`
+- Use `useAppForm` hook from `@/hooks/tanstack-form`
+- Configure validation with `validators: { onDynamic: zodSchema }` for real-time feedback or `onSubmit`
+- Handle invalid submissions with `onSubmitInvalid: ({ formApi }) => focusFirstError(formApi)`
+- Logic revalidation: `validationLogic: revalidateLogic()`
 
 ### Field Rendering
 
-- Use `form.AppField` with field components (`TextField`, etc.)
-- Each field supports `label`, `description`, `isRequired`, `focusRef`, and `testId` props
-- Use field `listeners` for side effects (onChange, onBlur)
+- Use `form.AppField` with the provided field components on the render prop:
+  - `(field) => <field.TextField label="Label" />`
+  - Components include: `TextField`, `SelectField`, `TextareaField`, `CountryField`, `SwitchField`, `ImageField`, `RadioGroupField`
+- Group fields using `FieldGroup` for visual structure
 
 ### Form Submission
 
-- Wrap `form.handleSubmit()` in event handler with `e.preventDefault()` and `e.stopPropagation()`
-- Integrate with `useServerAction` hook for server actions
-- Use `form.SubmitButton` wrapped in `form.AppForm` for automatic loading state
+- Wrap form in `form.AppForm`
+- Use `<form onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); form.handleSubmit() }}>`
+- Use `form.SubmitButton` for automatic loading state
 
-### Accessing Form Values
+### Dynamic Fields & State
 
-- Use `useStore` from `@tanstack/react-form` for reactive access
-- Access via `useStore(form.store, (state) => state.values.fieldName)`
-- Never access form values directly during render
-
-### Programmatic Operations
-
-- Use `form.setFieldValue()` to update field values
-- Use `form.validateField()` to trigger validation
-- Use field listeners for dependent field updates
-
-### Server Action Options
-
-- `toastMessages` for loading/success/error toasts
-- `isDisableToast: true` for background operations
-- `onSuccess` callback for post-submission logic
+- Use `form.Subscribe` to listen to field changes for conditional rendering
+- Use `field.pushValue`/`field.removeValue` for array fields (e.g., subsidiaries)
+- Use `useStore(form.store, (state) => ...)` for custom state access
 
 ## References
 

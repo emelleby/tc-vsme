@@ -1,4 +1,3 @@
-import * as React from 'react'
 import {
 	Field,
 	FieldDescription,
@@ -9,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { useFieldContext } from '@/hooks/form-context'
 
 interface TextFieldProps {
+	hidden?: boolean
 	label: string
 	description?: string
 	placeholder?: string
@@ -18,6 +18,7 @@ interface TextFieldProps {
 }
 
 export function TextField({
+	hidden,
 	label,
 	description,
 	placeholder,
@@ -29,7 +30,7 @@ export function TextField({
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
 
 	return (
-		<Field data-invalid={isInvalid}>
+		<Field data-invalid={isInvalid} hidden={hidden}>
 			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
 			<Input
 				id={field.name}
@@ -37,7 +38,12 @@ export function TextField({
 				type={type}
 				value={field.state.value}
 				onBlur={field.handleBlur}
-				onChange={(e) => field.handleChange(e.target.value)}
+				onChange={(e) => {
+					const rawValue = e.target.value
+					const value =
+						type === 'number' && rawValue !== '' ? Number(rawValue) : rawValue
+					field.handleChange(value as any)
+				}}
 				aria-invalid={isInvalid}
 				placeholder={placeholder}
 				disabled={disabled}

@@ -30,6 +30,7 @@ export function CountryField({
 				placeholder={placeholder}
 				defaultValue={field.state.value}
 				disabled={disabled}
+				aria-invalid={isInvalid}
 				onChange={(country: Country) => {
 					field.handleChange(country.alpha3)
 				}}

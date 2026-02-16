@@ -1,14 +1,13 @@
-import * as React from 'react'
 import {
 	Field,
 	FieldDescription,
 	FieldError,
-	FieldLabel
+	FieldLabel,
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
+import { useFieldContext } from '@/hooks/form-context'
 
 interface TextareaFieldProps {
-	field: any
 	label: string
 	description?: string
 	placeholder?: string
@@ -18,14 +17,14 @@ interface TextareaFieldProps {
 }
 
 export function TextareaField({
-	field,
 	label,
 	description,
 	placeholder,
 	disabled,
 	rows = 3,
-	className
+	className,
 }: TextareaFieldProps) {
+	const field = useFieldContext<string>()
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
 
 	return (
