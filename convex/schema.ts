@@ -68,6 +68,8 @@ const energyEmissionsDataValidator = v.object({
   scope1Emissions: v.number(),
   scope2EmissionsLocationBased: v.number(),
   scope2EmissionsMarketBased: v.number(),
+  climateDataCollectionMethod: v.string(),
+  dataUncertainty: v.string(),
 })
 
 // Union validator for all environmental form sections

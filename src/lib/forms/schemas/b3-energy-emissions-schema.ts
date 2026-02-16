@@ -20,6 +20,12 @@ export const b3EnergyEmissionsSchema = z.object({
 	scope2EmissionsMarketBased: z
 		.number({ message: 'Dette feltet er påkrevd' })
 		.min(0, 'Må være 0 eller mer'),
+	climateDataCollectionMethod: z
+		.string({ message: 'Dette feltet er påkrevd' })
+		.min(10, 'Beskrivelsen må være på minst 10 tegn'),
+	dataUncertainty: z
+		.string({ message: 'Dette feltet er påkrevd' })
+		.min(10, 'Beskrivelsen må være på minst 10 tegn'),
 })
 
 export type B3EnergyEmissionsFormValues = z.infer<

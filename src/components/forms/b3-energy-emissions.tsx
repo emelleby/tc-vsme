@@ -96,6 +96,8 @@ export function B3EnergyEmissionsForm() {
 			scope1Emissions: 0,
 			scope2EmissionsLocationBased: 0,
 			scope2EmissionsMarketBased: 0,
+			climateDataCollectionMethod: '',
+			dataUncertainty: '',
 		} as B3EnergyEmissionsFormValues,
 	})
 
@@ -238,6 +240,28 @@ export function B3EnergyEmissionsForm() {
 										unit="tCO₂e"
 										step="0.001"
 										description="Indirect emissions using supplier-specific emission factors"
+									/>
+								)}
+							</form.AppField>
+						</div>
+
+						<div className="grid grid-cols-1 gap-6">
+							<form.AppField name="climateDataCollectionMethod">
+								{(field) => (
+									<field.TextareaField
+										label="Climate data collection method"
+										placeholder="E.g. accounting data, measurements, estimates, third-party tools..."
+										description="Describe how climate data was collected and calculated"
+									/>
+								)}
+							</form.AppField>
+
+							<form.AppField name="dataUncertainty">
+								{(field) => (
+									<field.TextareaField
+										label="Data uncertainty"
+										placeholder="E.g. estimated values, missing data for parts of the year..."
+										description="Describe any uncertainties or limitations in the climate data"
 									/>
 								)}
 							</form.AppField>
