@@ -289,12 +289,12 @@ function PricingCard({
 		<div
 			className={`relative rounded-xl border p-6 flex flex-col ${
 				isRecommended
-					? 'border-[var(--teal)] bg-gradient-to-b from-teal-50/50 to-white shadow-lg scale-105'
+					? 'border-(--teal) bg-linear-to-b from-teal-50/50 to-white shadow-lg scale-105'
 					: 'border-border bg-card shadow-sm hover:shadow-md transition-shadow'
 			}`}
 		>
 			{isRecommended && recommendedLabel && (
-				<div className="absolute top-0 right-0 bg-[var(--teal)] text-white text-xs px-3 py-1 rounded-bl-lg font-medium">
+				<div className="absolute top-0 right-0 bg-(--teal) text-white text-xs px-3 py-1 rounded-bl-lg font-medium">
 					{recommendedLabel}
 				</div>
 			)}
@@ -315,8 +315,8 @@ function PricingCard({
 					{features.map((feature) => (
 						<li key={feature.text} className="flex items-start gap-3">
 							<span
-								className={`mt-0.5 flex-shrink-0 ${
-									isRecommended ? 'text-[var(--teal)]' : 'text-green-500'
+								className={`mt-0.5 shrink-0 ${
+									isRecommended ? 'text-(--teal)' : 'text-green-500'
 								}`}
 							>
 								{feature.icon}
@@ -329,9 +329,7 @@ function PricingCard({
 			<CardFooter className="pt-4">
 				<Button
 					className={`w-full ${
-						isRecommended
-							? 'bg-[var(--teal)] hover:bg-[var(--teal)]/90 text-white'
-							: ''
+						isRecommended ? 'bg-(--teal) hover:bg-(--teal)/90 text-white' : ''
 					}`}
 					variant={variant}
 				>

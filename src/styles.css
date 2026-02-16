@@ -93,7 +93,7 @@ code {
   --secondary: oklch(0.5878 0.1317 239.7182);
   --secondary-foreground: oklch(0.9761 0 0);
   --muted: oklch(0.3007 0.0124 196.5122);
-  --muted-foreground: oklch(0.9761 0 0);
+  --muted-foreground: oklch(0.7061 0 0);
   --accent: oklch(0.3973 0.0814 159.5097);
   --accent-foreground: oklch(0.9761 0 0);
   --destructive: oklch(0.5140 0.2220 16.9350);

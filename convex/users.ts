@@ -138,9 +138,46 @@ export const getByClerkId = query({
   },
 })
 
+/**
+ * Get user display info by clerkId.
+ * Returns minimal info needed for displaying contributor names.
+ * Any authenticated user can call this (for showing who edited forms).
+ */
+export const getDisplayName = query({
+  args: {
+    clerkId: v.string(),
+  },
+  returns: v.union(
+    v.object({
+      firstName: v.optional(v.string()),
+      lastName: v.optional(v.string()),
+      username: v.optional(v.string()),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    // Require authentication
+    await requireUserId(ctx)
+
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_clerkId', (q) => q.eq('clerkId', args.clerkId))
+      .unique()
+
+    if (!user) return null
+
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+    }
+  },
+})
+
 export default {
   upsertUser,
   getMe,
   getByClerkId,
+  getDisplayName,
 }
 

@@ -45,6 +45,22 @@ export const upsertOrganization = mutation({
     clerkOrgId: v.string(),
     name: v.string(),
     slug: v.string(),
+    orgNumber: v.optional(v.string()),
+    address: v.optional(
+      v.object({
+        street: v.optional(v.array(v.string())),
+        postalCode: v.optional(v.string()),
+        city: v.optional(v.string()),
+        country: v.optional(v.string()),
+        countryCode: v.optional(v.string()),
+      }),
+    ),
+    orgForm: v.optional(v.string()),
+    website: v.optional(v.string()),
+    naceCode: v.optional(v.string()),
+    industry: v.optional(v.string()),
+    numberEmployees: v.optional(v.number()),
+    businessModel: v.optional(v.string()),
   },
   returns: v.id('organizations'),
   handler: async (ctx, args) => {
@@ -57,11 +73,31 @@ export const upsertOrganization = mutation({
       .withIndex('by_clerkOrgId', (q) => q.eq('clerkOrgId', args.clerkOrgId))
       .unique()
 
+    // Check for slug uniqueness if slug is being set/changed
+    if (!existing || existing.slug !== args.slug) {
+      const slugCollision = await ctx.db
+        .query('organizations')
+        .withIndex('by_slug', (q) => q.eq('slug', args.slug))
+        .unique()
+
+      if (slugCollision) {
+        throw new Error(`Slug "${args.slug}" is already taken.`)
+      }
+    }
+
     if (existing) {
-      // Update existing organization with correct name and slug
+      // Update existing organization
       await ctx.db.patch(existing._id, {
         name: args.name,
         slug: args.slug,
+        orgNumber: args.orgNumber,
+        address: args.address,
+        orgForm: args.orgForm,
+        website: args.website,
+        naceCode: args.naceCode,
+        industry: args.industry,
+        numberEmployees: args.numberEmployees,
+        businessModel: args.businessModel,
       })
       return existing._id
     }
@@ -71,6 +107,14 @@ export const upsertOrganization = mutation({
       clerkOrgId: args.clerkOrgId,
       name: args.name,
       slug: args.slug,
+      orgNumber: args.orgNumber,
+      address: args.address,
+      orgForm: args.orgForm,
+      website: args.website,
+      naceCode: args.naceCode,
+      industry: args.industry,
+      numberEmployees: args.numberEmployees,
+      businessModel: args.businessModel,
     })
   },
 })
@@ -90,6 +134,22 @@ export const getByClerkOrgId = query({
       clerkOrgId: v.string(),
       name: v.string(),
       slug: v.string(),
+      orgNumber: v.optional(v.string()),
+      address: v.optional(
+        v.object({
+          street: v.optional(v.array(v.string())),
+          postalCode: v.optional(v.string()),
+          city: v.optional(v.string()),
+          country: v.optional(v.string()),
+          countryCode: v.optional(v.string()),
+        }),
+      ),
+      orgForm: v.optional(v.string()),
+      website: v.optional(v.string()),
+      naceCode: v.optional(v.string()),
+      industry: v.optional(v.string()),
+      numberEmployees: v.optional(v.number()),
+      businessModel: v.optional(v.string()),
     }),
     v.null()
   ),

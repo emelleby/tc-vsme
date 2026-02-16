@@ -40,6 +40,11 @@ export const Route = createFileRoute('/_appLayout')({
 		// Fetch full authentication context with metadata
 		const authContext = await getAuthContext()
 
+		const hasVsme = authContext?.hasVsme
+		const orgHasVsme = authContext?.orgHasVsme
+		const needsOrgSetup = authContext?.needsOrgSetup
+		const vsmeDb = authContext?.vsmeDb
+
 		// Check 1: User must be authenticated
 		if (!authContext) {
 			throw redirect({ to: '/sign-in' })
@@ -62,6 +67,12 @@ export const Route = createFileRoute('/_appLayout')({
 
 function RouteComponent() {
 	// Auth context is available via Route.useRouteContext() for child routes
+	const { authContext } = Route.useRouteContext()
+	const needsOrgSetup = authContext?.needsOrgSetup
+	const vsmeDb = authContext?.vsmeDb
+	const hasVsme = authContext?.hasVsme
+	const orgHasVsme = authContext?.orgHasVsme
+	const canAccessDashboard = authContext?.canAccessDashboard
 	return (
 		<SidebarProvider>
 			<AppSidebar />
@@ -72,15 +83,25 @@ function RouteComponent() {
 						<Separator orientation="vertical" className="mr-2 h-4" />
 						<Breadcrumb>
 							<BreadcrumbList>
-								<BreadcrumbItem className="hidden md:block">
-									<BreadcrumbLink href="#">
-										Building Your Application
-									</BreadcrumbLink>
+								<BreadcrumbItem>
+									<BreadcrumbPage>
+										{canAccessDashboard
+											? 'Can access dashboard'
+											: 'Cannot access dashboard'}
+									</BreadcrumbPage>
 								</BreadcrumbItem>
 								<BreadcrumbSeparator className="hidden md:block" />
 								<BreadcrumbItem>
-									<BreadcrumbPage>Some route</BreadcrumbPage>
+									<BreadcrumbPage>
+										{needsOrgSetup
+											? `Needs setup? = ${needsOrgSetup}`
+											: `Needs setup? = ${needsOrgSetup}`}
+									</BreadcrumbPage>
 								</BreadcrumbItem>
+								<BreadcrumbSeparator className="hidden md:block" />
+								<BreadcrumbPage>
+									{vsmeDb ? 'Has VSME DB' : 'Needs VSME DB'}
+								</BreadcrumbPage>
 							</BreadcrumbList>
 						</Breadcrumb>
 					</div>

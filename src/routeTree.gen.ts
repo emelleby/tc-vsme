@@ -39,11 +39,14 @@ import { Route as AppLayoutAppOrderRouteImport } from './routes/_appLayout/app/o
 import { Route as AppLayoutAppEmissionsRouteImport } from './routes/_appLayout/app/emissions'
 import { Route as DemoLayoutDemoGuitarsIndexRouteImport } from './routes/_demoLayout/demo/guitars/index'
 import { Route as AppLayoutAppSettingsIndexRouteImport } from './routes/_appLayout/app/settings/index'
+import { Route as AppLayoutAppGeneralIndexRouteImport } from './routes/_appLayout/app/general/index'
+import { Route as AppLayoutAppEnvironmentalIndexRouteImport } from './routes/_appLayout/app/environmental/index'
 import { Route as DemoLayoutDemoStartServerFuncsRouteImport } from './routes/_demoLayout/demo/start.server-funcs'
 import { Route as DemoLayoutDemoStartApiRequestRouteImport } from './routes/_demoLayout/demo/start.api-request'
 import { Route as DemoLayoutDemoSentryTestingRouteImport } from './routes/_demoLayout/demo/sentry.testing'
 import { Route as DemoLayoutDemoGuitarsGuitarIdRouteImport } from './routes/_demoLayout/demo/guitars/$guitarId'
 import { Route as DemoLayoutDemoFormSimpleRouteImport } from './routes/_demoLayout/demo/form.simple'
+import { Route as DemoLayoutDemoFormContactRouteImport } from './routes/_demoLayout/demo/form.contact'
 import { Route as DemoLayoutDemoFormAddressRouteImport } from './routes/_demoLayout/demo/form.address'
 import { Route as DemoLayoutDemoApiTqTodosRouteImport } from './routes/_demoLayout/demo/api.tq-todos'
 import { Route as DemoLayoutDemoApiNamesRouteImport } from './routes/_demoLayout/demo/api.names'
@@ -209,6 +212,18 @@ const AppLayoutAppSettingsIndexRoute =
     path: '/app/settings/',
     getParentRoute: () => AppLayoutRouteRoute,
   } as any)
+const AppLayoutAppGeneralIndexRoute =
+  AppLayoutAppGeneralIndexRouteImport.update({
+    id: '/app/general/',
+    path: '/app/general/',
+    getParentRoute: () => AppLayoutRouteRoute,
+  } as any)
+const AppLayoutAppEnvironmentalIndexRoute =
+  AppLayoutAppEnvironmentalIndexRouteImport.update({
+    id: '/app/environmental/',
+    path: '/app/environmental/',
+    getParentRoute: () => AppLayoutRouteRoute,
+  } as any)
 const DemoLayoutDemoStartServerFuncsRoute =
   DemoLayoutDemoStartServerFuncsRouteImport.update({
     id: '/demo/start/server-funcs',
@@ -237,6 +252,12 @@ const DemoLayoutDemoFormSimpleRoute =
   DemoLayoutDemoFormSimpleRouteImport.update({
     id: '/demo/form/simple',
     path: '/demo/form/simple',
+    getParentRoute: () => DemoLayoutRouteRoute,
+  } as any)
+const DemoLayoutDemoFormContactRoute =
+  DemoLayoutDemoFormContactRouteImport.update({
+    id: '/demo/form/contact',
+    path: '/demo/form/contact',
     getParentRoute: () => DemoLayoutRouteRoute,
   } as any)
 const DemoLayoutDemoFormAddressRoute =
@@ -339,11 +360,14 @@ export interface FileRoutesByFullPath {
   '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/demo/form/contact': typeof DemoLayoutDemoFormContactRoute
   '/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
   '/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
+  '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
   '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
@@ -386,11 +410,14 @@ export interface FileRoutesByTo {
   '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/demo/form/contact': typeof DemoLayoutDemoFormContactRoute
   '/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
   '/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
+  '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
   '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
@@ -436,11 +463,14 @@ export interface FileRoutesById {
   '/_demoLayout/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/_demoLayout/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/_demoLayout/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
+  '/_demoLayout/demo/form/contact': typeof DemoLayoutDemoFormContactRoute
   '/_demoLayout/demo/form/simple': typeof DemoLayoutDemoFormSimpleRoute
   '/_demoLayout/demo/guitars/$guitarId': typeof DemoLayoutDemoGuitarsGuitarIdRoute
   '/_demoLayout/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/_demoLayout/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/_demoLayout/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
+  '/_appLayout/app/environmental/': typeof AppLayoutAppEnvironmentalIndexRoute
+  '/_appLayout/app/general/': typeof AppLayoutAppGeneralIndexRoute
   '/_appLayout/app/settings/': typeof AppLayoutAppSettingsIndexRoute
   '/_demoLayout/demo/guitars/': typeof DemoLayoutDemoGuitarsIndexRoute
   '/_demoLayout/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
@@ -485,11 +515,14 @@ export interface FileRouteTypes {
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
+    | '/demo/form/contact'
     | '/demo/form/simple'
     | '/demo/guitars/$guitarId'
     | '/demo/sentry/testing'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app/environmental'
+    | '/app/general'
     | '/app/settings'
     | '/demo/guitars'
     | '/demo/api/ai/chat'
@@ -532,11 +565,14 @@ export interface FileRouteTypes {
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
+    | '/demo/form/contact'
     | '/demo/form/simple'
     | '/demo/guitars/$guitarId'
     | '/demo/sentry/testing'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/app/environmental'
+    | '/app/general'
     | '/app/settings'
     | '/demo/guitars'
     | '/demo/api/ai/chat'
@@ -581,11 +617,14 @@ export interface FileRouteTypes {
     | '/_demoLayout/demo/api/names'
     | '/_demoLayout/demo/api/tq-todos'
     | '/_demoLayout/demo/form/address'
+    | '/_demoLayout/demo/form/contact'
     | '/_demoLayout/demo/form/simple'
     | '/_demoLayout/demo/guitars/$guitarId'
     | '/_demoLayout/demo/sentry/testing'
     | '/_demoLayout/demo/start/api-request'
     | '/_demoLayout/demo/start/server-funcs'
+    | '/_appLayout/app/environmental/'
+    | '/_appLayout/app/general/'
     | '/_appLayout/app/settings/'
     | '/_demoLayout/demo/guitars/'
     | '/_demoLayout/demo/api/ai/chat'
@@ -828,6 +867,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutAppSettingsIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
+    '/_appLayout/app/general/': {
+      id: '/_appLayout/app/general/'
+      path: '/app/general'
+      fullPath: '/app/general'
+      preLoaderRoute: typeof AppLayoutAppGeneralIndexRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
+    '/_appLayout/app/environmental/': {
+      id: '/_appLayout/app/environmental/'
+      path: '/app/environmental'
+      fullPath: '/app/environmental'
+      preLoaderRoute: typeof AppLayoutAppEnvironmentalIndexRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
     '/_demoLayout/demo/start/server-funcs': {
       id: '/_demoLayout/demo/start/server-funcs'
       path: '/demo/start/server-funcs'
@@ -861,6 +914,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/form/simple'
       fullPath: '/demo/form/simple'
       preLoaderRoute: typeof DemoLayoutDemoFormSimpleRouteImport
+      parentRoute: typeof DemoLayoutRouteRoute
+    }
+    '/_demoLayout/demo/form/contact': {
+      id: '/_demoLayout/demo/form/contact'
+      path: '/demo/form/contact'
+      fullPath: '/demo/form/contact'
+      preLoaderRoute: typeof DemoLayoutDemoFormContactRouteImport
       parentRoute: typeof DemoLayoutRouteRoute
     }
     '/_demoLayout/demo/form/address': {
@@ -954,6 +1014,8 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutAppEmissionsRoute: typeof AppLayoutAppEmissionsRoute
   AppLayoutAppOrderRoute: typeof AppLayoutAppOrderRoute
   AppLayoutAppIndexRoute: typeof AppLayoutAppIndexRoute
+  AppLayoutAppEnvironmentalIndexRoute: typeof AppLayoutAppEnvironmentalIndexRoute
+  AppLayoutAppGeneralIndexRoute: typeof AppLayoutAppGeneralIndexRoute
   AppLayoutAppSettingsIndexRoute: typeof AppLayoutAppSettingsIndexRoute
 }
 
@@ -961,6 +1023,8 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutAppEmissionsRoute: AppLayoutAppEmissionsRoute,
   AppLayoutAppOrderRoute: AppLayoutAppOrderRoute,
   AppLayoutAppIndexRoute: AppLayoutAppIndexRoute,
+  AppLayoutAppEnvironmentalIndexRoute: AppLayoutAppEnvironmentalIndexRoute,
+  AppLayoutAppGeneralIndexRoute: AppLayoutAppGeneralIndexRoute,
   AppLayoutAppSettingsIndexRoute: AppLayoutAppSettingsIndexRoute,
 }
 
@@ -983,6 +1047,7 @@ interface DemoLayoutRouteRouteChildren {
   DemoLayoutDemoApiNamesRoute: typeof DemoLayoutDemoApiNamesRoute
   DemoLayoutDemoApiTqTodosRoute: typeof DemoLayoutDemoApiTqTodosRoute
   DemoLayoutDemoFormAddressRoute: typeof DemoLayoutDemoFormAddressRoute
+  DemoLayoutDemoFormContactRoute: typeof DemoLayoutDemoFormContactRoute
   DemoLayoutDemoFormSimpleRoute: typeof DemoLayoutDemoFormSimpleRoute
   DemoLayoutDemoGuitarsGuitarIdRoute: typeof DemoLayoutDemoGuitarsGuitarIdRoute
   DemoLayoutDemoSentryTestingRoute: typeof DemoLayoutDemoSentryTestingRoute
@@ -1015,6 +1080,7 @@ const DemoLayoutRouteRouteChildren: DemoLayoutRouteRouteChildren = {
   DemoLayoutDemoApiNamesRoute: DemoLayoutDemoApiNamesRoute,
   DemoLayoutDemoApiTqTodosRoute: DemoLayoutDemoApiTqTodosRoute,
   DemoLayoutDemoFormAddressRoute: DemoLayoutDemoFormAddressRoute,
+  DemoLayoutDemoFormContactRoute: DemoLayoutDemoFormContactRoute,
   DemoLayoutDemoFormSimpleRoute: DemoLayoutDemoFormSimpleRoute,
   DemoLayoutDemoGuitarsGuitarIdRoute: DemoLayoutDemoGuitarsGuitarIdRoute,
   DemoLayoutDemoSentryTestingRoute: DemoLayoutDemoSentryTestingRoute,

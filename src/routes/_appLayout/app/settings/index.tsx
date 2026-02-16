@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useQuery } from 'convex/react'
+import { useConvexAuth, useQuery } from 'convex/react'
 import { api } from '../../../../../convex/_generated/api'
 
 export const Route = createFileRoute('/_appLayout/app/settings/')({
@@ -8,15 +8,17 @@ export const Route = createFileRoute('/_appLayout/app/settings/')({
 
 function SettingsPage() {
 	const { authContext } = Route.useRouteContext()
-	const { userId, orgId } = authContext
+	const { orgId } = authContext
+	const { isAuthenticated } = useConvexAuth()
 
 	// Fetch current user's data from Convex (uses JWT auth)
-	const userData = useQuery(api.users.getMe)
+	// Skip if not authenticated yet to avoid "User must be authenticated" error
+	const userData = useQuery(api.users.getMe, isAuthenticated ? {} : 'skip')
 
 	// Fetch organization data from Convex if orgId exists
 	const orgData = useQuery(
 		api.organizations.getByClerkOrgId,
-		orgId ? { clerkOrgId: orgId } : 'skip',
+		isAuthenticated && orgId ? { clerkOrgId: orgId } : 'skip',
 	)
 
 	if (userData === undefined || (orgId && orgData === undefined)) {
@@ -133,6 +135,71 @@ function SettingsPage() {
 									{new Date(orgData._creationTime).toLocaleString()}
 								</dd>
 							</div>
+
+							{orgData.orgNumber && (
+								<div className="flex flex-col sm:flex-row sm:gap-4">
+									<dt className="font-medium text-muted-foreground min-w-35">
+										Org. Number:
+									</dt>
+									<dd className="text-foreground font-mono text-sm">
+										{orgData.orgNumber}
+									</dd>
+								</div>
+							)}
+
+							{orgData.orgForm && (
+								<div className="flex flex-col sm:flex-row sm:gap-4">
+									<dt className="font-medium text-muted-foreground min-w-35">
+										Type:
+									</dt>
+									<dd className="text-foreground">{orgData.orgForm}</dd>
+								</div>
+							)}
+
+							{orgData.website && (
+								<div className="flex flex-col sm:flex-row sm:gap-4">
+									<dt className="font-medium text-muted-foreground min-w-35">
+										Website:
+									</dt>
+									<dd className="text-foreground">
+										<a
+											href={
+												orgData.website.startsWith('http')
+													? orgData.website
+													: 'https://${orgData.website}'
+											}
+											target='_blank'
+											rel='noopener noreferrer'
+											className="text-primary hover:underline"
+										>
+											{orgData.website}
+										</a>
+									</dd>
+								</div>
+							)}
+
+							{orgData.address && (
+								<div className="flex flex-col sm:flex-row sm:gap-4">
+									<dt className="font-medium text-muted-foreground min-w-35">
+										Address:
+									</dt>
+									<dd className="text-foreground">
+										{orgData.address.street && (
+											<div>{orgData.address.street.join(', ')}</div>
+										)}
+										<div>
+											{[orgData.address.postalCode, orgData.address.city]
+												.filter(Boolean)
+												.join(' ')}
+										</div>
+										<div>
+											{[orgData.address.country, orgData.address.countryCode]
+												.filter(Boolean)
+												.join(', ')}
+										</div>
+									</dd>
+								</div>
+							)}
 						</dl>
 					) : (
 						<p className="text-muted-foreground">No organization data found</p>
