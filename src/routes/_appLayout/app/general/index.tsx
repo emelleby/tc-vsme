@@ -46,13 +46,9 @@ function GeneralPage() {
 	const sustainability = formSections?.sustainabilityInitiatives
 	const businessModel = formSections?.businessModel
 
-	// Show loading state during organization switching
-	if (isOrgLoading) {
-		return (
-			<div className="flex items-center justify-center p-8 text-muted-foreground">
-				Loading organization...
-			</div>
-		)
+	// Show loading state
+	if (isOrgLoading || formSections === undefined) {
+		return <div>Loading...</div>
 	}
 
 	return (

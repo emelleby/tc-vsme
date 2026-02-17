@@ -5,6 +5,7 @@ import { useQuery } from 'convex/react'
 import { B3EnergyEmissionsForm } from '@/components/forms/b3-energy-emissions'
 import { B4PollutionForm } from '@/components/forms/b4-pollution-form'
 import { B5BiodiversityForm } from '@/components/forms/b5-biodiversity-form'
+import { B6WaterManagementForm } from '@/components/forms/b6-water-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -44,6 +45,7 @@ function EnvironmentalPage() {
 	const energyEmissions = formSections?.energyEmissions
 	const pollution = formSections?.pollution
 	const biodiversity = formSections?.biodiversity
+	const waterManagement = formSections?.waterManagement
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -66,7 +68,7 @@ function EnvironmentalPage() {
 				version={
 					energyEmissions?.versions?.length
 						? energyEmissions.versions[energyEmissions.versions.length - 1]
-								.version
+								?.version
 						: undefined
 				}
 			>
@@ -82,12 +84,13 @@ function EnvironmentalPage() {
 				code="B4"
 				version={
 					pollution?.versions?.length
-						? pollution.versions[pollution.versions.length - 1].version
+						? pollution.versions[pollution.versions.length - 1]?.version
 						: undefined
 				}
 			>
 				<B4PollutionForm />
 			</FormCard>
+
 			<FormCard
 				title="Biodiversity"
 				updatedDate={formatDate(biodiversity?.lastModifiedAt)}
@@ -98,11 +101,29 @@ function EnvironmentalPage() {
 				module="Grunnmodul"
 				version={
 					biodiversity?.versions?.length
-						? biodiversity.versions[biodiversity.versions.length - 1].version
+						? biodiversity.versions[biodiversity.versions.length - 1]?.version
 						: undefined
 				}
 			>
 				<B5BiodiversityForm />
+			</FormCard>
+
+			<FormCard
+				title="Water Management"
+				updatedDate={formatDate(waterManagement?.lastModifiedAt)}
+				toolTip="Click to expand"
+				status={waterManagement?.status ?? 'draft'}
+				contributor={waterManagement?.contributor || { name: 'Unknown' }}
+				code="B6"
+				module="Grunnmodul"
+				version={
+					waterManagement?.versions?.length
+						? waterManagement.versions[waterManagement.versions.length - 1]
+								?.version
+						: undefined
+				}
+			>
+				<B6WaterManagementForm />
 			</FormCard>
 		</div>
 	)
