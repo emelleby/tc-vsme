@@ -4,6 +4,7 @@ import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { B3EnergyEmissionsForm } from '@/components/forms/b3-energy-emissions'
 import { B4PollutionForm } from '@/components/forms/b4-pollution-form'
+import { B5BiodiversityForm } from '@/components/forms/b5-biodiversity-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -42,7 +43,7 @@ function EnvironmentalPage() {
 	// Extract section-specific data with contributor already resolved
 	const energyEmissions = formSections?.energyEmissions
 	const pollution = formSections?.pollution
-	const section3 = formSections?.section3
+	const biodiversity = formSections?.biodiversity
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -89,18 +90,19 @@ function EnvironmentalPage() {
 			</FormCard>
 			<FormCard
 				title="Biodiversity"
-				updatedDate={formatDate(section3?.lastModifiedAt)}
+				updatedDate={formatDate(biodiversity?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={section3?.status ?? 'draft'}
-				contributor={section3?.contributor || { name: 'Unknown' }}
+				status={biodiversity?.status ?? 'draft'}
+				contributor={biodiversity?.contributor || { name: 'Unknown' }}
 				code="B5"
+				module="Grunnmodul"
 				version={
-					section3?.versions?.length
-						? section3.versions[section3.versions.length - 1].version
+					biodiversity?.versions?.length
+						? biodiversity.versions[biodiversity.versions.length - 1].version
 						: undefined
 				}
 			>
-				{/* Content will be added later */}
+				<B5BiodiversityForm />
 			</FormCard>
 		</div>
 	)

@@ -94,7 +94,7 @@ export function B1GeneralForm() {
 			naceCode: orgData?.naceCode || '',
 			revenue: mongoDefaults.revenue || 0,
 			balanceSheetTotal: 0,
-			employees: 0n,
+			employees: 0,
 			country: 'NOR',
 			reportType: false,
 			subsidiaries: [],

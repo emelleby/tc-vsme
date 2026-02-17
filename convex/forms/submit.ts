@@ -26,7 +26,14 @@ export const submitForm = mutation({
     const dataToSubmit = { ...rawData }
 
     // Explicit coercion for financial fields to ensure they match v.number()
-    const numericFields = ['revenue', 'balanceSheetTotal', 'employees']
+    const numericFields = [
+      'revenue',
+      'balanceSheetTotal',
+      'employees',
+      'totalAreaHectares',
+      'protectedAreaHectares',
+      'nonProtectedAreaHectares',
+    ]
     for (const key of numericFields) {
       if (typeof dataToSubmit[key] === 'string' && dataToSubmit[key] !== '') {
         dataToSubmit[key] = Number(dataToSubmit[key])
