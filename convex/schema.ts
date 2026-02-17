@@ -8,6 +8,7 @@ const formSectionValidator = v.union(
   v.literal("businessModel"),
   v.literal("energyEmissions"),
   v.literal("pollution"),
+  v.literal("biodiversity"),
 )
 
 // Form data validators for each section
@@ -86,10 +87,21 @@ const pollutionDataValidator = v.object({
   ),
 })
 
+const biodiversityDataValidator = v.object({
+  reportingYear: v.string(),
+  hasSensitiveBiodiversityAreas: v.boolean(),
+  totalAreaHectares: v.optional(v.number()),
+  protectedAreaHectares: v.optional(v.number()),
+  nonProtectedAreaHectares: v.optional(v.number()),
+  protectedSpeciesCount: v.optional(v.string()),
+  redListedSpeciesCount: v.optional(v.string()),
+})
+
 // Union validator for all environmental form sections
 const formEnvironmentalDataValidator = v.union(
   energyEmissionsDataValidator,
   pollutionDataValidator,
+  biodiversityDataValidator,
   // Add more environmental sections here as they are created
 )
 

@@ -7,7 +7,7 @@ export const pollutionEntrySchema = z.object({
 	pollutionType: z.string().min(1, 'Pollution type is required'),
 	emissionType: z.enum(EMISSION_TYPES),
 	amount: z
-		.number({ required_error: 'Amount is required' })
+		.number({ message: 'Amount is required' })
 		.min(0, 'Amount must be at least 0'),
 	unit: z.string().min(1, 'Unit is required'),
 })

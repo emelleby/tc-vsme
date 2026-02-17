@@ -4,6 +4,7 @@ import {
 	FieldError,
 	FieldLabel,
 } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -70,7 +71,7 @@ export function NumberField({
 					</InputGroupAddon>
 				</InputGroup>
 			) : (
-				<InputGroupInput
+				<Input
 					id={field.name}
 					name={field.name}
 					type="number"
