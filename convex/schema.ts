@@ -10,6 +10,7 @@ const formSectionValidator = v.union(
   v.literal("pollution"),
   v.literal("biodiversity"),
   v.literal("waterManagement"),
+  v.literal("resourceUseCircularEconomy"),
 )
 
 // Form data validators for each section
@@ -104,12 +105,30 @@ const waterManagementDataValidator = v.object({
   waterStress: v.optional(v.number()),
 })
 
+const resourceUseCircularEconomyDataValidator = v.object({
+  reportingYear: v.string(),
+  totalWaste: v.number(),
+  recyclingRate: v.number(),
+  energyRecovery: v.number(),
+  landfill: v.number(),
+  hazardousWaste: v.number(),
+  recycledMaterials: v.array(
+    v.object({
+      id: v.string(),
+      materialType: v.string(),
+      amount: v.number(),
+      unit: v.union(v.literal('tonn'), v.literal('kg')),
+    })
+  ),
+})
+
 // Union validator for all environmental form sections
 const formEnvironmentalDataValidator = v.union(
   energyEmissionsDataValidator,
   pollutionDataValidator,
   biodiversityDataValidator,
   waterManagementDataValidator,
+  resourceUseCircularEconomyDataValidator,
   // Add more environmental sections here as they are created
 )
 
