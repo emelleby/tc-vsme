@@ -6,6 +6,7 @@ import { B3EnergyEmissionsForm } from '@/components/forms/b3-energy-emissions'
 import { B4PollutionForm } from '@/components/forms/b4-pollution-form'
 import { B5BiodiversityForm } from '@/components/forms/b5-biodiversity-form'
 import { B6WaterManagementForm } from '@/components/forms/b6-water-form'
+import { B7ResourceUseCircularEconomyForm } from '@/components/forms/b7-resource-use-circular-economy-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -46,6 +47,7 @@ function EnvironmentalPage() {
 	const pollution = formSections?.pollution
 	const biodiversity = formSections?.biodiversity
 	const waterManagement = formSections?.waterManagement
+	const resourceUseCircularEconomy = formSections?.resourceUseCircularEconomy
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -124,6 +126,25 @@ function EnvironmentalPage() {
 				}
 			>
 				<B6WaterManagementForm />
+			</FormCard>
+
+			<FormCard
+				title="Resource Use and Circular Economy"
+				updatedDate={formatDate(resourceUseCircularEconomy?.lastModifiedAt)}
+				toolTip="Click to expand"
+				status={resourceUseCircularEconomy?.status ?? 'draft'}
+				contributor={resourceUseCircularEconomy?.contributor || { name: 'Unknown' }}
+				code="B7"
+				module="Grunnmodul"
+				version={
+					resourceUseCircularEconomy?.versions?.length
+						? resourceUseCircularEconomy.versions[
+								resourceUseCircularEconomy.versions.length - 1
+							]?.version
+						: undefined
+				}
+			>
+				<B7ResourceUseCircularEconomyForm />
 			</FormCard>
 		</div>
 	)
