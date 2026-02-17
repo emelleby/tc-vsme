@@ -3,9 +3,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
-	SCOPE_3_CATEGORIES,
 	type C2Scope3EmissionsFormValues,
 	c2Scope3EmissionsSchema,
+	SCOPE_3_CATEGORIES,
 } from '@/lib/forms/schemas/c2-scope3-emissions-schema'
 import { yearStore } from '@/lib/year-store'
 
@@ -86,7 +86,10 @@ export function C2Scope3EmissionsForm() {
 							<h3 className="text-base font-medium mb-6">Scope 3 Categories</h3>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								{SCOPE_3_CATEGORIES.map((cat) => (
-									<form.AppField key={cat.number} name={`category${cat.number}`}>
+									<form.AppField
+										key={cat.number}
+										name={`category${cat.number}`}
+									>
 										{(field) => (
 											<field.NumberField
 												label={`${cat.name} (cat. ${cat.number})`}
