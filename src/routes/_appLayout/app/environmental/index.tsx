@@ -7,6 +7,7 @@ import { B4PollutionForm } from '@/components/forms/b4-pollution-form'
 import { B5BiodiversityForm } from '@/components/forms/b5-biodiversity-form'
 import { B6WaterManagementForm } from '@/components/forms/b6-water-form'
 import { B7ResourceUseCircularEconomyForm } from '@/components/forms/b7-resource-use-circular-economy-form'
+import { C2Scope3EmissionsForm } from '@/components/forms/c2-scope3-emissions-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -48,6 +49,7 @@ function EnvironmentalPage() {
 	const biodiversity = formSections?.biodiversity
 	const waterManagement = formSections?.waterManagement
 	const resourceUseCircularEconomy = formSections?.resourceUseCircularEconomy
+	const scope3Emissions = formSections?.scope3Emissions
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -145,6 +147,24 @@ function EnvironmentalPage() {
 				}
 			>
 				<B7ResourceUseCircularEconomyForm />
+			</FormCard>
+
+			<FormCard
+				title="Scope 3 Emissions"
+				updatedDate={formatDate(scope3Emissions?.lastModifiedAt)}
+				toolTip="Click to expand"
+				status={scope3Emissions?.status ?? 'draft'}
+				contributor={scope3Emissions?.contributor || { name: 'Unknown' }}
+				code="C2"
+				module="Utvidet modul"
+				version={
+					scope3Emissions?.versions?.length
+						? scope3Emissions.versions[scope3Emissions.versions.length - 1]
+								?.version
+						: undefined
+				}
+			>
+				<C2Scope3EmissionsForm />
 			</FormCard>
 		</div>
 	)
