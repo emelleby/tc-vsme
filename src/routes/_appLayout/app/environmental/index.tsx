@@ -135,7 +135,9 @@ function EnvironmentalPage() {
 				updatedDate={formatDate(resourceUseCircularEconomy?.lastModifiedAt)}
 				toolTip="Click to expand"
 				status={resourceUseCircularEconomy?.status ?? 'draft'}
-				contributor={resourceUseCircularEconomy?.contributor || { name: 'Unknown' }}
+				contributor={
+					resourceUseCircularEconomy?.contributor || { name: 'Unknown' }
+				}
 				code="B7"
 				module="Grunnmodul"
 				version={

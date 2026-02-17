@@ -70,4 +70,6 @@ export const c2Scope3EmissionsSchema = z.object({
 		.min(0, 'Må være 0 eller mer'),
 })
 
-export type C2Scope3EmissionsFormValues = z.infer<typeof c2Scope3EmissionsSchema>
+export type C2Scope3EmissionsFormValues = z.infer<
+	typeof c2Scope3EmissionsSchema
+>
