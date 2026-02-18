@@ -12,6 +12,7 @@ const formSectionValidator = v.union(
   v.literal("waterManagement"),
   v.literal("resourceUseCircularEconomy"),
   v.literal("scope3Emissions"),
+  v.literal("climateRiskAnalysis"),
 )
 
 // Form data validators for each section
@@ -143,6 +144,11 @@ const scope3EmissionsDataValidator = v.object({
   category15: v.number(),
 })
 
+const climateRiskAnalysisDataValidator = v.object({
+  reportingYear: v.string(),
+  climateRiskDescription: v.string(),
+})
+
 // Union validator for all environmental form sections
 const formEnvironmentalDataValidator = v.union(
   energyEmissionsDataValidator,
@@ -151,6 +157,7 @@ const formEnvironmentalDataValidator = v.union(
   waterManagementDataValidator,
   resourceUseCircularEconomyDataValidator,
   scope3EmissionsDataValidator,
+  climateRiskAnalysisDataValidator,
   // Add more environmental sections here as they are created
 )
 
