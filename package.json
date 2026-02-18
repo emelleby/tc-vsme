@@ -87,7 +87,7 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
+    "@biomejs/biome": "2.4.2",
     "@content-collections/core": "^0.13.1",
     "@content-collections/vite": "^0.2.8",
     "@edge-runtime/vm": "^5.0.0",
