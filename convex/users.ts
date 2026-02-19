@@ -14,6 +14,7 @@ export const upsertUser = mutation({
     lastName: v.optional(v.string()),
     username: v.optional(v.string()),
     organizationId: v.string(),
+    hasVsme: v.optional(v.boolean()),
   },
   returns: v.id('users'),
   handler: async (ctx, args) => {
@@ -29,12 +30,18 @@ export const upsertUser = mutation({
     if (existing) {
       // User exists: add organizationId if not already present
       const orgIds = existing.organizationIds || []
+      const updates: any = { updatedAt: Date.now() }
+
       if (!orgIds.includes(args.organizationId)) {
-        await ctx.db.patch(existing._id, {
-          organizationIds: [...orgIds, args.organizationId],
-          updatedAt: Date.now(),
-        })
+        updates.organizationIds = [...orgIds, args.organizationId]
       }
+
+      // Update hasVsme if provided
+      if (args.hasVsme !== undefined) {
+        updates.hasVsme = args.hasVsme
+      }
+
+      await ctx.db.patch(existing._id, updates)
       return existing._id
     }
 
@@ -55,6 +62,9 @@ export const upsertUser = mutation({
     }
     if (args.username !== undefined) {
       userData.username = args.username
+    }
+    if (args.hasVsme !== undefined) {
+      userData.hasVsme = args.hasVsme
     }
 
     return await ctx.db.insert('users', userData)
@@ -174,10 +184,38 @@ export const getDisplayName = query({
   },
 })
 
+/**
+ * Get permission flags for the currently authenticated user.
+ * Returns the hasVsme flag for the calling user only.
+ * No user ID parameter to prevent cross-user data access.
+ */
+export const getPermissionFlags = query({
+  args: {},
+  returns: v.object({
+    hasVsme: v.boolean(),
+  }),
+  handler: async (ctx) => {
+    // Require authentication and get the user's ID
+    const userId = await requireUserId(ctx)
+
+    const user = await ctx.db
+      .query('users')
+      .withIndex('by_clerkId', (q) => q.eq('clerkId', userId))
+      .unique()
+
+    // If user doesn't exist or hasVsme is missing, default to false
+    // (conservative — user hasn't been explicitly granted create-org permission)
+    return {
+      hasVsme: user?.hasVsme ?? false,
+    }
+  },
+})
+
 export default {
   upsertUser,
   getMe,
   getByClerkId,
   getDisplayName,
+  getPermissionFlags,
 }
 
