@@ -153,6 +153,7 @@ export const getByClerkOrgId = query({
       industry: v.optional(v.string()),
       numberEmployees: v.optional(v.number()),
       businessModel: v.optional(v.string()),
+      hasVsme: v.optional(v.boolean()),
     }),
     v.null()
   ),
