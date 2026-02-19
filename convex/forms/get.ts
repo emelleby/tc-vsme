@@ -32,6 +32,43 @@ export const getForm = query({
   }
 })
 
+export const getBaseYearEmissions = query({
+  args: {
+    reportingYear: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const orgId = await requireOrgId(ctx)
+    
+    // Fetch both energyEmissions and scope3Emissions sections for the given year
+    const [energyEmissionsRecord, scope3EmissionsRecord] = await Promise.all([
+      getFormRecordBySection(ctx, "formEnvironmental", orgId, args.reportingYear, "energyEmissions"),
+      getFormRecordBySection(ctx, "formEnvironmental", orgId, args.reportingYear, "scope3Emissions"),
+    ])
+    
+    // Return what is found, with status info for UI feedback
+    const energyData = energyEmissionsRecord?.status === "submitted" 
+      ? energyEmissionsRecord.data as {
+          scope1Emissions?: number
+          scope2EmissionsMarketBased?: number
+        } | null
+      : null
+    
+    const scope3Data = scope3EmissionsRecord?.status === "submitted"
+      ? scope3EmissionsRecord.data as {
+          totalScope3Emissions?: number
+        } | null
+      : null
+    
+    return {
+      scope1Emissions: energyData?.scope1Emissions ?? null,
+      scope2EmissionsMarketBased: energyData?.scope2EmissionsMarketBased ?? null,
+      totalScope3Emissions: scope3Data?.totalScope3Emissions ?? null,
+      energyEmissionsStatus: energyEmissionsRecord?.status ?? null,
+      scope3EmissionsStatus: scope3EmissionsRecord?.status ?? null,
+    }
+  }
+})
+
 export const getFormAllSectionsWithContributors = query({
   args: {
     table: formTableValidator,

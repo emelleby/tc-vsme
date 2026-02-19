@@ -292,4 +292,20 @@ export default defineSchema({
     .index("by_org_year_section", ["orgId", "reportingYear", "section"])
     .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
     .index("by_orgId", ["orgId"]),
+
+  // Targets table for emissions reduction targets
+  targets: defineTable({
+    organizationId: v.string(),
+    baseYear: v.number(),
+    baseYearEmissions: v.number(),
+    targetYear: v.number(),
+    targetReduction: v.number(),
+    longTermTargetYear: v.optional(v.number()),
+    longTermTargetReduction: v.optional(v.number()),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    lastModifiedBy: v.string(),
+    lastModifiedAt: v.number(),
+  })
+    .index("by_organizationId", ["organizationId"]),
 })
