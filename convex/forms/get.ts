@@ -3,6 +3,22 @@ import { v } from "convex/values"
 import { requireOrgId } from "../_utils/auth"
 import { formTableValidator, formSectionValidator, getFormRecordBySection } from "./_utils"
 
+export const getEnvironmentalReportingYears = query({
+  args: {},
+  handler: async (ctx) => {
+    const orgId = await requireOrgId(ctx)
+    
+    const records = await ctx.db
+      .query("formEnvironmental")
+      .withIndex("by_orgId", (q) => q.eq("orgId", orgId))
+      .collect()
+    
+    // Extract unique reporting years and sort ascending
+    const years = [...new Set(records.map(r => r.reportingYear))]
+    return years.sort((a, b) => a - b)
+  }
+})
+
 export const getForm = query({
   args: {
     table: formTableValidator,

@@ -1,15 +1,23 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useConvexAuth, useQuery } from 'convex/react'
+import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import {
-	InputGroup,
-	InputGroupAddon,
-	InputGroupInput,
-} from '@/components/ui/input-group'
-import { Label } from '@/components/ui/label'
+import { useAppForm } from '@/hooks/tanstack-form'
 import { api } from '../../../../../convex/_generated/api'
+
+// Schema for the targets form
+const targetsFormSchema = z.object({
+	baseYearWithData: z.string().optional(),
+	baseYear: z.string().optional(),
+	baseYearEmissions: z.number().optional(),
+	targetYear: z.number().optional(),
+	targetReduction: z.number().optional(),
+	longTermTargetYear: z.number().optional(),
+	longTermTargetReduction: z.number().optional(),
+})
+
+type TargetsFormValues = z.infer<typeof targetsFormSchema>
 
 export const Route = createFileRoute('/_appLayout/app/targets/')({
 	component: TargetsPage,
@@ -26,7 +34,44 @@ function TargetsPage() {
 		isAuthenticated && orgId ? { clerkOrgId: orgId } : 'skip',
 	)
 
+	// Fetch reporting years from formEnvironmental table for Base Year dropdown
+	const environmentalYears = useQuery(
+		api.forms.get.getEnvironmentalReportingYears,
+		isAuthenticated ? {} : 'skip',
+	)
+
 	const companyName = orgData?.name || 'Your Company'
+
+	// Convert years to select options
+	// Use "none" as a special value to represent empty/undefined (Radix Select doesn't allow empty string values)
+	const NONE_VALUE = 'none'
+	const yearOptions = [
+		{ label: '- Clear field -', value: NONE_VALUE },
+		...(environmentalYears ?? []).map((year) => ({
+			label: year.toString(),
+			value: year.toString(),
+		})),
+	]
+
+	// Initialize TanStack Form
+	const form = useAppForm({
+		defaultValues: {
+			baseYearWithData: '',
+			baseYear: '',
+			baseYearEmissions: undefined,
+			targetYear: undefined,
+			targetReduction: undefined,
+			longTermTargetYear: undefined,
+			longTermTargetReduction: undefined,
+		} as TargetsFormValues,
+		validators: {
+			onChange: targetsFormSchema,
+		},
+		onSubmit: ({ value }) => {
+			console.log('Form submitted:', value)
+			// TODO: Implement form submission
+		},
+	})
 
 	if (orgId && orgData === undefined) {
 		return <div className="p-6">Loading...</div>
@@ -48,75 +93,100 @@ function TargetsPage() {
 					<CardTitle>Emissions Targets</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<form className="space-y-6">
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							<div className="space-y-2">
-								<Label htmlFor="base-year">Base year</Label>
-								<Input id="base-year" type="number" placeholder="e.g., 2020" />
+					<form.AppForm>
+						<form className="space-y-6">
+							{/* Base Year with data selector */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField
+									name="baseYearWithData"
+									listeners={{
+										onChange: ({ value, fieldApi }) => {
+											// Handle "none" selection - clear both fields
+											if (value === NONE_VALUE) {
+												fieldApi.form.setFieldValue('baseYearWithData', '')
+												fieldApi.form.setFieldValue('baseYear', '')
+											} else {
+												// Update baseYear field when baseYearWithData changes
+												fieldApi.form.setFieldValue('baseYear', value ?? '')
+											}
+										},
+									}}
+								>
+									{(field) => (
+										<div className="space-y-2">
+											<field.SelectField
+												label="Base Year with data"
+												placeholder="Select a year"
+												options={yearOptions}
+											/>
+										</div>
+									)}
+								</form.AppField>
 							</div>
 
-							<div className="space-y-2">
-								<Label htmlFor="base-year-emissions">Base year emissions</Label>
-								<Input
-									id="base-year-emissions"
-									type="number"
-									placeholder="e.g., 1000"
-								/>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="baseYear">
+									{(field) => (
+										<field.TextField
+											label="Base year"
+											placeholder="e.g., 2020"
+											disabled={!!field.state.value}
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="baseYearEmissions">
+									{(field) => (
+										<field.NumberField
+											label="Base year emissions"
+											placeholder="e.g., 1000"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="targetYear">
+									{(field) => (
+										<field.NumberField
+											label="Target year"
+											placeholder="e.g., 2030"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="targetReduction">
+									{(field) => (
+										<field.NumberField
+											label="Target reduction"
+											placeholder="e.g., 50"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="longTermTargetYear">
+									{(field) => (
+										<field.NumberField
+											label="Long term target year"
+											placeholder="e.g., 2050"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="longTermTargetReduction">
+									{(field) => (
+										<field.NumberField
+											label="Long term target reduction"
+											placeholder="e.g., 90"
+											unit="%"
+										/>
+									)}
+								</form.AppField>
 							</div>
 
-							<div className="space-y-2">
-								<Label htmlFor="target-year">Target year</Label>
-								<Input
-									id="target-year"
-									type="number"
-									placeholder="e.g., 2030"
-								/>
+							<div className="flex justify-end">
+								<Button type="submit">Save targets</Button>
 							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="target-reduction">Target reduction</Label>
-								<Input
-									id="target-reduction"
-									type="number"
-									placeholder="e.g., 50"
-								/>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="long-term-target-year">
-									Long term target year
-								</Label>
-								<Input
-									id="long-term-target-year"
-									type="number"
-									placeholder="e.g., 2050"
-								/>
-							</div>
-
-							<div className="space-y-2">
-								<Label htmlFor="long-term-target-reduction">
-									Long term target reduction
-								</Label>
-								<InputGroup>
-									<InputGroupInput
-										id="long-term-target-reduction"
-										type="number"
-										placeholder="e.g., 90"
-									/>
-									<InputGroupAddon
-										align="inline-end"
-										className="bg-secondary/10 pl-2 pr-2 py-2 rounded-r-md"
-									>
-										%
-									</InputGroupAddon>
-								</InputGroup>
-							</div>
-						</div>
-
-						<div className="flex justify-end">
-							<Button type="submit">Save targets</Button>
-						</div>
-					</form>
+						</form>
+					</form.AppForm>
 				</CardContent>
 			</Card>
 		</div>
