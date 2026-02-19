@@ -91,6 +91,7 @@ export const getMe = query({
       username: v.optional(v.string()),
       organizationIds: v.array(v.string()),
       updatedAt: v.number(),
+      hasVsme: v.optional(v.boolean()),
     }),
     v.null()
   ),
@@ -129,6 +130,7 @@ export const getByClerkId = query({
       username: v.optional(v.string()),
       organizationIds: v.array(v.string()),
       updatedAt: v.number(),
+      hasVsme: v.optional(v.boolean()),
     }),
     v.null()
   ),
