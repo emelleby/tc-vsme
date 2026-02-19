@@ -21,6 +21,7 @@ import type * as forms_submit from "../forms/submit.js";
 import type * as mongodb_client from "../mongodb/client.js";
 import type * as mongodb_queries from "../mongodb/queries.js";
 import type * as organizations from "../organizations.js";
+import type * as targets from "../targets.js";
 import type * as todos from "../todos.js";
 import type * as users from "../users.js";
 
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   "mongodb/client": typeof mongodb_client;
   "mongodb/queries": typeof mongodb_queries;
   organizations: typeof organizations;
+  targets: typeof targets;
   todos: typeof todos;
   users: typeof users;
 }>;
