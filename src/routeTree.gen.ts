@@ -38,6 +38,7 @@ import { Route as DemoLayoutDemoAiChatRouteImport } from './routes/_demoLayout/d
 import { Route as AppLayoutAppOrderRouteImport } from './routes/_appLayout/app/order'
 import { Route as AppLayoutAppEmissionsRouteImport } from './routes/_appLayout/app/emissions'
 import { Route as DemoLayoutDemoGuitarsIndexRouteImport } from './routes/_demoLayout/demo/guitars/index'
+import { Route as AppLayoutAppTargetsIndexRouteImport } from './routes/_appLayout/app/targets/index'
 import { Route as AppLayoutAppSettingsIndexRouteImport } from './routes/_appLayout/app/settings/index'
 import { Route as AppLayoutAppGeneralIndexRouteImport } from './routes/_appLayout/app/general/index'
 import { Route as AppLayoutAppEnvironmentalIndexRouteImport } from './routes/_appLayout/app/environmental/index'
@@ -206,6 +207,12 @@ const DemoLayoutDemoGuitarsIndexRoute =
     path: '/demo/guitars/',
     getParentRoute: () => DemoLayoutRouteRoute,
   } as any)
+const AppLayoutAppTargetsIndexRoute =
+  AppLayoutAppTargetsIndexRouteImport.update({
+    id: '/app/targets/',
+    path: '/app/targets/',
+    getParentRoute: () => AppLayoutRouteRoute,
+  } as any)
 const AppLayoutAppSettingsIndexRoute =
   AppLayoutAppSettingsIndexRouteImport.update({
     id: '/app/settings/',
@@ -369,6 +376,7 @@ export interface FileRoutesByFullPath {
   '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
   '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
+  '/app/targets': typeof AppLayoutAppTargetsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
   '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
   '/demo/api/ai/image': typeof DemoLayoutDemoApiAiImageRoute
@@ -419,6 +427,7 @@ export interface FileRoutesByTo {
   '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
   '/app/general': typeof AppLayoutAppGeneralIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
+  '/app/targets': typeof AppLayoutAppTargetsIndexRoute
   '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
   '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
   '/demo/api/ai/image': typeof DemoLayoutDemoApiAiImageRoute
@@ -472,6 +481,7 @@ export interface FileRoutesById {
   '/_appLayout/app/environmental/': typeof AppLayoutAppEnvironmentalIndexRoute
   '/_appLayout/app/general/': typeof AppLayoutAppGeneralIndexRoute
   '/_appLayout/app/settings/': typeof AppLayoutAppSettingsIndexRoute
+  '/_appLayout/app/targets/': typeof AppLayoutAppTargetsIndexRoute
   '/_demoLayout/demo/guitars/': typeof DemoLayoutDemoGuitarsIndexRoute
   '/_demoLayout/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
   '/_demoLayout/demo/api/ai/image': typeof DemoLayoutDemoApiAiImageRoute
@@ -524,6 +534,7 @@ export interface FileRouteTypes {
     | '/app/environmental'
     | '/app/general'
     | '/app/settings'
+    | '/app/targets'
     | '/demo/guitars'
     | '/demo/api/ai/chat'
     | '/demo/api/ai/image'
@@ -574,6 +585,7 @@ export interface FileRouteTypes {
     | '/app/environmental'
     | '/app/general'
     | '/app/settings'
+    | '/app/targets'
     | '/demo/guitars'
     | '/demo/api/ai/chat'
     | '/demo/api/ai/image'
@@ -626,6 +638,7 @@ export interface FileRouteTypes {
     | '/_appLayout/app/environmental/'
     | '/_appLayout/app/general/'
     | '/_appLayout/app/settings/'
+    | '/_appLayout/app/targets/'
     | '/_demoLayout/demo/guitars/'
     | '/_demoLayout/demo/api/ai/chat'
     | '/_demoLayout/demo/api/ai/image'
@@ -860,6 +873,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoLayoutDemoGuitarsIndexRouteImport
       parentRoute: typeof DemoLayoutRouteRoute
     }
+    '/_appLayout/app/targets/': {
+      id: '/_appLayout/app/targets/'
+      path: '/app/targets'
+      fullPath: '/app/targets'
+      preLoaderRoute: typeof AppLayoutAppTargetsIndexRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
     '/_appLayout/app/settings/': {
       id: '/_appLayout/app/settings/'
       path: '/app/settings'
@@ -1017,6 +1037,7 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutAppEnvironmentalIndexRoute: typeof AppLayoutAppEnvironmentalIndexRoute
   AppLayoutAppGeneralIndexRoute: typeof AppLayoutAppGeneralIndexRoute
   AppLayoutAppSettingsIndexRoute: typeof AppLayoutAppSettingsIndexRoute
+  AppLayoutAppTargetsIndexRoute: typeof AppLayoutAppTargetsIndexRoute
 }
 
 const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
@@ -1026,6 +1047,7 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutAppEnvironmentalIndexRoute: AppLayoutAppEnvironmentalIndexRoute,
   AppLayoutAppGeneralIndexRoute: AppLayoutAppGeneralIndexRoute,
   AppLayoutAppSettingsIndexRoute: AppLayoutAppSettingsIndexRoute,
+  AppLayoutAppTargetsIndexRoute: AppLayoutAppTargetsIndexRoute,
 }
 
 const AppLayoutRouteRouteWithChildren = AppLayoutRouteRoute._addFileChildren(

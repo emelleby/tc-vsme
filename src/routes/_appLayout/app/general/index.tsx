@@ -2,13 +2,16 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
+import { useState } from 'react'
 import { B1GeneralForm } from '@/components/forms/b1-general-form'
 import { B2SustainabilityInitiativesForm } from '@/components/forms/b2-sustainability-initiatives-form'
 
 import { C1BusinessModelForm } from '@/components/forms/c1-business-model-form'
+import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
+import { GeneralHelp } from './-initiatives-help'
 
 export const Route = createFileRoute('/_appLayout/app/general/')({
 	component: GeneralPage,
@@ -28,6 +31,7 @@ function formatDate(timestamp: number | undefined): string {
 
 function GeneralPage() {
 	const reportingYear = useStore(yearStore, (state) => state.selectedYear)
+	const [isInitiativesHelpOpen, setInitiativesHelpOpen] = useState(false)
 
 	// Guard against race conditions during org switching
 	const { skipQuery, isLoading: isOrgLoading } = useOrgGuard()
@@ -80,6 +84,9 @@ function GeneralPage() {
 				status={sustainability?.status ?? 'draft'}
 				contributor={sustainability?.contributor || { name: 'Unknown' }}
 				code="B2"
+				buttonText="Hjelp"
+				onClick={() => setInitiativesHelpOpen(true)}
+				module="Grunnmodul"
 				version={
 					sustainability?.versions?.length
 						? sustainability.versions[sustainability.versions.length - 1]
@@ -89,6 +96,14 @@ function GeneralPage() {
 			>
 				<B2SustainabilityInitiativesForm />
 			</FormCard>
+			<HelpSheet
+				open={isInitiativesHelpOpen}
+				onOpenChange={setInitiativesHelpOpen}
+				title="Sustainability initiatives"
+				description="Guidance and examples for selecting sustainability initiatives."
+			>
+				<GeneralHelp />
+			</HelpSheet>
 
 			<hr />
 			<FormCard

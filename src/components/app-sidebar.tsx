@@ -78,6 +78,10 @@ const data = {
 					url: '/app/emissions',
 				},
 				{
+					title: 'Targets',
+					url: '/app/targets',
+				},
+				{
 					title: 'Settings',
 					url: '/app/settings',
 				},
