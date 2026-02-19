@@ -293,3 +293,142 @@ describe('getOrgRole - New JWT Layout', () => {
     expect(role).toBe('admin')
   })
 })
+
+describe('Per-Request Identity Caching', () => {
+  it('calls getUserIdentity only once when multiple auth utilities are called with same ctx', async () => {
+    const getUserIdentitySpy = vi.fn().mockResolvedValue({
+      subject: 'user_123',
+      email: 'test@example.com',
+      name: 'Test User',
+      org_id: 'org_456',
+      org_role: 'admin',
+    })
+
+    const ctx = {
+      auth: {
+        getUserIdentity: getUserIdentitySpy,
+      },
+    }
+
+    // Call multiple auth utilities with the same ctx
+    await requireUserId(ctx)
+    await getOrgId(ctx)
+
+    // getUserIdentity should only be called once due to caching
+    expect(getUserIdentitySpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls getUserIdentity only once when calling requireUserId, getUserEmail, and getOrgRole', async () => {
+    const getUserIdentitySpy = vi.fn().mockResolvedValue({
+      subject: 'user_123',
+      email: 'test@example.com',
+      name: 'Test User',
+      org_id: 'org_456',
+      org_role: 'admin',
+    })
+
+    const ctx = {
+      auth: {
+        getUserIdentity: getUserIdentitySpy,
+      },
+    }
+
+    // Call three different auth utilities
+    await requireUserId(ctx)
+    await getUserEmail(ctx)
+    await getOrgRole(ctx)
+
+    // getUserIdentity should only be called once
+    expect(getUserIdentitySpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('calls getUserIdentity once per ctx object (different ctx = different cache)', async () => {
+    const getUserIdentitySpy1 = vi.fn().mockResolvedValue({
+      subject: 'user_123',
+      email: 'test@example.com',
+    })
+
+    const getUserIdentitySpy2 = vi.fn().mockResolvedValue({
+      subject: 'user_456',
+      email: 'other@example.com',
+    })
+
+    const ctx1 = {
+      auth: {
+        getUserIdentity: getUserIdentitySpy1,
+      },
+    }
+
+    const ctx2 = {
+      auth: {
+        getUserIdentity: getUserIdentitySpy2,
+      },
+    }
+
+    // Call with first ctx
+    await requireUserId(ctx1)
+    await getOrgId(ctx1)
+
+    // Call with second ctx
+    await requireUserId(ctx2)
+    await getOrgId(ctx2)
+
+    // Each spy should be called exactly once
+    expect(getUserIdentitySpy1).toHaveBeenCalledTimes(1)
+    expect(getUserIdentitySpy2).toHaveBeenCalledTimes(1)
+  })
+
+  it('caches the promise, not the resolved value (handles concurrent calls)', async () => {
+    let resolveIdentity: (value: any) => void
+    const identityPromise = new Promise((resolve) => {
+      resolveIdentity = resolve
+    })
+
+    const getUserIdentitySpy = vi.fn().mockReturnValue(identityPromise)
+
+    const ctx = {
+      auth: {
+        getUserIdentity: getUserIdentitySpy,
+      },
+    }
+
+    // Start two concurrent calls
+    const promise1 = requireUserId(ctx)
+    const promise2 = getOrgId(ctx)
+
+    // getUserIdentity should only be called once, even though both calls are in flight
+    expect(getUserIdentitySpy).toHaveBeenCalledTimes(1)
+
+    // Resolve the identity
+    resolveIdentity!({
+      subject: 'user_123',
+      org_id: 'org_456',
+    })
+
+    // Both promises should resolve with the same data
+    const [userId, orgId] = await Promise.all([promise1, promise2])
+    expect(userId).toBe('user_123')
+    expect(orgId).toBe('org_456')
+
+    // Still only one call to getUserIdentity
+    expect(getUserIdentitySpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns same error when cached identity call fails', async () => {
+    const error = new Error('JWT verification failed')
+    const getUserIdentitySpy = vi.fn().mockRejectedValue(error)
+
+    const ctx = {
+      auth: {
+        getUserIdentity: getUserIdentitySpy,
+      },
+    }
+
+    // Both calls should fail with the same error
+    await expect(requireUserId(ctx)).rejects.toThrow('JWT verification failed')
+    await expect(getOrgId(ctx)).rejects.toThrow('JWT verification failed')
+
+    // getUserIdentity should only be called once (error is cached)
+    expect(getUserIdentitySpy).toHaveBeenCalledTimes(1)
+  })
+})
