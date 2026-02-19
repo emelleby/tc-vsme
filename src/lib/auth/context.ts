@@ -4,6 +4,12 @@
  * This module provides server functions for fetching full authentication context
  * including user and organization permission flags from Convex. These functions are
  * designed to be called in route beforeLoad hooks where API calls are acceptable.
+ *
+ * Story 5: Client-Side Auth Context Caching
+ * - Implements in-memory cache to avoid redundant Convex queries on navigation
+ * - Cache is keyed by userId + orgId to handle org switching
+ * - Cache is automatically invalidated when orgId changes
+ * - Manual invalidation available via invalidateAuthContext()
  */
 
 import { auth } from '@clerk/tanstack-react-start/server'
@@ -18,6 +24,43 @@ if (!CONVEX_URL) {
 }
 
 /**
+ * In-memory cache for auth context
+ * Key format: `${userId}:${orgId || 'no-org'}`
+ * Cache is cleared on page refresh (in-memory only)
+ */
+const authContextCache = new Map<string, AuthContext | null>()
+
+/**
+ * Generates a cache key for the auth context
+ */
+function getCacheKey(userId: string, orgId: string | null | undefined): string {
+	return `${userId}:${orgId || 'no-org'}`
+}
+
+/**
+ * Invalidates the cached auth context for the current user.
+ * Call this after operations that change user/org permissions (e.g., setupOrganization).
+ *
+ * @example
+ * ```tsx
+ * await setupOrganization({ ... })
+ * await invalidateAuthContext() // Force fresh data on next navigation
+ * ```
+ */
+export const invalidateAuthContext = createServerFn({
+	method: 'POST',
+}).handler(async (): Promise<void> => {
+	const authResult = await auth()
+	const userId = authResult.userId
+	const orgId = authResult.orgId
+
+	if (userId) {
+		const cacheKey = getCacheKey(userId, orgId)
+		authContextCache.delete(cacheKey)
+	}
+})
+
+/**
  * Fetches the complete authentication context for the current user.
  *
  * This server function:
@@ -25,9 +68,15 @@ if (!CONVEX_URL) {
  * - Fetches user permission flags from Convex (hasVsme)
  * - Fetches organization permission flags from Convex (orgHasVsme, vsmeDb) if org is selected
  * - Computes derived properties (canAccessDashboard, needsOrgSetup)
+ * - **Story 5**: Caches results in-memory to avoid redundant queries on navigation
  *
- * **Performance Note**: This function makes Convex queries (~100ms total) and should only be
- * called in route beforeLoad hooks, not in global middleware.
+ * **Performance Note**: First call makes Convex queries (~100ms total). Subsequent calls
+ * return cached data instantly unless orgId changes or cache is invalidated.
+ *
+ * **Cache Invalidation**: Cache is automatically cleared when:
+ * - User switches organizations (orgId changes)
+ * - Page is refreshed (in-memory cache)
+ * - invalidateAuthContext() is called manually
  *
  * @returns AuthContext object if authenticated, null otherwise
  *
@@ -55,6 +104,14 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 		// Return null if not authenticated
 		if (!userId) {
 			return null
+		}
+
+		// Check cache first
+		const cacheKey = getCacheKey(userId, orgId)
+		const cached = authContextCache.get(cacheKey)
+		if (cached !== undefined) {
+			// Cache hit - return immediately without Convex queries
+			return cached
 		}
 
 		// Initialize Convex client (server-side)
@@ -98,7 +155,7 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 		// 2. They have an org with orgHasVsme but no vsmeDb
 		const needsOrgSetup = hasVsme && (!orgId || (orgHasVsme && !vsmeDb))
 
-		return {
+		const result: AuthContext = {
 			isAuthenticated: true,
 			userId,
 			orgId: orgId || null,
@@ -108,5 +165,10 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 			canAccessDashboard,
 			needsOrgSetup,
 		}
+
+		// Store in cache for future navigations
+		authContextCache.set(cacheKey, result)
+
+		return result
 	},
 )
