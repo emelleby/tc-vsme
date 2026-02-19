@@ -99,7 +99,7 @@ function TargetsPage() {
 	}, [environmentalYears])
 
 	// Compute default values from existing targets
-	const defaultValues = useMemo<TargetsFormValues>(() => {
+	const defaultValues = useMemo(() => {
 		if (existingTargets) {
 			return {
 				baseYear: existingTargets.baseYear,
@@ -111,18 +111,18 @@ function TargetsPage() {
 			}
 		}
 		return {
-			baseYear: undefined,
-			baseYearEmissions: undefined,
-			targetYear: undefined,
-			targetReduction: undefined,
-			longTermTargetYear: undefined,
-			longTermTargetReduction: undefined,
+			baseYear: undefined as number | undefined,
+			baseYearEmissions: undefined as number | undefined,
+			targetYear: undefined as number | undefined,
+			targetReduction: undefined as number | undefined,
+			longTermTargetYear: undefined as number | undefined,
+			longTermTargetReduction: undefined as number | undefined,
 		}
 	}, [existingTargets])
 
 	// Initialize TanStack Form with default values
 	const form = useAppForm({
-		defaultValues,
+		defaultValues: defaultValues as TargetsFormValues,
 		validators: {
 			onSubmit: targetsFormSchema,
 		},
