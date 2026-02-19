@@ -1,8 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { BadgeQuestionMarkIcon, ChevronRightIcon } from 'lucide-react'
-import React, { useRef } from 'react'
+import { BadgeQuestionMarkIcon, ChevronRightIcon, InfoIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { useRef } from 'react'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
@@ -23,7 +25,7 @@ interface FormCardProps {
 	onClick?: () => void
 	toolTip: string
 	buttonText?: string
-	children?: React.ReactNode
+	children?: ReactNode
 	module?: 'Grunnmodul' | 'Utvidet modul'
 	code: string
 	version?: number
@@ -44,6 +46,7 @@ export function FormCard({
 }: FormCardProps) {
 	const { isExpanded, toggleExpand } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
+	const hasHelpButton = Boolean(buttonText)
 
 	return (
 		<Card
@@ -65,7 +68,7 @@ export function FormCard({
 				}}
 			>
 				<div className="flex justify-between items-start w-full">
-					<div className="flex gap-2">
+					<div className="flex gap-2 items-center">
 						<div
 							className={cn(
 								'inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
@@ -84,31 +87,36 @@ export function FormCard({
 							)}
 						/>
 					</div>
-					<div className="flex gap-2">
+					<div className="flex items-center gap-2">
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<Button
-										type="button"
-										className="flex gap-2"
-										variant="ghost"
-										size="default"
-										onClick={(e) => {
-											e.stopPropagation()
-											console.log('Button clicked in FormCard')
-											onClick()
-										}}
-										onPointerDown={(e) => e.stopPropagation()}
-									>
-										<BadgeQuestionMarkIcon className="h-6 w-6" />
-										<span>{buttonText}</span>
-									</Button>
+									<InfoIcon
+										className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-help"
+										onClick={(e) => e.stopPropagation()}
+									/>
 								</TooltipTrigger>
 								<TooltipContent>
 									<p>{toolTip}</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
+						{hasHelpButton && (
+							<Button
+								type="button"
+								className="flex gap-2"
+								variant="ghost"
+								size="default"
+								onClick={(e) => {
+									e.stopPropagation()
+									onClick()
+								}}
+								onPointerDown={(e) => e.stopPropagation()}
+							>
+								<BadgeQuestionMarkIcon className="h-6 w-6" />
+								<span>{buttonText}</span>
+							</Button>
+						)}
 					</div>
 				</div>
 			</CardHeader>
