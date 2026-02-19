@@ -1,5 +1,14 @@
 # Authentication Flow Documentation
 
+> **⚠️ DEPRECATED**: This document has been consolidated into `docs/AUTH.md`.
+> Please refer to `docs/AUTH.md` for the current, comprehensive authentication documentation.
+>
+> **Note**: This file contains outdated references to Encore.ts backend (project now uses Convex).
+>
+> **Last Updated**: 2026-02-19 (Consolidated into AUTH.md)
+
+---
+
 This document provides a detailed explanation of the authentication flow in this Encore.ts + Next.js application using Clerk for identity management.
 
 ## Table of Contents
@@ -179,11 +188,11 @@ const isPublicRoute = createRouteMatcher([
 
 The middleware checks three critical flags from Clerk metadata:
 
-| Flag | Location | Meaning |
-|------|----------|---------|
-| `hasVsme` | User publicMetadata | User has permission to create VSME organizations |
-| `orgHasVsme` | Organization publicMetadata | Organization has VSME access |
-| `vsmeDb` | Organization publicMetadata | Organization exists in MongoDB database |
+| Flag         | Location                    | Meaning                                          |
+| ------------ | --------------------------- | ------------------------------------------------ |
+| `hasVsme`    | User publicMetadata         | User has permission to create VSME organizations |
+| `orgHasVsme` | Organization publicMetadata | Organization has VSME access                     |
+| `vsmeDb`     | Organization publicMetadata | Organization exists in MongoDB database          |
 
 ### 2.3 Routing Decision Tree
 
@@ -576,12 +585,12 @@ flowchart LR
 
 ### 5.3 State Transitions
 
-| State | hasVsme | orgHasVsme | vsmeDb | Allowed Routes | Redirect To |
-|-------|---------|------------|--------|----------------|-------------|
-| Visitor | ❌ | ❌ | ❌ | Public only | `/` |
-| New User | ✅ | ❌ | ❌ | Public + `/create-organization` | `/create-organization` |
-| Org Created | ✅ | ✅ | ❌ | Public + `/create-organization` | `/create-organization` |
-| Full Access | ✅ | ✅ | ✅ | All routes | - |
+| State       | hasVsme | orgHasVsme | vsmeDb | Allowed Routes                  | Redirect To            |
+| ----------- | ------- | ---------- | ------ | ------------------------------- | ---------------------- |
+| Visitor     | ❌       | ❌          | ❌      | Public only                     | `/`                    |
+| New User    | ✅       | ❌          | ❌      | Public + `/create-organization` | `/create-organization` |
+| Org Created | ✅       | ✅          | ❌      | Public + `/create-organization` | `/create-organization` |
+| Full Access | ✅       | ✅          | ✅      | All routes                      | -                      |
 
 ---
 
