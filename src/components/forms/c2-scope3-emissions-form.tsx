@@ -1,8 +1,11 @@
+import { useStore } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useAction } from 'convex/react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { AlertTriangle } from 'lucide-react'
 import { useMemo } from 'react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { FormButtons } from '@/hooks/tanstack-form'
@@ -152,6 +155,20 @@ export function C2Scope3EmissionsForm() {
 			defaultValues,
 		})
 
+	// Real-time validation: Calculate category sum and compare with total
+	const formValues = useStore(form.store, (state) => state.values)
+
+	const categorySum = useMemo(() => {
+		return SCOPE_3_CATEGORIES.reduce((sum, cat) => {
+			const value = formValues[`category${cat.number}`] || 0
+			return sum + value
+		}, 0)
+	}, [formValues])
+
+	const totalScope3 = formValues.totalScope3Emissions || 0
+	const difference = Math.abs(categorySum - totalScope3)
+	const hasMismatch = difference > 0.01 // 0.01 tCO₂e tolerance
+
 	// Combined loading state
 	const isFormLoading = isLoading || isMongoLoading
 
@@ -211,6 +228,19 @@ export function C2Scope3EmissionsForm() {
 					<Card>
 						<CardContent className="pt-6">
 							<h3 className="text-lg font-medium mb-4">Scope 3 Categories</h3>
+
+							{/* Category Sum Validation Warning */}
+							{hasMismatch && (
+								<Alert variant="warning" className="mb-4">
+									<AlertTriangle className="h-4 w-4" />
+									<AlertDescription>
+										⚠️ Warning: Categories sum to {categorySum.toFixed(2)} tCO₂e
+										but total is {totalScope3.toFixed(2)} tCO₂e. Difference:{' '}
+										{difference.toFixed(2)} tCO₂e
+									</AlertDescription>
+								</Alert>
+							)}
+
 							<Tabs defaultValue="upstream" className="w-full">
 								<TabsList className="grid w-full grid-cols-2">
 									<TabsTrigger value="upstream">
