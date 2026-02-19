@@ -124,6 +124,7 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				industry: data.industry,
 				numberEmployees: data.numberEmployees,
 				businessModel: data.businessModel,
+				hasVsme: true,
 			})
 
 			// Step 2: Upsert user in Convex
@@ -134,6 +135,7 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				lastName: user.lastName || undefined,
 				username: user.username || undefined,
 				organizationId: data.orgId,
+				hasVsme: false,
 			})
 
 			// Step 3: Update Clerk organization metadata

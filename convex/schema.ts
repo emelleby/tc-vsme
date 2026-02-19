@@ -198,6 +198,7 @@ export default defineSchema({
     industry: v.optional(v.string()),
     numberEmployees: v.optional(v.number()),
     businessModel: v.optional(v.string()),
+    hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkOrgId', ['clerkOrgId'])
     .index('by_slug', ['slug'])
@@ -212,6 +213,7 @@ export default defineSchema({
     username: v.optional(v.string()),
     organizationIds: v.array(v.string()), // Array of Clerk org IDs
     updatedAt: v.number(), // Manual timestamp for updates
+    hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkId', ['clerkId'])
     .index('by_email', ['email']),
