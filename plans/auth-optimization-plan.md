@@ -202,7 +202,7 @@ No explicit cache to invalidate. Convex queries read from the database in real-t
 
 ---
 
-## Story 3: Per-Request Identity Cache in Convex Auth Utilities
+## Story 3: Per-Request Identity Cache in Convex Auth Utilities ✅ COMPLETED (2026-02-19)
 
 ### Description
 
@@ -675,3 +675,121 @@ Validator: v.object({..., (missing hasVsme field)})
 **Next Steps:**
 
 Story 3 can be implemented immediately. It will add per-request identity caching in `convex/_utils/auth.ts` to eliminate redundant `getUserIdentity()` calls within single handler invocations. This is a pure performance optimization with zero risk to the org-scoping invariant.
+
+---
+
+### Story 3 Implementation Summary (Completed 2026-02-19)
+
+**What was implemented:**
+
+1. **Added per-request identity caching** (`convex/_utils/auth.ts`):
+   - **Added**: `const identityCache = new WeakMap<object, Promise<any>>()` (line 37)
+   - **Added**: `getCachedIdentity(ctx)` helper function (lines 48-56)
+   - **Updated**: All 7 auth utility functions to use `getCachedIdentity(ctx)` instead of `ctx.auth.getUserIdentity()`:
+     - `requireUserId()` (line 73)
+     - `getOrgId()` (line 95)
+     - `requireOrgId()` (line 115)
+     - `getAuthIdentity()` (line 133)
+     - `getUserEmail()` (line 147)
+     - `getUserName()` (line 165)
+     - `getOrgRole()` (line 183)
+
+2. **Added comprehensive test coverage** (`convex/_utils/__tests__/auth.test.ts`):
+   - **Added**: New test suite "Per-Request Identity Caching" with 5 test cases (lines 297-434):
+     - Verifies single `getUserIdentity()` call when using `requireUserId()` then `getOrgId()`
+     - Verifies single call when using `requireUserId()`, `getUserEmail()`, and `getOrgRole()`
+     - Verifies separate calls for different `ctx` objects (no cross-request leakage)
+     - Verifies promise caching (not resolved value) for concurrent calls
+     - Verifies error caching behavior
+   - **Result**: All 34 tests passing (29 existing + 5 new)
+
+**Important Design Decisions:**
+
+1. **WeakMap for per-request caching**:
+   - Uses the `ctx` object as the key
+   - Automatically garbage-collected when `ctx` goes out of scope (no memory leaks)
+   - Different handler invocations get different `ctx` objects → zero cross-request data leakage
+   - Perfect for request-scoped caching in serverless environments
+
+2. **Promise caching (not resolved value)**:
+   - Caches `ctx.auth.getUserIdentity()` promise itself, not the resolved value
+   - Ensures concurrent calls from the same handler don't trigger multiple underlying calls
+   - If multiple auth utilities are called before the first promise resolves, they all share the same promise
+   - This is critical for correctness in async scenarios
+
+3. **TypeScript type safety**:
+   - Fixed TypeScript errors by restructuring the caching logic
+   - Changed from `let promise = identityCache.get(ctx)` (which could be undefined) to early return pattern
+   - Ensures the returned promise is always defined (never `Promise<any> | undefined`)
+
+4. **Zero breaking changes**:
+   - All auth utility functions maintain identical signatures and return types
+   - Caching is completely transparent to callers
+   - All existing tests pass without modification
+   - New tests verify the caching behavior
+
+**Performance Impact:**
+
+- **Before**: Handlers calling multiple auth utilities (e.g., `requireUserId()` + `requireOrgId()`) triggered N separate `getUserIdentity()` calls
+- **After**: Only 1 `getUserIdentity()` call per handler invocation, regardless of how many auth utilities are used
+- **Example**: A handler calling `requireUserId()`, `getUserEmail()`, and `getOrgRole()` now makes 1 call instead of 3
+- **Latency improvement**: Reduces per-handler latency by eliminating redundant JWT verifications
+- **Note**: `getUserIdentity()` is a local JWT verification (not a Clerk API call), so this is a latency optimization, not a rate limit fix
+
+**Test Coverage:**
+
+All test scenarios verified:
+- ✅ Single call when multiple utilities use same context
+- ✅ Single call when calling utilities in sequence
+- ✅ Separate calls for different context objects (no cross-request leakage)
+- ✅ Concurrent call handling (promise caching)
+- ✅ Error caching (same error returned for failed identity calls)
+- ✅ All 29 existing tests still passing (no regressions)
+
+**Security Verification:**
+
+- ✅ **Org-scoping invariant preserved**: The `orgId` is extracted from the cached JWT identity's `org_id` claim. Same claim, same value, just read once instead of multiple times.
+- ✅ **No cross-request leakage**: Each Convex handler invocation receives a unique `ctx` object. The `WeakMap` ensures no data bleeds between requests.
+- ✅ **Same error semantics**: If `getUserIdentity()` returns `null`, the cached `null` is returned to all callers. `requireUserId` and `requireOrgId` still throw their `Unauthorized` errors correctly.
+- ✅ **Automatic cleanup**: `WeakMap` automatically garbage-collects entries when `ctx` goes out of scope. No manual cleanup needed.
+
+**Context for Story 4:**
+
+Story 4 is **independent** of Story 3 and can be implemented immediately. It focuses on reducing Clerk API calls in `setupOrganization` by passing user/org data from the client instead of fetching it server-side.
+
+**What Story 4 needs:**
+- Understanding of what data is available on the client side at the `setupOrganization` call site
+- Access to `useUser()` hook in `create-organization.tsx` to get user email/name
+- Org name and slug are already available from the Clerk `createOrganization()` return value
+
+**Files Modified:**
+- `convex/_utils/auth.ts` (added caching mechanism)
+- `convex/_utils/__tests__/auth.test.ts` (added 5 new tests)
+
+**Performance Characteristics:**
+
+- **Memory**: `WeakMap` has minimal memory overhead. Entries are automatically garbage-collected when `ctx` is no longer referenced.
+- **CPU**: Negligible overhead (single map lookup per auth utility call)
+- **Latency**: Reduces redundant JWT verifications within a single handler
+- **Scalability**: No global state, no cross-request interference, perfect for serverless
+
+**Known Issues/Gotchas:**
+
+1. **TypeScript type annotations**: The `getCachedIdentity()` function uses `any` for the `ctx` parameter because Convex context types vary across query/mutation/action contexts. This is safe and follows Convex best practices.
+
+2. **Not a rate limit fix**: This story optimizes latency, not Clerk API rate limits. `getUserIdentity()` is a local JWT verification (no API call). The rate limit fix came from Story 2 (eliminating Clerk Backend API calls in `getAuthContext()`).
+
+3. **Transparent to callers**: The caching is an internal implementation detail. All auth utility functions maintain their existing contracts. Callers don't need to know about the cache.
+
+4. **Error propagation**: If `getUserIdentity()` throws an error, the error is cached and returned to all callers within the same request. This is correct behavior (consistent error state).
+
+**Verification:**
+
+1. **Unit tests**: All 34 tests in `auth.test.ts` passing (29 existing + 5 new)
+2. **TypeScript**: No type errors (fixed by restructuring the caching logic)
+3. **No regressions**: All existing auth utility behavior unchanged
+4. **Caching verified**: New tests confirm single `getUserIdentity()` call per context
+
+**Next Steps:**
+
+Story 4 can be implemented immediately. It will reduce Clerk API calls in `setupOrganization` from 4-6 calls to 2-3 calls by passing user/org data from the client instead of fetching it server-side. This provides burst protection during concurrent org setups.
