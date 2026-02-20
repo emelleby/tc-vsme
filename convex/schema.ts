@@ -304,6 +304,18 @@ export default defineSchema({
     targetReduction: v.number(),
     longTermTargetYear: v.optional(v.number()),
     longTermTargetReduction: v.optional(v.number()),
+    projections: v.optional(v.array(
+      v.object({
+        year: v.number(),
+        scope1: v.number(),
+        scope2: v.number(),
+        scope3: v.number(),
+        total: v.number(),
+        isBaseYear: v.optional(v.boolean()),
+        isTargetYear: v.optional(v.boolean()),
+        isLongTermTargetYear: v.optional(v.boolean()),
+      })
+    )),
     createdBy: v.string(),
     createdAt: v.number(),
     lastModifiedBy: v.string(),

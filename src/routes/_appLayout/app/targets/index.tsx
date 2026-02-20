@@ -1,6 +1,13 @@
+import { useStore } from '@tanstack/react-form'
 import { createFileRoute } from '@tanstack/react-router'
+import {
+	createColumnHelper,
+	flexRender,
+	getCoreRowModel,
+	useReactTable,
+} from '@tanstack/react-table'
 import { useMutation, useQuery } from 'convex/react'
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
@@ -36,6 +43,21 @@ interface BaseYearEmissionsData {
 	scope1Emissions: number | null
 	scope2EmissionsMarketBased: number | null
 	totalScope3Emissions: number | null
+	category1: number | null
+	category2: number | null
+	category3: number | null
+	category4: number | null
+	category5: number | null
+	category6: number | null
+	category7: number | null
+	category8: number | null
+	category9: number | null
+	category10: number | null
+	category11: number | null
+	category12: number | null
+	category13: number | null
+	category14: number | null
+	category15: number | null
 	energyEmissionsStatus: string | null
 	scope3EmissionsStatus: string | null
 }
@@ -52,6 +74,230 @@ function calculateTotalEmissions(data: BaseYearEmissionsData | null): number {
 export const Route = createFileRoute('/_appLayout/app/targets/')({
 	component: TargetsPage,
 })
+
+// --- Table Logic & Components ---
+
+interface EmissionRow {
+	year: number
+	scope1: number
+	scope2: number
+	scope3: number
+	total: number
+	isBaseYear?: boolean
+	isTargetYear?: boolean
+	isLongTermTargetYear?: boolean
+}
+
+function calculateCompoundReduction(
+	startValue: number,
+	startYear: number,
+	endYear: number,
+	reductionPercentage: number,
+): number {
+	if (startYear >= endYear) return 0 // Should not happen given constraints
+	const targetValue = startValue * (1 - reductionPercentage / 100)
+	// CAGR formula: (End / Start)^(1 / n) - 1
+	// Here we want the factor x such that Start * x^n = Target
+	// x = (Target / Start)^(1 / n)
+	if (startValue === 0) return 0
+
+	const n = endYear - startYear
+	const rate = Math.pow(targetValue / startValue, 1 / n)
+	return rate
+}
+
+function generateEmissionRows(
+	baseYear: number,
+	targetYear: number,
+	targetReduction: number,
+	longTermTargetYear: number | undefined,
+	longTermTargetReduction: number | undefined,
+	baseEmissions: BaseYearEmissionsData,
+): EmissionRow[] {
+	const rows: EmissionRow[] = []
+	const startYear = baseYear
+	// If long term target is present and valid (after target year), go up to that
+	// otherwise just go to target year
+	const endYear =
+		longTermTargetYear && longTermTargetYear > targetYear
+			? longTermTargetYear
+			: targetYear
+
+	// Initial values
+	let currentScope1 = baseEmissions.scope1Emissions ?? 0
+	let currentScope2 = baseEmissions.scope2EmissionsMarketBased ?? 0
+	let currentScope3 = baseEmissions.totalScope3Emissions ?? 0
+
+	// 1. Calculate rate for Base -> Target
+	const rate1Scope1 = calculateCompoundReduction(
+		baseEmissions.scope1Emissions ?? 0,
+		baseYear,
+		targetYear,
+		targetReduction,
+	)
+	const rate1Scope2 = calculateCompoundReduction(
+		baseEmissions.scope2EmissionsMarketBased ?? 0,
+		baseYear,
+		targetYear,
+		targetReduction,
+	)
+	const rate1Scope3 = calculateCompoundReduction(
+		baseEmissions.totalScope3Emissions ?? 0,
+		baseYear,
+		targetYear,
+		targetReduction,
+	)
+
+	// 2. Calculate rate for Target -> Long Term (if applicable)
+	let rate2Scope1 = 0
+	let rate2Scope2 = 0
+	let rate2Scope3 = 0
+
+	if (
+		longTermTargetYear &&
+		longTermTargetReduction !== undefined &&
+		longTermTargetYear > targetYear
+	) {
+		// We need the values AT target year to calculate the next leg
+		const targetScope1 =
+			(baseEmissions.scope1Emissions ?? 0) * (1 - targetReduction / 100)
+		const targetScope2 =
+			(baseEmissions.scope2EmissionsMarketBased ?? 0) *
+			(1 - targetReduction / 100)
+		const targetScope3 =
+			(baseEmissions.totalScope3Emissions ?? 0) * (1 - targetReduction / 100)
+
+		// Calculate rate from Target Year value -> Long Term value relative to Base Year
+		// The Long Term Reduction is usually relative to Base Year
+		const longTermValueScope1 =
+			(baseEmissions.scope1Emissions ?? 0) * (1 - longTermTargetReduction / 100)
+		const longTermValueScope2 =
+			(baseEmissions.scope2EmissionsMarketBased ?? 0) *
+			(1 - longTermTargetReduction / 100)
+		const longTermValueScope3 =
+			(baseEmissions.totalScope3Emissions ?? 0) *
+			(1 - longTermTargetReduction / 100)
+
+		// Calculate annual reduction rate for the second period
+		// Formula: (Final / Intermediate)^(1 / n_years_period_2)
+		const n2 = longTermTargetYear - targetYear
+		if (targetScope1 > 0)
+			rate2Scope1 = Math.pow(longTermValueScope1 / targetScope1, 1 / n2)
+		if (targetScope2 > 0)
+			rate2Scope2 = Math.pow(longTermValueScope2 / targetScope2, 1 / n2)
+		if (targetScope3 > 0)
+			rate2Scope3 = Math.pow(longTermValueScope3 / targetScope3, 1 / n2)
+	}
+
+	for (let y = startYear; y <= endYear; y++) {
+		// Round to 2 decimals
+		const s1 = Number(currentScope1.toFixed(2))
+		const s2 = Number(currentScope2.toFixed(2))
+		const s3 = Number(currentScope3.toFixed(2))
+		const tot = Number(
+			(currentScope1 + currentScope2 + currentScope3).toFixed(2),
+		)
+
+		rows.push({
+			year: y,
+			scope1: s1,
+			scope2: s2,
+			scope3: s3,
+			total: tot,
+			isBaseYear: y === baseYear,
+			isTargetYear: y === targetYear,
+			isLongTermTargetYear: longTermTargetYear
+				? y === longTermTargetYear
+				: undefined,
+		})
+
+		// Prepare for next iteration
+		if (y < targetYear) {
+			currentScope1 *= rate1Scope1
+			currentScope2 *= rate1Scope2
+			currentScope3 *= rate1Scope3
+		} else if (y >= targetYear && y < endYear) {
+			currentScope1 *= rate2Scope1
+			currentScope2 *= rate2Scope2
+			currentScope3 *= rate2Scope3
+		}
+	}
+
+	return rows
+}
+
+const columnHelper = createColumnHelper<EmissionRow>()
+
+const columns = [
+	columnHelper.accessor('year', {
+		header: 'Year',
+		cell: (info) => info.getValue(),
+	}),
+	columnHelper.accessor('scope1', {
+		header: 'Scope 1',
+		cell: (info) => info.getValue().toLocaleString(),
+	}),
+	columnHelper.accessor('scope2', {
+		header: 'Scope 2',
+		cell: (info) => info.getValue().toLocaleString(),
+	}),
+	columnHelper.accessor('scope3', {
+		header: 'Scope 3',
+		cell: (info) => info.getValue().toLocaleString(),
+	}),
+	columnHelper.accessor('total', {
+		header: 'Total Emissions',
+		cell: (info) => info.getValue().toLocaleString(),
+	}),
+]
+
+function EmissionsTable({ data }: { data: EmissionRow[] }) {
+	const table = useReactTable({
+		data,
+		columns,
+		getCoreRowModel: getCoreRowModel(),
+		filterFns: {
+			fuzzy: () => true,
+		},
+	})
+
+	return (
+		<div className="rounded-md border">
+			<table className="w-full text-sm">
+				<thead className="bg-muted/50">
+					{table.getHeaderGroups().map((headerGroup) => (
+						<tr key={headerGroup.id}>
+							{headerGroup.headers.map((header) => (
+								<th
+									key={header.id}
+									className="h-10 px-4 text-left align-middle font-medium text-muted-foreground"
+								>
+									{header.isPlaceholder
+										? null
+										: flexRender(
+												header.column.columnDef.header,
+												header.getContext(),
+											)}
+								</th>
+							))}
+						</tr>
+					))}
+				</thead>
+				<tbody className="divide-y">
+					{table.getRowModel().rows.map((row) => (
+						<tr key={row.id} className="hover:bg-muted/50">
+							{row.getVisibleCells().map((cell) => (
+								<td key={cell.id} className="p-4 align-middle">
+									{flexRender(cell.column.columnDef.cell, cell.getContext())}
+								</td>
+							))}
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</div>
+	)
+}
 
 function TargetsPage() {
 	const { organization } = useOrgGuard()
@@ -85,6 +331,10 @@ function TargetsPage() {
 	// Mutation to save targets
 	const saveTargets = useMutation(api.targets.saveTargets)
 
+	// Ref to access latest emissions data in onSubmit
+	const baseYearEmissionsDataRef = useRef(baseYearEmissionsData)
+	baseYearEmissionsDataRef.current = baseYearEmissionsData
+
 	const companyName = orgData?.name || 'Your Company'
 
 	// Convert years to select options
@@ -101,6 +351,12 @@ function TargetsPage() {
 	// Compute default values from existing targets
 	const defaultValues = useMemo(() => {
 		if (existingTargets) {
+			// If we have existing targets, we should also set the selected base year
+			// so that we can fetch the emissions data for it
+			if (selectedBaseYear === null && existingTargets.baseYear) {
+				setSelectedBaseYear(existingTargets.baseYear)
+			}
+
 			return {
 				baseYear: existingTargets.baseYear,
 				baseYearEmissions: existingTargets.baseYearEmissions,
@@ -118,7 +374,7 @@ function TargetsPage() {
 			longTermTargetYear: undefined as number | undefined,
 			longTermTargetReduction: undefined as number | undefined,
 		}
-	}, [existingTargets])
+	}, [existingTargets, selectedBaseYear])
 
 	// Initialize TanStack Form with default values
 	const form = useAppForm({
@@ -129,6 +385,20 @@ function TargetsPage() {
 		onSubmit: async ({ value }) => {
 			setIsSaving(true)
 			try {
+				const currentBaseEmissions = baseYearEmissionsDataRef.current
+				let projections: EmissionRow[] = []
+
+				if (currentBaseEmissions) {
+					projections = generateEmissionRows(
+						value.baseYear,
+						value.targetYear,
+						value.targetReduction,
+						value.longTermTargetYear,
+						value.longTermTargetReduction,
+						currentBaseEmissions,
+					)
+				}
+
 				await saveTargets({
 					baseYear: value.baseYear,
 					baseYearEmissions: value.baseYearEmissions,
@@ -136,6 +406,7 @@ function TargetsPage() {
 					targetReduction: value.targetReduction,
 					longTermTargetYear: value.longTermTargetYear,
 					longTermTargetReduction: value.longTermTargetReduction,
+					projections: projections.length > 0 ? projections : undefined,
 				})
 				toast.success('Targets saved successfully')
 			} catch (error) {
@@ -146,6 +417,37 @@ function TargetsPage() {
 			}
 		},
 	})
+
+	// Watch form values for table generation
+	const formValues = useStore(form.store, (state: any) => state.values)
+
+	// Generate table data efficiently
+	const tableData = useMemo(() => {
+		if (
+			!baseYearEmissionsData ||
+			!formValues.baseYear ||
+			!formValues.targetYear ||
+			!formValues.targetReduction
+		) {
+			return []
+		}
+
+		return generateEmissionRows(
+			formValues.baseYear,
+			formValues.targetYear,
+			formValues.targetReduction,
+			formValues.longTermTargetYear,
+			formValues.longTermTargetReduction,
+			baseYearEmissionsData,
+		)
+	}, [
+		baseYearEmissionsData,
+		formValues.baseYear,
+		formValues.targetYear,
+		formValues.targetReduction,
+		formValues.longTermTargetYear,
+		formValues.longTermTargetReduction,
+	])
 
 	// Show loading state
 	if (!organization || existingTargets === undefined) {
@@ -353,6 +655,18 @@ function TargetsPage() {
 					</form.AppForm>
 				</CardContent>
 			</Card>
+
+			{/* Emissions Projection Table */}
+			{tableData.length > 0 && (
+				<Card>
+					<CardHeader>
+						<CardTitle>Emission Reduction Trajectory</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<EmissionsTable data={tableData} />
+					</CardContent>
+				</Card>
+			)}
 		</div>
 	)
 }

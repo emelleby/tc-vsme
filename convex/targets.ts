@@ -14,6 +14,20 @@ export const saveTargets = mutation({
     targetReduction: v.number(),
     longTermTargetYear: v.optional(v.number()),
     longTermTargetReduction: v.optional(v.number()),
+    projections: v.optional(
+      v.array(
+        v.object({
+          year: v.number(),
+          scope1: v.number(),
+          scope2: v.number(),
+          scope3: v.number(),
+          total: v.number(),
+          isBaseYear: v.optional(v.boolean()),
+          isTargetYear: v.optional(v.boolean()),
+          isLongTermTargetYear: v.optional(v.boolean()),
+        }),
+      ),
+    ),
   },
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx)
@@ -35,6 +49,7 @@ export const saveTargets = mutation({
         targetReduction: args.targetReduction,
         longTermTargetYear: args.longTermTargetYear,
         longTermTargetReduction: args.longTermTargetReduction,
+        projections: args.projections,
         lastModifiedBy: userId,
         lastModifiedAt: now,
       })
@@ -51,6 +66,7 @@ export const saveTargets = mutation({
       // targetEmissions: args.targetEmissions,
       longTermTargetYear: args.longTermTargetYear,
       longTermTargetReduction: args.longTermTargetReduction,
+      projections: args.projections,
       createdBy: userId,
       createdAt: now,
       lastModifiedBy: userId,
