@@ -10,6 +10,7 @@ import { useMutation, useQuery } from 'convex/react'
 import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { EmissionsChart } from '@/components/emissions-chart'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAppForm } from '@/hooks/tanstack-form'
@@ -655,6 +656,19 @@ function TargetsPage() {
 					</form.AppForm>
 				</CardContent>
 			</Card>
+
+			{/* Emissions Chart - shows saved projections from database */}
+			{existingTargets?.projections &&
+				existingTargets.projections.length > 0 && (
+					<Card>
+						<CardHeader>
+							<CardTitle>Emissions Reduction Trajectory</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<EmissionsChart projections={existingTargets.projections} />
+						</CardContent>
+					</Card>
+				)}
 
 			{/* Emissions Projection Table */}
 			{tableData.length > 0 && (
