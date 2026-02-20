@@ -56,6 +56,21 @@ export const getBaseYearEmissions = query({
     const scope3Data = scope3EmissionsRecord?.status === "submitted"
       ? scope3EmissionsRecord.data as {
           totalScope3Emissions?: number
+          category1?: number
+          category2?: number
+          category3?: number
+          category4?: number
+          category5?: number
+          category6?: number
+          category7?: number
+          category8?: number
+          category9?: number
+          category10?: number
+          category11?: number
+          category12?: number
+          category13?: number
+          category14?: number
+          category15?: number
         } | null
       : null
     
@@ -63,6 +78,21 @@ export const getBaseYearEmissions = query({
       scope1Emissions: energyData?.scope1Emissions ?? null,
       scope2EmissionsMarketBased: energyData?.scope2EmissionsMarketBased ?? null,
       totalScope3Emissions: scope3Data?.totalScope3Emissions ?? null,
+      category1: scope3Data?.category1 ?? null,
+      category2: scope3Data?.category2 ?? null,
+      category3: scope3Data?.category3 ?? null,
+      category4: scope3Data?.category4 ?? null,
+      category5: scope3Data?.category5 ?? null,
+      category6: scope3Data?.category6 ?? null,
+      category7: scope3Data?.category7 ?? null,
+      category8: scope3Data?.category8 ?? null,
+      category9: scope3Data?.category9 ?? null,
+      category10: scope3Data?.category10 ?? null,
+      category11: scope3Data?.category11 ?? null,
+      category12: scope3Data?.category12 ?? null,
+      category13: scope3Data?.category13 ?? null,
+      category14: scope3Data?.category14 ?? null,
+      category15: scope3Data?.category15 ?? null,
       energyEmissionsStatus: energyEmissionsRecord?.status ?? null,
       scope3EmissionsStatus: scope3EmissionsRecord?.status ?? null,
     }
