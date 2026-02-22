@@ -1,4 +1,12 @@
-import { Chart, Series, XAxis, YAxis } from '@highcharts/react'
+import {
+	Chart,
+	Legend,
+	Series,
+	Title,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from '@highcharts/react'
 import { useMemo } from 'react'
 
 interface EmissionProjection {
@@ -51,94 +59,57 @@ export function EmissionsChart({
 			options={{
 				chart: {
 					type: 'line',
-					height: 400,
-					style: {
-						fontFamily: 'inherit',
-					},
-				},
-				title: {
-					text: title,
-					style: {
-						fontSize: '18px',
-						fontWeight: '600',
-					},
-				},
-				xAxis: {
-					categories: years,
-					title: {
-						text: 'Year',
-					},
-				},
-				yAxis: {
-					title: {
-						text: 'Emissions (tCO₂e)',
-					},
-					min: 0,
-				},
-				tooltip: {
-					shared: true,
-					valueDecimals: 2,
-					valueSuffix: ' tCO₂e',
-				},
-				legend: {
-					layout: 'horizontal',
-					align: 'center',
-					verticalAlign: 'bottom',
-				},
-				plotOptions: {
-					line: {
-						marker: {
-							enabled: true,
-							radius: 4,
-						},
-						lineWidth: 2,
-					},
 				},
 				credits: {
 					enabled: false,
 				},
 			}}
+			containerProps={{
+				style: { width: '100%', height: '400px' },
+			}}
 		>
-			<XAxis categories={years} />
-			<YAxis>
-				<Series
-					type="line"
-					data={scope1Data}
-					options={{
-						name: 'Scope 1',
-						color: '#ef4444',
-						marker: { symbol: 'circle' },
-					}}
-				/>
-				<Series
-					type="line"
-					data={scope2Data}
-					options={{
-						name: 'Scope 2',
-						color: '#f59e0b',
-						marker: { symbol: 'square' },
-					}}
-				/>
-				<Series
-					type="line"
-					data={scope3Data}
-					options={{
-						name: 'Scope 3',
-						color: '#10b981',
-						marker: { symbol: 'diamond' },
-					}}
-				/>
-				<Series
-					type="line"
-					data={totalData}
-					options={{
-						name: 'Total',
-						color: '#6366f1',
-						lineWidth: 3,
-						marker: { symbol: 'triangle' },
-					}}
-				/>
-			</YAxis>
+			<Title>{title}</Title>
+			<XAxis categories={years} title={{ text: 'Year' }} />
+			<YAxis title={{ text: 'Emissions (tCO₂e)' }} min={0} />
+			<Series
+				type="line"
+				data={scope1Data}
+				options={{
+					name: 'Scope 1',
+					color: '#ef4444',
+					marker: { symbol: 'circle' },
+				}}
+			/>
+			<Series
+				type="line"
+				data={scope2Data}
+				options={{
+					name: 'Scope 2',
+					color: '#f59e0b',
+					marker: { symbol: 'square' },
+				}}
+			/>
+			<Series
+				type="line"
+				data={scope3Data}
+				options={{
+					name: 'Scope 3',
+					color: '#10b981',
+					marker: { symbol: 'diamond' },
+				}}
+			/>
+			<Series
+				type="line"
+				data={totalData}
+				options={{
+					name: 'Total',
+					color: '#6366f1',
+					lineWidth: 3,
+					marker: { symbol: 'triangle' },
+				}}
+			/>
+			<Legend layout="horizontal" align="center" verticalAlign="bottom" />
+			<Tooltip shared valueDecimals={2} valueSuffix=" tCO₂e" />
 		</Chart>
 	)
 }
