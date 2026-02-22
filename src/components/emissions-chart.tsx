@@ -56,14 +56,6 @@ export function EmissionsChart({
 
 	return (
 		<Chart
-			options={{
-				chart: {
-					type: 'line',
-				},
-				credits: {
-					enabled: false,
-				},
-			}}
 			containerProps={{
 				style: { width: '100%', height: '400px' },
 			}}
@@ -76,7 +68,7 @@ export function EmissionsChart({
 				data={scope1Data}
 				options={{
 					name: 'Scope 1',
-					color: '#ef4444',
+					color: 'var(--highcharts-color-3)',
 					marker: { symbol: 'circle' },
 				}}
 			/>
@@ -85,7 +77,7 @@ export function EmissionsChart({
 				data={scope2Data}
 				options={{
 					name: 'Scope 2',
-					color: '#f59e0b',
+					color: 'var(--highcharts-color-4)',
 					marker: { symbol: 'square' },
 				}}
 			/>
@@ -94,7 +86,7 @@ export function EmissionsChart({
 				data={scope3Data}
 				options={{
 					name: 'Scope 3',
-					color: '#10b981',
+					color: 'var(--highcharts-color-0)',
 					marker: { symbol: 'diamond' },
 				}}
 			/>
@@ -103,7 +95,7 @@ export function EmissionsChart({
 				data={totalData}
 				options={{
 					name: 'Total',
-					color: '#6366f1',
+					color: 'var(--highcharts-color-1)',
 					lineWidth: 3,
 					marker: { symbol: 'triangle' },
 				}}
