@@ -14,6 +14,13 @@ export const saveTargets = mutation({
     targetReduction: v.number(),
     longTermTargetYear: v.optional(v.number()),
     longTermTargetReduction: v.optional(v.number()),
+    hasScopeSpecificTargets: v.optional(
+      v.object({
+        scope1: v.boolean(),
+        scope2: v.boolean(),
+        scope3: v.boolean(),
+      })
+    ),
     projections: v.optional(
       v.array(
         v.object({
@@ -49,6 +56,7 @@ export const saveTargets = mutation({
         targetReduction: args.targetReduction,
         longTermTargetYear: args.longTermTargetYear,
         longTermTargetReduction: args.longTermTargetReduction,
+        hasScopeSpecificTargets: args.hasScopeSpecificTargets,
         projections: args.projections,
         lastModifiedBy: userId,
         lastModifiedAt: now,
@@ -66,6 +74,7 @@ export const saveTargets = mutation({
       // targetEmissions: args.targetEmissions,
       longTermTargetYear: args.longTermTargetYear,
       longTermTargetReduction: args.longTermTargetReduction,
+      hasScopeSpecificTargets: args.hasScopeSpecificTargets,
       projections: args.projections,
       createdBy: userId,
       createdAt: now,
