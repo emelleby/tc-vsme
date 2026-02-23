@@ -41,6 +41,18 @@ const targetsFormSchema = z.object({
 
 type TargetsFormValues = z.infer<typeof targetsFormSchema>
 
+const scope1TargetsFormSchema = z.object({
+	targetReduction: z
+		.number('Target reduction is required')
+		.min(0, 'Target reduction must be at least 0%')
+		.max(100, 'Target reduction cannot exceed 100%'),
+	targetAbsolute: z.number().min(0, 'Target emissions must be at least 0'),
+	longTermTargetReduction: z.number().min(0).max(100).optional(),
+	longTermTargetAbsolute: z.number().min(0).optional(),
+})
+
+type Scope1TargetsFormValues = z.infer<typeof scope1TargetsFormSchema>
+
 // Type for base year emissions data from Convex
 interface BaseYearEmissionsData {
 	scope1Emissions: number | null
@@ -244,6 +256,112 @@ function generateEmissionRows(
 	return rows
 }
 
+function updateScope1Projections(
+	existingProjections: EmissionRow[],
+	targetReduction: number,
+	longTermTargetReduction: number | undefined,
+): EmissionRow[] {
+	const rows = [...existingProjections]
+	const baseRow = rows.find((r) => r.isBaseYear)
+	const targetRow = rows.find((r) => r.isTargetYear)
+	const longTermRow = rows.find((r) => r.isLongTermTargetYear)
+
+	if (!baseRow || !targetRow) return rows
+
+	const baseYear = baseRow.year
+	const targetYear = targetRow.year
+	const longTermTargetYear = longTermRow?.year
+	const baseScope1 = baseRow.scope1
+
+	const rate1Scope1 = calculateCompoundReduction(
+		baseScope1,
+		baseYear,
+		targetYear,
+		targetReduction,
+	)
+
+	let rate2Scope1 = 0
+
+	if (
+		longTermTargetYear &&
+		longTermTargetReduction !== undefined &&
+		longTermTargetYear > targetYear
+	) {
+		const targetScope1 = baseScope1 * (1 - targetReduction / 100)
+		const longTermValueScope1 = baseScope1 * (1 - longTermTargetReduction / 100)
+		const n2 = longTermTargetYear - targetYear
+		if (targetScope1 > 0) {
+			rate2Scope1 = Math.pow(longTermValueScope1 / targetScope1, 1 / n2)
+		}
+	}
+
+	let currentScope1 = baseScope1
+
+	return rows.map((row) => {
+		const y = row.year
+		const newScope1 = currentScope1
+
+		if (y < targetYear) {
+			currentScope1 *= rate1Scope1
+		} else if (
+			longTermTargetYear &&
+			y >= targetYear &&
+			y < longTermTargetYear
+		) {
+			currentScope1 *= rate2Scope1
+		}
+
+		const s1 = Number(newScope1.toFixed(2))
+		const s2 = row.scope2
+		const s3 = row.scope3
+		const tot = Number((s1 + s2 + s3).toFixed(2))
+
+		return {
+			...row,
+			scope1: s1,
+			total: tot,
+		}
+	})
+}
+
+function calculateOverallReductions(projections: EmissionRow[]): {
+	targetReduction: number
+	longTermTargetReduction?: number
+} {
+	const baseRow = projections.find((p) => p.isBaseYear)
+	const targetRow = projections.find((p) => p.isTargetYear)
+	const longTermRow = projections.find((p) => p.isLongTermTargetYear)
+
+	if (!baseRow || !targetRow) {
+		return { targetReduction: 0 }
+	}
+
+	const baseTotal = baseRow.total
+	let targetReduction = 0
+	let longTermTargetReduction: number | undefined = undefined
+
+	if (baseTotal > 0) {
+		targetReduction = (1 - targetRow.total / baseTotal) * 100
+
+		if (longTermRow) {
+			longTermTargetReduction = (1 - longTermRow.total / baseTotal) * 100
+		}
+	} else if (baseTotal === 0 && targetRow.total !== undefined) {
+		targetReduction = 0
+		if (longTermRow) {
+			longTermTargetReduction = 0
+		}
+	}
+
+	return {
+		targetReduction: Number(targetReduction.toFixed(2)),
+		longTermTargetReduction:
+			longTermTargetReduction !== undefined
+				? Number(longTermTargetReduction.toFixed(2))
+				: undefined,
+	}
+}
+
 const columnHelper = createColumnHelper<EmissionRow>()
 
 const columns = [
@@ -424,6 +542,11 @@ function TargetsPage() {
 					targetReduction: value.targetReduction,
 					longTermTargetYear: value.longTermTargetYear,
 					longTermTargetReduction: value.longTermTargetReduction,
+					hasScopeSpecificTargets: {
+						scope1: false,
+						scope2: false,
+						scope3: false,
+					},
 					projections: projections.length > 0 ? projections : undefined,
 				})
 				toast.success('Targets saved successfully')
@@ -436,8 +559,117 @@ function TargetsPage() {
 		},
 	})
 
+	// Scope 1 Form Default Values & Setup
+	const scope1DefaultValues = useMemo(() => {
+		if (!existingTargets?.projections) {
+			return {
+				targetReduction: undefined,
+				targetAbsolute: undefined,
+				longTermTargetReduction: undefined,
+				longTermTargetAbsolute: undefined,
+			}
+		}
+
+		const base = existingTargets.projections.find(
+			(p: EmissionRow) => p.isBaseYear,
+		)
+		const tgt = existingTargets.projections.find(
+			(p: EmissionRow) => p.isTargetYear,
+		)
+		const ltTgt = existingTargets.projections.find(
+			(p: EmissionRow) => p.isLongTermTargetYear,
+		)
+
+		const baseVal = base?.scope1 ?? 0
+		const targetVal = tgt?.scope1
+
+		let targetPct: number | undefined = undefined
+		if (baseVal > 0 && targetVal !== undefined) {
+			targetPct = (1 - targetVal / baseVal) * 100
+		} else if (baseVal === 0 && targetVal !== undefined) {
+			targetPct = 0
+		}
+
+		const ltVal = ltTgt?.scope1
+		let ltPct: number | undefined = undefined
+		if (ltVal !== undefined) {
+			if (baseVal > 0) {
+				ltPct = (1 - ltVal / baseVal) * 100
+			} else {
+				ltPct = 0
+			}
+		}
+
+		return {
+			targetReduction:
+				targetPct !== undefined ? Number(targetPct.toFixed(2)) : undefined,
+			targetAbsolute:
+				targetVal !== undefined ? Number(targetVal.toFixed(2)) : undefined,
+			longTermTargetReduction:
+				ltPct !== undefined ? Number(ltPct.toFixed(2)) : undefined,
+			longTermTargetAbsolute:
+				ltVal !== undefined ? Number(ltVal.toFixed(2)) : undefined,
+		}
+	}, [existingTargets])
+
+	const [isSavingScope1, setIsSavingScope1] = useState(false)
+
+	const scope1Form = useAppForm({
+		defaultValues: scope1DefaultValues as Scope1TargetsFormValues,
+		validators: {
+			onSubmit: scope1TargetsFormSchema,
+		},
+		onSubmit: async ({ value }) => {
+			setIsSavingScope1(true)
+			try {
+				if (!existingTargets || !existingTargets.projections) {
+					throw new Error('No base projections found')
+				}
+
+				const newProjections = updateScope1Projections(
+					existingTargets.projections,
+					value.targetReduction || 0,
+					value.longTermTargetReduction,
+				)
+
+				const {
+					targetReduction: newGlobalTargetReduction,
+					longTermTargetReduction: newGlobalLongTermTargetReduction,
+				} = calculateOverallReductions(newProjections)
+
+				await saveTargets({
+					baseYear: existingTargets.baseYear,
+					baseYearEmissions: existingTargets.baseYearEmissions,
+					targetYear: existingTargets.targetYear,
+					targetReduction: newGlobalTargetReduction,
+					longTermTargetYear: existingTargets.longTermTargetYear,
+					longTermTargetReduction:
+						newGlobalLongTermTargetReduction ??
+						existingTargets.longTermTargetReduction,
+					hasScopeSpecificTargets: {
+						scope1: true,
+						scope2: existingTargets.hasScopeSpecificTargets?.scope2 ?? false,
+						scope3: existingTargets.hasScopeSpecificTargets?.scope3 ?? false,
+					},
+					projections: newProjections,
+				})
+				toast.success('Scope 1 targets saved successfully')
+			} catch (error) {
+				console.error('Failed to save Scope 1 targets:', error)
+				toast.error('Failed to save Scope 1 targets')
+			} finally {
+				setIsSavingScope1(false)
+			}
+		},
+	})
+
 	// Watch form values for table generation
 	const formValues = useStore(form.store, (state: any) => state.values)
+
+	const baseScope1Proj = existingTargets?.projections?.find(
+		(p: EmissionRow) => p.isBaseYear,
+	)
+	const baseScope1Value = baseScope1Proj?.scope1 ?? 0
 
 	// Generate table data efficiently
 	const tableData = useMemo(() => {
@@ -466,6 +698,12 @@ function TargetsPage() {
 		formValues.longTermTargetYear,
 		formValues.longTermTargetReduction,
 	])
+
+	const hasSpecificTargetsActive = useMemo(() => {
+		if (!existingTargets?.hasScopeSpecificTargets) return false
+		const targets = existingTargets.hasScopeSpecificTargets
+		return targets.scope1 || targets.scope2 || targets.scope3
+	}, [existingTargets])
 
 	// Show loading state
 	if (!organization || existingTargets === undefined) {
@@ -505,6 +743,20 @@ function TargetsPage() {
 									variants={itemVariants}
 									transition={{ type: 'tween' }}
 								>
+									{hasSpecificTargetsActive && (
+										<div className="bg-amber-50 dark:bg-amber-950 border-l-4 border-amber-500 p-4 mb-6 rounded-r-md">
+											<div className="flex">
+												<div className="ml-3">
+													<p className="text-sm text-amber-800 dark:text-amber-200">
+														<strong>Note:</strong> You have set scope-specific
+														targets. Saving new global targets here will
+														recalculate and overwrite your specific targets
+														across all scopes.
+													</p>
+												</div>
+											</div>
+										</div>
+									)}
 									<Card>
 										<CardHeader>
 											<CardTitle>Emissions Targets</CardTitle>
@@ -764,9 +1016,223 @@ function TargetsPage() {
 											<CardTitle>Scope 1 Targets</CardTitle>
 										</CardHeader>
 										<CardContent>
-											<p className="text-muted-foreground">
-												Scope 1 targets coming soon...
-											</p>
+											{!existingTargets?.projections ||
+											existingTargets.projections.length === 0 ? (
+												<div className="rounded-md bg-muted p-4 text-sm text-muted-foreground border">
+													Please set your Base Year and global emissions targets
+													in the Main tab first before setting scope-specific
+													targets.
+												</div>
+											) : (
+												<scope1Form.AppForm>
+													<form
+														onSubmit={(e) => {
+															e.preventDefault()
+															e.stopPropagation()
+															scope1Form.handleSubmit()
+														}}
+														className="space-y-6"
+													>
+														<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+															<div className="space-y-2">
+																<div className="text-sm font-medium">
+																	Base Year
+																</div>
+																<div className="flex h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																	{existingTargets.baseYear}
+																</div>
+															</div>
+															<div className="space-y-2">
+																<div className="text-sm font-medium">
+																	Base Year Emissions (Scope 1)
+																</div>
+																<div className="flex h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																	{baseScope1Value.toLocaleString()} tCO₂e
+																</div>
+															</div>
+
+															<div className="space-y-2">
+																<div className="text-sm font-medium">
+																	Target Year
+																</div>
+																<div className="flex h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																	{existingTargets.targetYear}
+																</div>
+															</div>
+															{/* empty div for alignment */}
+															<div className="hidden md:block" />
+
+															<scope1Form.AppField
+																name="targetReduction"
+																listeners={{
+																	onChange: ({ value }) => {
+																		if (
+																			value !== undefined &&
+																			baseScope1Value > 0
+																		) {
+																			const expected =
+																				baseScope1Value * (1 - value / 100)
+																			const current =
+																				scope1Form.getFieldValue(
+																					'targetAbsolute',
+																				)
+																			if (
+																				Math.abs(expected - (current || 0)) >
+																				0.01
+																			) {
+																				scope1Form.setFieldValue(
+																					'targetAbsolute',
+																					Number(expected.toFixed(2)),
+																				)
+																			}
+																		}
+																	},
+																}}
+															>
+																{(field) => (
+																	<field.NumberField
+																		label="Target reduction"
+																		placeholder="e.g., 50"
+																		unit="%"
+																	/>
+																)}
+															</scope1Form.AppField>
+
+															<scope1Form.AppField
+																name="targetAbsolute"
+																listeners={{
+																	onChange: ({ value }) => {
+																		if (
+																			value !== undefined &&
+																			baseScope1Value > 0
+																		) {
+																			const expectedPct =
+																				(1 - value / baseScope1Value) * 100
+																			const currentPct =
+																				scope1Form.getFieldValue(
+																					'targetReduction',
+																				)
+																			if (
+																				Math.abs(
+																					expectedPct - (currentPct || 0),
+																				) > 0.01
+																			) {
+																				scope1Form.setFieldValue(
+																					'targetReduction',
+																					Number(expectedPct.toFixed(2)),
+																				)
+																			}
+																		}
+																	},
+																}}
+															>
+																{(field) => (
+																	<field.NumberField
+																		label="Target emissions"
+																		placeholder="e.g., 500"
+																		unit="tCO₂e"
+																	/>
+																)}
+															</scope1Form.AppField>
+
+															{existingTargets.longTermTargetYear && (
+																<>
+																	<div className="space-y-2 col-span-1 md:col-span-2 mt-4 pt-4 border-t">
+																		<div className="text-sm font-medium">
+																			Long Term Target Year
+																		</div>
+																		<div className="flex h-10 w-full md:w-[calc(50%-12px)] xl:w-[calc(50%-12px)] rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																			{existingTargets.longTermTargetYear}
+																		</div>
+																	</div>
+
+																	<scope1Form.AppField
+																		name="longTermTargetReduction"
+																		listeners={{
+																			onChange: ({ value }) => {
+																				if (
+																					value !== undefined &&
+																					baseScope1Value > 0
+																				) {
+																					const expected =
+																						baseScope1Value * (1 - value / 100)
+																					const current =
+																						scope1Form.getFieldValue(
+																							'longTermTargetAbsolute',
+																						)
+																					if (
+																						Math.abs(
+																							expected - (current || 0),
+																						) > 0.01
+																					) {
+																						scope1Form.setFieldValue(
+																							'longTermTargetAbsolute',
+																							Number(expected.toFixed(2)),
+																						)
+																					}
+																				}
+																			},
+																		}}
+																	>
+																		{(field) => (
+																			<field.NumberField
+																				label="Long term target reduction"
+																				placeholder="e.g., 90"
+																				unit="%"
+																			/>
+																		)}
+																	</scope1Form.AppField>
+
+																	<scope1Form.AppField
+																		name="longTermTargetAbsolute"
+																		listeners={{
+																			onChange: ({ value }) => {
+																				if (
+																					value !== undefined &&
+																					baseScope1Value > 0
+																				) {
+																					const expectedPct =
+																						(1 - value / baseScope1Value) * 100
+																					const currentPct =
+																						scope1Form.getFieldValue(
+																							'longTermTargetReduction',
+																						)
+																					if (
+																						Math.abs(
+																							expectedPct - (currentPct || 0),
+																						) > 0.01
+																					) {
+																						scope1Form.setFieldValue(
+																							'longTermTargetReduction',
+																							Number(expectedPct.toFixed(2)),
+																						)
+																					}
+																				}
+																			},
+																		}}
+																	>
+																		{(field) => (
+																			<field.NumberField
+																				label="Long term target emissions"
+																				placeholder="e.g., 100"
+																				unit="tCO₂e"
+																			/>
+																		)}
+																	</scope1Form.AppField>
+																</>
+															)}
+														</div>
+
+														<div className="flex justify-end">
+															<Button type="submit" disabled={isSavingScope1}>
+																{isSavingScope1
+																	? 'Saving...'
+																	: 'Save Scope 1 targets'}
+															</Button>
+														</div>
+													</form>
+												</scope1Form.AppForm>
+											)}
 										</CardContent>
 									</Card>
 								</motion.div>

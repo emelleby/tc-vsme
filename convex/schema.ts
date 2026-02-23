@@ -304,6 +304,13 @@ export default defineSchema({
     targetReduction: v.number(),
     longTermTargetYear: v.optional(v.number()),
     longTermTargetReduction: v.optional(v.number()),
+    hasScopeSpecificTargets: v.optional(
+      v.object({
+        scope1: v.boolean(),
+        scope2: v.boolean(),
+        scope3: v.boolean(),
+      })
+    ),
     projections: v.optional(v.array(
       v.object({
         year: v.number(),
