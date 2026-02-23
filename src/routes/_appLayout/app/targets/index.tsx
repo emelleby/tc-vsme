@@ -53,6 +53,18 @@ const scope1TargetsFormSchema = z.object({
 
 type Scope1TargetsFormValues = z.infer<typeof scope1TargetsFormSchema>
 
+const scope2TargetsFormSchema = z.object({
+	targetReduction: z
+		.number('Target reduction is required')
+		.min(0, 'Target reduction must be at least 0%')
+		.max(100, 'Target reduction cannot exceed 100%'),
+	targetAbsolute: z.number().min(0, 'Target emissions must be at least 0'),
+	longTermTargetReduction: z.number().min(0).max(100).optional(),
+	longTermTargetAbsolute: z.number().min(0).optional(),
+})
+
+type Scope2TargetsFormValues = z.infer<typeof scope2TargetsFormSchema>
+
 // Type for base year emissions data from Convex
 interface BaseYearEmissionsData {
 	scope1Emissions: number | null
@@ -319,6 +331,74 @@ function updateScope1Projections(
 		return {
 			...row,
 			scope1: s1,
+			total: tot,
+		}
+	})
+}
+
+function updateScope2Projections(
+	existingProjections: EmissionRow[],
+	targetReduction: number,
+	longTermTargetReduction: number | undefined,
+): EmissionRow[] {
+	const rows = [...existingProjections]
+	const baseRow = rows.find((r) => r.isBaseYear)
+	const targetRow = rows.find((r) => r.isTargetYear)
+	const longTermRow = rows.find((r) => r.isLongTermTargetYear)
+
+	if (!baseRow || !targetRow) return rows
+
+	const baseYear = baseRow.year
+	const targetYear = targetRow.year
+	const longTermTargetYear = longTermRow?.year
+	const baseScope2 = baseRow.scope2
+
+	const rate1Scope2 = calculateCompoundReduction(
+		baseScope2,
+		baseYear,
+		targetYear,
+		targetReduction,
+	)
+
+	let rate2Scope2 = 0
+
+	if (
+		longTermTargetYear &&
+		longTermTargetReduction !== undefined &&
+		longTermTargetYear > targetYear
+	) {
+		const targetScope2 = baseScope2 * (1 - targetReduction / 100)
+		const longTermValueScope2 = baseScope2 * (1 - longTermTargetReduction / 100)
+		const n2 = longTermTargetYear - targetYear
+		if (targetScope2 > 0) {
+			rate2Scope2 = Math.pow(longTermValueScope2 / targetScope2, 1 / n2)
+		}
+	}
+
+	let currentScope2 = baseScope2
+
+	return rows.map((row) => {
+		const y = row.year
+		const newScope2 = currentScope2
+
+		if (y < targetYear) {
+			currentScope2 *= rate1Scope2
+		} else if (
+			longTermTargetYear &&
+			y >= targetYear &&
+			y < longTermTargetYear
+		) {
+			currentScope2 *= rate2Scope2
+		}
+
+		const s1 = row.scope1
+		const s2 = Number(newScope2.toFixed(2))
+		const s3 = row.scope3
+		const tot = Number((s1 + s2 + s3).toFixed(2))
+
+		return {
+			...row,
+			scope2: s2,
 			total: tot,
 		}
 	})
@@ -663,6 +743,110 @@ function TargetsPage() {
 		},
 	})
 
+	// Scope 2 Form Default Values & Setup
+	const scope2DefaultValues = useMemo(() => {
+		if (!existingTargets?.projections) {
+			return {
+				targetReduction: undefined,
+				targetAbsolute: undefined,
+				longTermTargetReduction: undefined,
+				longTermTargetAbsolute: undefined,
+			}
+		}
+
+		const base = existingTargets.projections.find(
+			(p: EmissionRow) => p.isBaseYear,
+		)
+		const tgt = existingTargets.projections.find(
+			(p: EmissionRow) => p.isTargetYear,
+		)
+		const ltTgt = existingTargets.projections.find(
+			(p: EmissionRow) => p.isLongTermTargetYear,
+		)
+
+		const baseVal = base?.scope2 ?? 0
+		const targetVal = tgt?.scope2
+
+		let targetPct: number | undefined = undefined
+		if (baseVal > 0 && targetVal !== undefined) {
+			targetPct = (1 - targetVal / baseVal) * 100
+		} else if (baseVal === 0 && targetVal !== undefined) {
+			targetPct = 0
+		}
+
+		const ltVal = ltTgt?.scope2
+		let ltPct: number | undefined = undefined
+		if (ltVal !== undefined) {
+			if (baseVal > 0) {
+				ltPct = (1 - ltVal / baseVal) * 100
+			} else {
+				ltPct = 0
+			}
+		}
+
+		return {
+			targetReduction:
+				targetPct !== undefined ? Number(targetPct.toFixed(2)) : undefined,
+			targetAbsolute:
+				targetVal !== undefined ? Number(targetVal.toFixed(2)) : undefined,
+			longTermTargetReduction:
+				ltPct !== undefined ? Number(ltPct.toFixed(2)) : undefined,
+			longTermTargetAbsolute:
+				ltVal !== undefined ? Number(ltVal.toFixed(2)) : undefined,
+		}
+	}, [existingTargets])
+
+	const [isSavingScope2, setIsSavingScope2] = useState(false)
+
+	const scope2Form = useAppForm({
+		defaultValues: scope2DefaultValues as Scope2TargetsFormValues,
+		validators: {
+			onSubmit: scope2TargetsFormSchema,
+		},
+		onSubmit: async ({ value }) => {
+			setIsSavingScope2(true)
+			try {
+				if (!existingTargets || !existingTargets.projections) {
+					throw new Error('No base projections found')
+				}
+
+				const newProjections = updateScope2Projections(
+					existingTargets.projections,
+					value.targetReduction || 0,
+					value.longTermTargetReduction,
+				)
+
+				const {
+					targetReduction: newGlobalTargetReduction,
+					longTermTargetReduction: newGlobalLongTermTargetReduction,
+				} = calculateOverallReductions(newProjections)
+
+				await saveTargets({
+					baseYear: existingTargets.baseYear,
+					baseYearEmissions: existingTargets.baseYearEmissions,
+					targetYear: existingTargets.targetYear,
+					targetReduction: newGlobalTargetReduction,
+					longTermTargetYear: existingTargets.longTermTargetYear,
+					longTermTargetReduction:
+						newGlobalLongTermTargetReduction ??
+						existingTargets.longTermTargetReduction,
+					hasScopeSpecificTargets: {
+						scope1: existingTargets.hasScopeSpecificTargets?.scope1 ?? false,
+						scope2: true,
+						scope3: existingTargets.hasScopeSpecificTargets?.scope3 ?? false,
+					},
+					projections: newProjections,
+				})
+				toast.success('Scope 2 targets saved successfully')
+			} catch (error) {
+				console.error('Failed to save Scope 2 targets:', error)
+				toast.error('Failed to save Scope 2 targets')
+			} finally {
+				setIsSavingScope2(false)
+			}
+		},
+	})
+
 	// Watch form values for table generation
 	const formValues = useStore(form.store, (state: any) => state.values)
 
@@ -670,6 +854,11 @@ function TargetsPage() {
 		(p: EmissionRow) => p.isBaseYear,
 	)
 	const baseScope1Value = baseScope1Proj?.scope1 ?? 0
+
+	const baseScope2Proj = existingTargets?.projections?.find(
+		(p: EmissionRow) => p.isBaseYear,
+	)
+	const baseScope2Value = baseScope2Proj?.scope2 ?? 0
 
 	// Generate table data efficiently
 	const tableData = useMemo(() => {
@@ -1065,7 +1254,7 @@ function TargetsPage() {
 															<scope1Form.AppField
 																name="targetReduction"
 																listeners={{
-																	onChange: ({ value }) => {
+																	onBlur: ({ value }) => {
 																		if (
 																			value !== undefined &&
 																			baseScope1Value > 0
@@ -1101,7 +1290,7 @@ function TargetsPage() {
 															<scope1Form.AppField
 																name="targetAbsolute"
 																listeners={{
-																	onChange: ({ value }) => {
+																	onBlur: ({ value }) => {
 																		if (
 																			value !== undefined &&
 																			baseScope1Value > 0
@@ -1149,7 +1338,7 @@ function TargetsPage() {
 																	<scope1Form.AppField
 																		name="longTermTargetReduction"
 																		listeners={{
-																			onChange: ({ value }) => {
+																			onBlur: ({ value }) => {
 																				if (
 																					value !== undefined &&
 																					baseScope1Value > 0
@@ -1186,7 +1375,7 @@ function TargetsPage() {
 																	<scope1Form.AppField
 																		name="longTermTargetAbsolute"
 																		listeners={{
-																			onChange: ({ value }) => {
+																			onBlur: ({ value }) => {
 																				if (
 																					value !== undefined &&
 																					baseScope1Value > 0
@@ -1256,9 +1445,223 @@ function TargetsPage() {
 											<CardTitle>Scope 2 Targets</CardTitle>
 										</CardHeader>
 										<CardContent>
-											<p className="text-muted-foreground">
-												Scope 2 targets coming soon...
-											</p>
+											{!existingTargets?.projections ||
+											existingTargets.projections.length === 0 ? (
+												<div className="rounded-md bg-muted p-4 text-sm text-muted-foreground border">
+													Please set your Base Year and global emissions targets
+													in the Main tab first before setting scope-specific
+													targets.
+												</div>
+											) : (
+												<scope2Form.AppForm>
+													<form
+														onSubmit={(e) => {
+															e.preventDefault()
+															e.stopPropagation()
+															scope2Form.handleSubmit()
+														}}
+														className="space-y-6"
+													>
+														<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+															<div className="space-y-2">
+																<div className="text-sm font-medium">
+																	Base Year
+																</div>
+																<div className="flex h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																	{existingTargets.baseYear}
+																</div>
+															</div>
+															<div className="space-y-2">
+																<div className="text-sm font-medium">
+																	Base Year Emissions (Scope 2)
+																</div>
+																<div className="flex h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																	{baseScope2Value.toLocaleString()} tCO₂e
+																</div>
+															</div>
+
+															<div className="space-y-2">
+																<div className="text-sm font-medium">
+																	Target Year
+																</div>
+																<div className="flex h-10 w-full rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																	{existingTargets.targetYear}
+																</div>
+															</div>
+															{/* empty div for alignment */}
+															<div className="hidden md:block" />
+
+															<scope2Form.AppField
+																name="targetReduction"
+																listeners={{
+																	onBlur: ({ value }) => {
+																		if (
+																			value !== undefined &&
+																			baseScope2Value > 0
+																		) {
+																			const expected =
+																				baseScope2Value * (1 - value / 100)
+																			const current =
+																				scope2Form.getFieldValue(
+																					'targetAbsolute',
+																				)
+																			if (
+																				Math.abs(expected - (current || 0)) >
+																				0.01
+																			) {
+																				scope2Form.setFieldValue(
+																					'targetAbsolute',
+																					Number(expected.toFixed(2)),
+																				)
+																			}
+																		}
+																	},
+																}}
+															>
+																{(field) => (
+																	<field.NumberField
+																		label="Target reduction"
+																		placeholder="e.g., 50"
+																		unit="%"
+																	/>
+																)}
+															</scope2Form.AppField>
+
+															<scope2Form.AppField
+																name="targetAbsolute"
+																listeners={{
+																	onBlur: ({ value }) => {
+																		if (
+																			value !== undefined &&
+																			baseScope2Value > 0
+																		) {
+																			const expectedPct =
+																				(1 - value / baseScope2Value) * 100
+																			const currentPct =
+																				scope2Form.getFieldValue(
+																					'targetReduction',
+																				)
+																			if (
+																				Math.abs(
+																					expectedPct - (currentPct || 0),
+																				) > 0.01
+																			) {
+																				scope2Form.setFieldValue(
+																					'targetReduction',
+																					Number(expectedPct.toFixed(2)),
+																				)
+																			}
+																		}
+																	},
+																}}
+															>
+																{(field) => (
+																	<field.NumberField
+																		label="Target emissions"
+																		placeholder="e.g., 500"
+																		unit="tCO₂e"
+																	/>
+																)}
+															</scope2Form.AppField>
+
+															{existingTargets.longTermTargetYear && (
+																<>
+																	<div className="space-y-2 col-span-1 md:col-span-2 mt-4 pt-4 border-t">
+																		<div className="text-sm font-medium">
+																			Long Term Target Year
+																		</div>
+																		<div className="flex h-10 w-full md:w-[calc(50%-12px)] xl:w-[calc(50%-12px)] rounded-md border border-input bg-muted px-3 py-2 text-sm text-muted-foreground">
+																			{existingTargets.longTermTargetYear}
+																		</div>
+																	</div>
+
+																	<scope2Form.AppField
+																		name="longTermTargetReduction"
+																		listeners={{
+																			onBlur: ({ value }) => {
+																				if (
+																					value !== undefined &&
+																					baseScope2Value > 0
+																				) {
+																					const expected =
+																						baseScope2Value * (1 - value / 100)
+																					const current =
+																						scope2Form.getFieldValue(
+																							'longTermTargetAbsolute',
+																						)
+																					if (
+																						Math.abs(
+																							expected - (current || 0),
+																						) > 0.01
+																					) {
+																						scope2Form.setFieldValue(
+																							'longTermTargetAbsolute',
+																							Number(expected.toFixed(2)),
+																						)
+																					}
+																				}
+																			},
+																		}}
+																	>
+																		{(field) => (
+																			<field.NumberField
+																				label="Long term target reduction"
+																				placeholder="e.g., 90"
+																				unit="%"
+																			/>
+																		)}
+																	</scope2Form.AppField>
+
+																	<scope2Form.AppField
+																		name="longTermTargetAbsolute"
+																		listeners={{
+																			onBlur: ({ value }) => {
+																				if (
+																					value !== undefined &&
+																					baseScope2Value > 0
+																				) {
+																					const expectedPct =
+																						(1 - value / baseScope2Value) * 100
+																					const currentPct =
+																						scope2Form.getFieldValue(
+																							'longTermTargetReduction',
+																						)
+																					if (
+																						Math.abs(
+																							expectedPct - (currentPct || 0),
+																						) > 0.01
+																					) {
+																						scope2Form.setFieldValue(
+																							'longTermTargetReduction',
+																							Number(expectedPct.toFixed(2)),
+																						)
+																					}
+																				}
+																			},
+																		}}
+																	>
+																		{(field) => (
+																			<field.NumberField
+																				label="Long term target emissions"
+																				placeholder="e.g., 100"
+																				unit="tCO₂e"
+																			/>
+																		)}
+																	</scope2Form.AppField>
+																</>
+															)}
+														</div>
+
+														<div className="flex justify-end">
+															<Button type="submit" disabled={isSavingScope2}>
+																{isSavingScope2
+																	? 'Saving...'
+																	: 'Save Scope 2 targets'}
+															</Button>
+														</div>
+													</form>
+												</scope2Form.AppForm>
+											)}
 										</CardContent>
 									</Card>
 								</motion.div>
