@@ -7,12 +7,14 @@ import {
 	useReactTable,
 } from '@tanstack/react-table'
 import { useMutation, useQuery } from 'convex/react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { EmissionsChart } from '@/components/emissions-chart'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppForm } from '@/hooks/tanstack-form'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { api } from '../../../../../convex/_generated/api'
@@ -70,6 +72,21 @@ function calculateTotalEmissions(data: BaseYearEmissionsData | null): number {
 	const scope2 = data.scope2EmissionsMarketBased ?? 0
 	const scope3 = data.totalScope3Emissions ?? 0
 	return scope1 + scope2 + scope3
+}
+
+const listVariants = {
+	hidden: { opacity: 0 },
+	visible: {
+		opacity: 1,
+		transition: {
+			staggerChildren: 0.1,
+		},
+	},
+}
+
+const itemVariants = {
+	hidden: { opacity: 0, y: 20 },
+	visible: { opacity: 1, y: 0 },
 }
 
 export const Route = createFileRoute('/_appLayout/app/targets/')({
@@ -183,11 +200,11 @@ function generateEmissionRows(
 		// Formula: (Final / Intermediate)^(1 / n_years_period_2)
 		const n2 = longTermTargetYear - targetYear
 		if (targetScope1 > 0)
-			rate2Scope1 = Math.pow(longTermValueScope1 / targetScope1, 1 / n2)
+			rate2Scope1 = (longTermValueScope1 / targetScope1) ** (1 / n2)
 		if (targetScope2 > 0)
-			rate2Scope2 = Math.pow(longTermValueScope2 / targetScope2, 1 / n2)
+			rate2Scope2 = (longTermValueScope2 / targetScope2) ** (1 / n2)
 		if (targetScope3 > 0)
-			rate2Scope3 = Math.pow(longTermValueScope3 / targetScope3, 1 / n2)
+			rate2Scope3 = (longTermValueScope3 / targetScope3) ** (1 / n2)
 	}
 
 	for (let y = startYear; y <= endYear; y++) {
@@ -466,221 +483,350 @@ function TargetsPage() {
 				</p>
 			</div>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>Emissions Targets</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<form.AppForm>
-						<form
-							onSubmit={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-								form.handleSubmit()
-							}}
-							className="space-y-6"
-						>
-							{/* Base Year with data selector and emissions verification */}
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								<div className="space-y-2">
-									<div className="text-sm font-medium">Base Year with data</div>
-									<select
-										className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-										value={selectedBaseYear ?? ''}
-										onChange={(e) => {
-											const year = e.target.value
-												? Number.parseInt(e.target.value, 10)
-												: null
-											setSelectedBaseYear(year)
-											if (year) {
-												form.setFieldValue('baseYear', year)
-											}
-										}}
+			<Tabs defaultValue="main" className="w-full">
+				<TabsList className="grid w-full grid-cols-4">
+					<TabsTrigger value="main">Main</TabsTrigger>
+					<TabsTrigger value="scope1">Scope 1</TabsTrigger>
+					<TabsTrigger value="scope2">Scope 2</TabsTrigger>
+					<TabsTrigger value="scope3">Scope 3</TabsTrigger>
+				</TabsList>
+
+				<div className="mt-6">
+					<TabsContent value="main" className="mt-0">
+						<AnimatePresence>
+							<motion.div
+								animate="visible"
+								className="space-y-8"
+								exit="hidden"
+								initial="hidden"
+								variants={listVariants}
+							>
+								<motion.div
+									variants={itemVariants}
+									transition={{ type: 'tween' }}
+								>
+									<Card>
+										<CardHeader>
+											<CardTitle>Emissions Targets</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<form.AppForm>
+												<form
+													onSubmit={(e) => {
+														e.preventDefault()
+														e.stopPropagation()
+														form.handleSubmit()
+													}}
+													className="space-y-6"
+												>
+													{/* Base Year with data selector and emissions verification */}
+													<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+														<div className="space-y-2">
+															<div className="text-sm font-medium">
+																Base Year with data
+															</div>
+															<select
+																className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+																value={selectedBaseYear ?? ''}
+																onChange={(e) => {
+																	const year = e.target.value
+																		? Number.parseInt(e.target.value, 10)
+																		: null
+																	setSelectedBaseYear(year)
+																	if (year) {
+																		form.setFieldValue('baseYear', year)
+																	}
+																}}
+															>
+																{yearOptions.map((option) => (
+																	<option
+																		key={option.value}
+																		value={option.value}
+																	>
+																		{option.label}
+																	</option>
+																))}
+															</select>
+														</div>
+
+														{/* Emissions verification column */}
+														{selectedBaseYear && (
+															<div className="space-y-2">
+																<div className="text-sm font-medium text-muted-foreground">
+																	Verified Emissions for {selectedBaseYear}
+																</div>
+																<div className="rounded-md border bg-muted/30 p-3 space-y-1 text-sm">
+																	{baseYearEmissionsData === undefined ? (
+																		<div className="text-muted-foreground">
+																			Loading emissions data...
+																		</div>
+																	) : (
+																		<>
+																			<div className="flex justify-between">
+																				<span className="text-muted-foreground">
+																					Scope 1:
+																				</span>
+																				<span className="font-mono">
+																					{baseYearEmissionsData.scope1Emissions !==
+																					null
+																						? `${baseYearEmissionsData.scope1Emissions.toLocaleString()} tCO₂e`
+																						: baseYearEmissionsData.energyEmissionsStatus ===
+																								null
+																							? 'N/A (no record)'
+																							: `N/A (${baseYearEmissionsData.energyEmissionsStatus})`}
+																				</span>
+																			</div>
+																			<div className="flex justify-between">
+																				<span className="text-muted-foreground">
+																					Scope 2 (market-based):
+																				</span>
+																				<span className="font-mono">
+																					{baseYearEmissionsData.scope2EmissionsMarketBased !==
+																					null
+																						? `${baseYearEmissionsData.scope2EmissionsMarketBased.toLocaleString()} tCO₂e`
+																						: baseYearEmissionsData.energyEmissionsStatus ===
+																								null
+																							? 'N/A (no record)'
+																							: `N/A (${baseYearEmissionsData.energyEmissionsStatus})`}
+																				</span>
+																			</div>
+																			<div className="flex justify-between">
+																				<span className="text-muted-foreground">
+																					Scope 3:
+																				</span>
+																				<span className="font-mono">
+																					{baseYearEmissionsData.totalScope3Emissions !==
+																					null
+																						? `${baseYearEmissionsData.totalScope3Emissions.toLocaleString()} tCO₂e`
+																						: baseYearEmissionsData.scope3EmissionsStatus ===
+																								null
+																							? 'N/A (no record)'
+																							: `N/A (${baseYearEmissionsData.scope3EmissionsStatus})`}
+																				</span>
+																			</div>
+																			<div className="flex justify-between pt-1 border-t mt-1">
+																				<span className="font-medium">
+																					Total:
+																				</span>
+																				<span className="font-mono font-medium">
+																					{calculateTotalEmissions(
+																						baseYearEmissionsData,
+																					).toLocaleString()}{' '}
+																					tCO₂e
+																				</span>
+																			</div>
+																			<Button
+																				type="button"
+																				variant="outline"
+																				size="sm"
+																				className="w-full mt-2"
+																				onClick={() => {
+																					const total = calculateTotalEmissions(
+																						baseYearEmissionsData,
+																					)
+																					form.setFieldValue(
+																						'baseYearEmissions',
+																						total,
+																					)
+																				}}
+																			>
+																				Use this total
+																			</Button>
+																		</>
+																	)}
+																</div>
+															</div>
+														)}
+													</div>
+
+													<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+														<form.AppField name="baseYear">
+															{(field) => (
+																<field.NumberField
+																	label="Base year"
+																	placeholder="e.g., 2020"
+																/>
+															)}
+														</form.AppField>
+
+														<form.AppField name="baseYearEmissions">
+															{(field) => (
+																<field.NumberField
+																	label="Base year emissions (tCO₂e)"
+																	placeholder="e.g., 1000"
+																/>
+															)}
+														</form.AppField>
+
+														<form.AppField name="targetYear">
+															{(field) => (
+																<field.NumberField
+																	label="Target year"
+																	placeholder="e.g., 2030"
+																/>
+															)}
+														</form.AppField>
+
+														<form.AppField name="targetReduction">
+															{(field) => (
+																<field.NumberField
+																	label="Target reduction"
+																	placeholder="e.g., 50"
+																	unit="%"
+																/>
+															)}
+														</form.AppField>
+
+														<form.AppField name="longTermTargetYear">
+															{(field) => (
+																<field.NumberField
+																	label="Long term target year"
+																	placeholder="e.g., 2050"
+																/>
+															)}
+														</form.AppField>
+
+														<form.AppField name="longTermTargetReduction">
+															{(field) => (
+																<field.NumberField
+																	label="Long term target reduction"
+																	placeholder="e.g., 90"
+																	unit="%"
+																/>
+															)}
+														</form.AppField>
+													</div>
+
+													<div className="flex justify-end">
+														<Button type="submit" disabled={isSaving}>
+															{isSaving ? 'Saving...' : 'Save targets'}
+														</Button>
+													</div>
+												</form>
+											</form.AppForm>
+										</CardContent>
+									</Card>
+								</motion.div>
+
+								{/* Emissions Chart - shows saved projections from database */}
+								{existingTargets?.projections &&
+									existingTargets.projections.length > 0 && (
+										<motion.div
+											variants={itemVariants}
+											transition={{ type: 'tween' }}
+										>
+											<Card>
+												<CardHeader>
+													<CardTitle>Emissions Reduction Trajectory</CardTitle>
+												</CardHeader>
+												<CardContent>
+													<EmissionsChart
+														projections={existingTargets.projections}
+													/>
+												</CardContent>
+											</Card>
+										</motion.div>
+									)}
+
+								{/* Emissions Projection Table */}
+								{tableData.length > 0 && (
+									<motion.div
+										variants={itemVariants}
+										transition={{ type: 'tween' }}
 									>
-										{yearOptions.map((option) => (
-											<option key={option.value} value={option.value}>
-												{option.label}
-											</option>
-										))}
-									</select>
-								</div>
-
-								{/* Emissions verification column */}
-								{selectedBaseYear && (
-									<div className="space-y-2">
-										<div className="text-sm font-medium text-muted-foreground">
-											Verified Emissions for {selectedBaseYear}
-										</div>
-										<div className="rounded-md border bg-muted/30 p-3 space-y-1 text-sm">
-											{baseYearEmissionsData === undefined ? (
-												<div className="text-muted-foreground">
-													Loading emissions data...
-												</div>
-											) : (
-												<>
-													<div className="flex justify-between">
-														<span className="text-muted-foreground">
-															Scope 1:
-														</span>
-														<span className="font-mono">
-															{baseYearEmissionsData.scope1Emissions !== null
-																? `${baseYearEmissionsData.scope1Emissions.toLocaleString()} tCO₂e`
-																: baseYearEmissionsData.energyEmissionsStatus ===
-																		null
-																	? 'N/A (no record)'
-																	: `N/A (${baseYearEmissionsData.energyEmissionsStatus})`}
-														</span>
-													</div>
-													<div className="flex justify-between">
-														<span className="text-muted-foreground">
-															Scope 2 (market-based):
-														</span>
-														<span className="font-mono">
-															{baseYearEmissionsData.scope2EmissionsMarketBased !==
-															null
-																? `${baseYearEmissionsData.scope2EmissionsMarketBased.toLocaleString()} tCO₂e`
-																: baseYearEmissionsData.energyEmissionsStatus ===
-																		null
-																	? 'N/A (no record)'
-																	: `N/A (${baseYearEmissionsData.energyEmissionsStatus})`}
-														</span>
-													</div>
-													<div className="flex justify-between">
-														<span className="text-muted-foreground">
-															Scope 3:
-														</span>
-														<span className="font-mono">
-															{baseYearEmissionsData.totalScope3Emissions !==
-															null
-																? `${baseYearEmissionsData.totalScope3Emissions.toLocaleString()} tCO₂e`
-																: baseYearEmissionsData.scope3EmissionsStatus ===
-																		null
-																	? 'N/A (no record)'
-																	: `N/A (${baseYearEmissionsData.scope3EmissionsStatus})`}
-														</span>
-													</div>
-													<div className="flex justify-between pt-1 border-t mt-1">
-														<span className="font-medium">Total:</span>
-														<span className="font-mono font-medium">
-															{calculateTotalEmissions(
-																baseYearEmissionsData,
-															).toLocaleString()}{' '}
-															tCO₂e
-														</span>
-													</div>
-													<Button
-														type="button"
-														variant="outline"
-														size="sm"
-														className="w-full mt-2"
-														onClick={() => {
-															const total = calculateTotalEmissions(
-																baseYearEmissionsData,
-															)
-															form.setFieldValue('baseYearEmissions', total)
-														}}
-													>
-														Use this total
-													</Button>
-												</>
-											)}
-										</div>
-									</div>
+										<Card>
+											<CardHeader>
+												<CardTitle>Emission Reduction Trajectory</CardTitle>
+											</CardHeader>
+											<CardContent>
+												<EmissionsTable data={tableData} />
+											</CardContent>
+										</Card>
+									</motion.div>
 								)}
-							</div>
-
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								<form.AppField name="baseYear">
-									{(field) => (
-										<field.NumberField
-											label="Base year"
-											placeholder="e.g., 2020"
-										/>
-									)}
-								</form.AppField>
-
-								<form.AppField name="baseYearEmissions">
-									{(field) => (
-										<field.NumberField
-											label="Base year emissions (tCO₂e)"
-											placeholder="e.g., 1000"
-										/>
-									)}
-								</form.AppField>
-
-								<form.AppField name="targetYear">
-									{(field) => (
-										<field.NumberField
-											label="Target year"
-											placeholder="e.g., 2030"
-										/>
-									)}
-								</form.AppField>
-
-								<form.AppField name="targetReduction">
-									{(field) => (
-										<field.NumberField
-											label="Target reduction"
-											placeholder="e.g., 50"
-											unit="%"
-										/>
-									)}
-								</form.AppField>
-
-								<form.AppField name="longTermTargetYear">
-									{(field) => (
-										<field.NumberField
-											label="Long term target year"
-											placeholder="e.g., 2050"
-										/>
-									)}
-								</form.AppField>
-
-								<form.AppField name="longTermTargetReduction">
-									{(field) => (
-										<field.NumberField
-											label="Long term target reduction"
-											placeholder="e.g., 90"
-											unit="%"
-										/>
-									)}
-								</form.AppField>
-							</div>
-
-							<div className="flex justify-end">
-								<Button type="submit" disabled={isSaving}>
-									{isSaving ? 'Saving...' : 'Save targets'}
-								</Button>
-							</div>
-						</form>
-					</form.AppForm>
-				</CardContent>
-			</Card>
-
-			{/* Emissions Chart - shows saved projections from database */}
-			{existingTargets?.projections &&
-				existingTargets.projections.length > 0 && (
-					<Card>
-						<CardHeader>
-							<CardTitle>Emissions Reduction Trajectory</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<EmissionsChart projections={existingTargets.projections} />
-						</CardContent>
-					</Card>
-				)}
-
-			{/* Emissions Projection Table */}
-			{tableData.length > 0 && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Emission Reduction Trajectory</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<EmissionsTable data={tableData} />
-					</CardContent>
-				</Card>
-			)}
+							</motion.div>
+						</AnimatePresence>
+					</TabsContent>
+					<TabsContent value="scope1" className="mt-0">
+						<AnimatePresence>
+							<motion.div
+								animate="visible"
+								exit="hidden"
+								initial="hidden"
+								variants={listVariants}
+							>
+								<motion.div
+									variants={itemVariants}
+									transition={{ type: 'tween' }}
+								>
+									<Card>
+										<CardHeader>
+											<CardTitle>Scope 1 Targets</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<p className="text-muted-foreground">
+												Scope 1 targets coming soon...
+											</p>
+										</CardContent>
+									</Card>
+								</motion.div>
+							</motion.div>
+						</AnimatePresence>
+					</TabsContent>
+					<TabsContent value="scope2" className="mt-0">
+						<AnimatePresence>
+							<motion.div
+								animate="visible"
+								exit="hidden"
+								initial="hidden"
+								variants={listVariants}
+							>
+								<motion.div
+									variants={itemVariants}
+									transition={{ type: 'tween' }}
+								>
+									<Card>
+										<CardHeader>
+											<CardTitle>Scope 2 Targets</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<p className="text-muted-foreground">
+												Scope 2 targets coming soon...
+											</p>
+										</CardContent>
+									</Card>
+								</motion.div>
+							</motion.div>
+						</AnimatePresence>
+					</TabsContent>
+					<TabsContent value="scope3" className="mt-0">
+						<AnimatePresence>
+							<motion.div
+								animate="visible"
+								exit="hidden"
+								initial="hidden"
+								variants={listVariants}
+							>
+								<motion.div
+									variants={itemVariants}
+									transition={{ type: 'tween' }}
+								>
+									<Card>
+										<CardHeader>
+											<CardTitle>Scope 3 Targets</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<p className="text-muted-foreground">
+												Scope 3 targets coming soon...
+											</p>
+										</CardContent>
+									</Card>
+								</motion.div>
+							</motion.div>
+						</AnimatePresence>
+					</TabsContent>
+				</div>
+			</Tabs>
 		</div>
 	)
 }
