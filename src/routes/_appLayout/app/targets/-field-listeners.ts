@@ -99,3 +99,65 @@ export function createScopeFieldListeners({
 		),
 	}
 }
+
+/**
+ * Creates listeners for Scope 3 totals to redistribute across categories
+ */
+export function createScope3TotalToCategories(
+	form: {
+		setFieldValue: (name: string, value: number) => void
+	},
+	proportions: number[],
+	isLongTerm: boolean = false,
+) {
+	return {
+		onBlur: ({ value }: { value: number | undefined }) => {
+			if (value !== undefined) {
+				const prefix = isLongTerm ? 'ltCategory' : 'targetCategory'
+				proportions.forEach((prop, i) => {
+					const categoryVal = value * prop
+					form.setFieldValue(
+						`${prefix}${i + 1}`,
+						Number(categoryVal.toFixed(2)),
+					)
+				})
+			}
+		},
+	}
+}
+
+/**
+ * Creates listeners for individual Scope 3 categories to update totals
+ */
+export function createScope3CategoryToTotal(
+	form: {
+		getFieldValue: (name: string) => number | undefined
+		setFieldValue: (name: string, value: number) => void
+	},
+	baseValue: number,
+	isLongTerm: boolean = false,
+) {
+	return {
+		onBlur: () => {
+			const prefix = isLongTerm ? 'ltCategory' : 'targetCategory'
+			const totalField = isLongTerm
+				? 'longTermTargetAbsolute'
+				: 'targetAbsolute'
+			const reductionField = isLongTerm
+				? 'longTermTargetReduction'
+				: 'targetReduction'
+
+			let newTotal = 0
+			for (let i = 1; i <= 15; i++) {
+				newTotal += form.getFieldValue(`${prefix}${i}`) || 0
+			}
+
+			form.setFieldValue(totalField, Number(newTotal.toFixed(2)))
+
+			if (baseValue > 0) {
+				const reduction = (1 - newTotal / baseValue) * 100
+				form.setFieldValue(reductionField, Number(reduction.toFixed(2)))
+			}
+		},
+	}
+}

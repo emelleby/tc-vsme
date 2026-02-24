@@ -1,25 +1,31 @@
 import { useMutation, useQuery } from 'convex/react'
 import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import { useAppForm } from '@/hooks/tanstack-form'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { api } from '../../../../../convex/_generated/api'
+import type { Doc } from '../../../../../convex/_generated/dataModel'
 import type {
 	BaseYearEmissionsData,
 	EmissionRow,
 	Scope1TargetsFormValues,
 	Scope2TargetsFormValues,
+	Scope3TargetsFormValues,
 	TargetsFormValues,
 } from './-schemas'
 import {
 	scope1TargetsFormSchema,
 	scope2TargetsFormSchema,
+	scope3TargetsFormSchema,
 	targetsFormSchema,
 } from './-schemas'
 import {
 	calculateOverallReductions,
 	generateEmissionRows,
+	getScope3CategoryProportions,
 	updateScope1Projections,
 	updateScope2Projections,
+	updateScope3Projections,
 } from './-utils'
 
 interface UseTargetsDataResult {
@@ -93,23 +99,17 @@ export function useTargetsData(
 	}
 }
 
-interface UseTargetsFormResult {
-	form: any
-	isSaving: boolean
-	defaultValues: TargetsFormValues
-}
-
 /**
  * Hook for managing the main targets form
  */
 export function useTargetsForm(
-	existingTargets: any,
+	existingTargets: Doc<'targets'> | null | undefined,
 	baseYearEmissionsData: BaseYearEmissionsData | null | undefined,
 	saveTargets: ReturnType<typeof useMutation>,
 	selectedBaseYear: number | null,
 	setSelectedBaseYear: (year: number | null) => void,
-	useAppForm: (config: any) => any,
-): UseTargetsFormResult {
+	formHook: typeof useAppForm,
+) {
 	const [isSaving, setIsSaving] = useState(false)
 	const baseYearEmissionsDataRef = useRef(baseYearEmissionsData)
 	baseYearEmissionsDataRef.current = baseYearEmissionsData
@@ -143,7 +143,7 @@ export function useTargetsForm(
 	}, [existingTargets, selectedBaseYear, setSelectedBaseYear])
 
 	// Initialize TanStack Form with default values
-	const form = useAppForm({
+	const form = formHook({
 		defaultValues: defaultValues as TargetsFormValues,
 		validators: {
 			onSubmit: targetsFormSchema,
@@ -200,7 +200,7 @@ export function useTargetsForm(
  * Hook for computing scope-specific default values
  */
 export function useScopeDefaultValues(
-	existingTargets: any,
+	existingTargets: Doc<'targets'> | null | undefined,
 	scopeNumber: 1 | 2,
 ): {
 	targetReduction: number | undefined
@@ -263,17 +263,125 @@ export function useScopeDefaultValues(
 }
 
 /**
+ * Hook for computing Scope 3 specific default values including categories
+ */
+export function useScope3DefaultValues(
+	existingTargets: Doc<'targets'> | null | undefined,
+	baseYearEmissionsData: BaseYearEmissionsData | null | undefined,
+): Scope3TargetsFormValues {
+	return useMemo(() => {
+		const baseDefaults = {
+			targetReduction: undefined,
+			targetAbsolute: undefined,
+			longTermTargetReduction: undefined,
+			longTermTargetAbsolute: undefined,
+		}
+
+		const proportions = baseYearEmissionsData
+			? getScope3CategoryProportions(baseYearEmissionsData)
+			: Array(15).fill(1 / 15)
+
+		// Initialize all category fields to undefined
+		const categoryDefaults: Record<string, number | undefined> = {}
+		for (let i = 1; i <= 15; i++) {
+			categoryDefaults[`targetCategory${i}`] = undefined
+			categoryDefaults[`ltCategory${i}`] = undefined
+		}
+
+		if (!existingTargets?.projections) {
+			return {
+				...baseDefaults,
+				...categoryDefaults,
+			} as unknown as Scope3TargetsFormValues
+		}
+
+		const base = existingTargets.projections.find(
+			(p: EmissionRow) => p.isBaseYear,
+		)
+		const tgt = existingTargets.projections.find(
+			(p: EmissionRow) => p.isTargetYear,
+		)
+		const ltTgt = existingTargets.projections.find(
+			(p: EmissionRow) => p.isLongTermTargetYear,
+		)
+
+		const baseVal = base?.scope3 ?? 0
+		const targetVal = tgt?.scope3
+		const ltVal = ltTgt?.scope3
+
+		let targetPct: number | undefined
+		if (baseVal > 0 && targetVal !== undefined) {
+			targetPct = (1 - targetVal / baseVal) * 100
+		} else if (baseVal === 0 && targetVal !== undefined) {
+			targetPct = 0
+		}
+
+		let ltPct: number | undefined
+		if (ltVal !== undefined) {
+			if (baseVal > 0) {
+				ltPct = (1 - ltVal / baseVal) * 100
+			} else {
+				ltPct = 0
+			}
+		}
+
+		// Fill in category values from projections OR fallback to proportional split
+		if (tgt?.scope3Categories) {
+			for (let i = 1; i <= 15; i++) {
+				categoryDefaults[`targetCategory${i}`] =
+					tgt.scope3Categories[
+						`category${i}` as keyof typeof tgt.scope3Categories
+					]
+			}
+		} else if (targetVal !== undefined) {
+			for (let i = 1; i <= 15; i++) {
+				categoryDefaults[`targetCategory${i}`] = Number(
+					(targetVal * proportions[i - 1]).toFixed(2),
+				)
+			}
+		}
+
+		if (ltTgt?.scope3Categories) {
+			for (let i = 1; i <= 15; i++) {
+				categoryDefaults[`ltCategory${i}`] =
+					ltTgt.scope3Categories[
+						`category${i}` as keyof typeof ltTgt.scope3Categories
+					]
+			}
+		} else if (ltVal !== undefined) {
+			for (let i = 1; i <= 15; i++) {
+				categoryDefaults[`ltCategory${i}`] = Number(
+					(ltVal * proportions[i - 1]).toFixed(2),
+				)
+			}
+		}
+
+		return {
+			targetReduction:
+				targetPct !== undefined ? Number(targetPct.toFixed(2)) : undefined,
+			targetAbsolute:
+				targetVal !== undefined ? Number(targetVal.toFixed(2)) : undefined,
+			longTermTargetReduction:
+				ltPct !== undefined ? Number(ltPct.toFixed(2)) : undefined,
+			longTermTargetAbsolute:
+				ltVal !== undefined ? Number(ltVal.toFixed(2)) : undefined,
+			...categoryDefaults,
+		} as unknown as Scope3TargetsFormValues
+	}, [existingTargets, baseYearEmissionsData])
+}
+
+/**
  * Hook for managing the Scope 1 targets form
  */
 export function useScope1Form(
-	existingTargets: any,
+	existingTargets: Doc<'targets'> | null | undefined,
 	saveTargets: ReturnType<typeof useMutation>,
-	useAppForm: (config: any) => any,
+	formHook: typeof useAppForm,
 ) {
 	const [isSaving, setIsSaving] = useState(false)
 	const scope1DefaultValues = useScopeDefaultValues(existingTargets, 1)
 
-	const form = useAppForm({
+	const form = formHook({
 		defaultValues: scope1DefaultValues as Scope1TargetsFormValues,
 		validators: {
 			onSubmit: scope1TargetsFormSchema,
@@ -332,14 +440,14 @@ export function useScope1Form(
  * Hook for managing the Scope 2 targets form
  */
 export function useScope2Form(
-	existingTargets: any,
+	existingTargets: Doc<'targets'> | null | undefined,
 	saveTargets: ReturnType<typeof useMutation>,
-	useAppForm: (config: any) => any,
+	formHook: typeof useAppForm,
 ) {
 	const [isSaving, setIsSaving] = useState(false)
 	const scope2DefaultValues = useScopeDefaultValues(existingTargets, 2)
 
-	const form = useAppForm({
+	const form = formHook({
 		defaultValues: scope2DefaultValues as Scope2TargetsFormValues,
 		validators: {
 			onSubmit: scope2TargetsFormSchema,
@@ -395,12 +503,97 @@ export function useScope2Form(
 }
 
 /**
+ * Hook for managing the Scope 3 targets form
+ */
+export function useScope3Form(
+	existingTargets: Doc<'targets'> | null | undefined,
+	baseYearEmissionsData: BaseYearEmissionsData | null | undefined,
+	saveTargets: ReturnType<typeof useMutation>,
+	formHook: typeof useAppForm,
+) {
+	const [isSaving, setIsSaving] = useState(false)
+	const scope3DefaultValues = useScope3DefaultValues(
+		existingTargets,
+		baseYearEmissionsData,
+	)
+
+	const form = formHook({
+		defaultValues: scope3DefaultValues,
+		validators: {
+			onSubmit: scope3TargetsFormSchema,
+		},
+		onSubmit: async ({ value }: { value: Scope3TargetsFormValues }) => {
+			setIsSaving(true)
+			try {
+				if (!existingTargets || !existingTargets.projections) {
+					throw new Error('No base projections found')
+				}
+
+				// Extract category values for target and long-term target
+				const targetCategoryValues: Record<string, number | undefined> = {}
+				const ltCategoryValues: Record<string, number | undefined> = {}
+
+				for (let i = 1; i <= 15; i++) {
+					targetCategoryValues[`targetCategory${i}`] = value[
+						`targetCategory${i}` as keyof Scope3TargetsFormValues
+					] as number | undefined
+					ltCategoryValues[`ltCategory${i}`] = value[
+						`ltCategory${i}` as keyof Scope3TargetsFormValues
+					] as number | undefined
+				}
+
+				const newProjections = updateScope3Projections(
+					existingTargets.projections,
+					value.targetReduction || 0,
+					value.longTermTargetReduction,
+					targetCategoryValues,
+					ltCategoryValues,
+				)
+
+				const {
+					targetReduction: newGlobalTargetReduction,
+					longTermTargetReduction: newGlobalLongTermTargetReduction,
+				} = calculateOverallReductions(newProjections)
+
+				await saveTargets({
+					baseYear: existingTargets.baseYear,
+					baseYearEmissions: existingTargets.baseYearEmissions,
+					targetYear: existingTargets.targetYear,
+					targetReduction: newGlobalTargetReduction,
+					longTermTargetYear: existingTargets.longTermTargetYear,
+					longTermTargetReduction:
+						newGlobalLongTermTargetReduction ??
+						existingTargets.longTermTargetReduction,
+					hasScopeSpecificTargets: {
+						scope1: existingTargets.hasScopeSpecificTargets?.scope1 ?? false,
+						scope2: existingTargets.hasScopeSpecificTargets?.scope2 ?? false,
+						scope3: true,
+					},
+					projections: newProjections,
+				})
+				toast.success('Scope 3 targets saved successfully')
+			} catch (error) {
+				console.error('Failed to save Scope 3 targets:', error)
+				toast.error('Failed to save Scope 3 targets')
+			} finally {
+				setIsSaving(false)
+			}
+		},
+	})
+
+	return {
+		form,
+		isSaving,
+	}
+}
+
+/**
  * Hook for computing derived values from targets data
  */
 export function useTargetsComputedValues(
-	existingTargets: any,
+	existingTargets: Doc<'targets'> | null | undefined,
 	baseYearEmissionsData: BaseYearEmissionsData | null | undefined,
-	formValues: any,
+	formValues: TargetsFormValues,
 ) {
 	// Get base scope values from projections
 	const baseScope1Proj = existingTargets?.projections?.find(
@@ -412,6 +605,11 @@ export function useTargetsComputedValues(
 		(p: EmissionRow) => p.isBaseYear,
 	)
 	const baseScope2Value = baseScope2Proj?.scope2 ?? 0
+
+	const baseScope3Proj = existingTargets?.projections?.find(
+		(p: EmissionRow) => p.isBaseYear,
+	)
+	const baseScope3Value = baseScope3Proj?.scope3 ?? 0
 
 	// Generate table data efficiently
 	const tableData = useMemo(() => {
@@ -451,6 +649,7 @@ export function useTargetsComputedValues(
 	return {
 		baseScope1Value,
 		baseScope2Value,
+		baseScope3Value,
 		tableData,
 		hasSpecificTargetsActive,
 	}

@@ -46,6 +46,50 @@ export const scope2TargetsFormSchema = z.object({
 
 export type Scope2TargetsFormValues = z.infer<typeof scope2TargetsFormSchema>
 
+export const scope3TargetsFormSchema = z.object({
+	targetReduction: z
+		.number('Target reduction is required')
+		.min(0, 'Target reduction must be at least 0%')
+		.max(100, 'Target reduction cannot exceed 100%'),
+	targetAbsolute: z.number().min(0, 'Target emissions must be at least 0'),
+	longTermTargetReduction: z.number().min(0).max(100).optional(),
+	longTermTargetAbsolute: z.number().min(0).optional(),
+	// 15 target-year categories
+	targetCategory1: z.number().optional(),
+	targetCategory2: z.number().optional(),
+	targetCategory3: z.number().optional(),
+	targetCategory4: z.number().optional(),
+	targetCategory5: z.number().optional(),
+	targetCategory6: z.number().optional(),
+	targetCategory7: z.number().optional(),
+	targetCategory8: z.number().optional(),
+	targetCategory9: z.number().optional(),
+	targetCategory10: z.number().optional(),
+	targetCategory11: z.number().optional(),
+	targetCategory12: z.number().optional(),
+	targetCategory13: z.number().optional(),
+	targetCategory14: z.number().optional(),
+	targetCategory15: z.number().optional(),
+	// 15 long-term categories
+	ltCategory1: z.number().optional(),
+	ltCategory2: z.number().optional(),
+	ltCategory3: z.number().optional(),
+	ltCategory4: z.number().optional(),
+	ltCategory5: z.number().optional(),
+	ltCategory6: z.number().optional(),
+	ltCategory7: z.number().optional(),
+	ltCategory8: z.number().optional(),
+	ltCategory9: z.number().optional(),
+	ltCategory10: z.number().optional(),
+	ltCategory11: z.number().optional(),
+	ltCategory12: z.number().optional(),
+	ltCategory13: z.number().optional(),
+	ltCategory14: z.number().optional(),
+	ltCategory15: z.number().optional(),
+})
+
+export type Scope3TargetsFormValues = z.infer<typeof scope3TargetsFormSchema>
+
 // Type for base year emissions data from Convex
 export interface BaseYearEmissionsData {
 	scope1Emissions: number | null
@@ -80,4 +124,21 @@ export interface EmissionRow {
 	isBaseYear?: boolean
 	isTargetYear?: boolean
 	isLongTermTargetYear?: boolean
+	scope3Categories?: {
+		category1?: number
+		category2?: number
+		category3?: number
+		category4?: number
+		category5?: number
+		category6?: number
+		category7?: number
+		category8?: number
+		category9?: number
+		category10?: number
+		category11?: number
+		category12?: number
+		category13?: number
+		category14?: number
+		category15?: number
+	}
 }

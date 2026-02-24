@@ -4,10 +4,11 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAppForm } from '@/hooks/tanstack-form'
-import { itemVariants, listVariants } from './-animations'
+import { listVariants } from './-animations'
 import {
 	useScope1Form,
 	useScope2Form,
+	useScope3Form,
 	useTargetsComputedValues,
 	useTargetsData,
 	useTargetsForm,
@@ -15,6 +16,7 @@ import {
 import { MainTab } from './-main-tab'
 import { Scope1Tab } from './-scope1-tab'
 import { Scope2Tab } from './-scope2-tab'
+import { Scope3Tab } from './-scope3-tab'
 
 export const Route = createFileRoute('/_appLayout/app/targets/')({
 	component: TargetsPage,
@@ -57,6 +59,14 @@ function TargetsPage() {
 		useAppForm,
 	)
 
+	// Scope 3 form setup
+	const { form: scope3Form, isSaving: isSavingScope3 } = useScope3Form(
+		existingTargets,
+		baseYearEmissionsData,
+		saveTargets,
+		useAppForm,
+	)
+
 	// Watch form values for table generation
 	const formValues = useStore(form.store, (state: any) => state.values)
 
@@ -64,6 +74,7 @@ function TargetsPage() {
 	const {
 		baseScope1Value,
 		baseScope2Value,
+		baseScope3Value,
 		tableData,
 		hasSpecificTargetsActive,
 	} = useTargetsComputedValues(
@@ -163,19 +174,13 @@ function TargetsPage() {
 								initial="hidden"
 								variants={listVariants}
 							>
-								<motion.div
-									variants={itemVariants}
-									transition={{ type: 'tween' }}
-								>
-									<div className="rounded-md border bg-card p-6">
-										<h3 className="text-lg font-semibold mb-2">
-											Scope 3 Targets
-										</h3>
-										<p className="text-muted-foreground">
-											Scope 3 targets coming soon...
-										</p>
-									</div>
-								</motion.div>
+								<Scope3Tab
+									scope3Form={scope3Form}
+									isSavingScope3={isSavingScope3}
+									existingTargets={existingTargets}
+									baseScope3Value={baseScope3Value}
+									baseYearEmissionsData={baseYearEmissionsData}
+								/>
 							</motion.div>
 						</AnimatePresence>
 					</TabsContent>

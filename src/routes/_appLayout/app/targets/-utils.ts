@@ -305,6 +305,124 @@ export function updateScope2Projections(
 }
 
 /**
+ * Calculate proportions for Scope 3 categories from base year data
+ */
+export function getScope3CategoryProportions(
+	baseEmissions: BaseYearEmissionsData,
+): number[] {
+	const total = baseEmissions.totalScope3Emissions || 0
+	if (total <= 0) {
+		// Fallback: equal split across all 15 categories
+		return Array(15).fill(1 / 15)
+	}
+
+	return Array.from({ length: 15 }, (_, i) => {
+		const catVal =
+			(baseEmissions[
+				`category${i + 1}` as keyof BaseYearEmissionsData
+			] as number) || 0
+		return catVal / total
+	})
+}
+
+/**
+ * Update Scope 3 projections in existing emission rows
+ */
+export function updateScope3Projections(
+	existingProjections: EmissionRow[],
+	targetReduction: number,
+	longTermTargetReduction: number | undefined,
+	targetCategoryValues: Record<string, number | undefined>,
+	ltCategoryValues?: Record<string, number | undefined>,
+): EmissionRow[] {
+	const rows = [...existingProjections]
+	const baseRow = rows.find((r) => r.isBaseYear)
+	const targetRow = rows.find((r) => r.isTargetYear)
+	const longTermRow = rows.find((r) => r.isLongTermTargetYear)
+
+	if (!baseRow || !targetRow) return rows
+
+	const baseYear = baseRow.year
+	const targetYear = targetRow.year
+	const longTermTargetYear = longTermRow?.year
+	const baseScope3 = baseRow.scope3
+
+	const rate1Scope3 = calculateCompoundReduction(
+		baseScope3,
+		baseYear,
+		targetYear,
+		targetReduction,
+	)
+
+	let rate2Scope3 = 0
+	if (
+		longTermTargetYear &&
+		longTermTargetReduction !== undefined &&
+		longTermTargetYear > targetYear
+	) {
+		const targetScope3 = baseScope3 * (1 - targetReduction / 100)
+		const longTermValueScope3 = baseScope3 * (1 - longTermTargetReduction / 100)
+		const n2 = longTermTargetYear - targetYear
+		if (targetScope3 > 0) {
+			rate2Scope3 = (longTermValueScope3 / targetScope3) ** (1 / n2)
+		}
+	}
+
+	let currentScope3 = baseScope3
+
+	return rows.map((row) => {
+		const y = row.year
+		const newScope3 = currentScope3
+
+		if (y < targetYear) {
+			currentScope3 *= rate1Scope3
+		} else if (
+			longTermTargetYear &&
+			y >= targetYear &&
+			y < longTermTargetYear
+		) {
+			currentScope3 *= rate2Scope3
+		}
+
+		const s1 = row.scope1
+		const s2 = row.scope2
+		const s3 = Number(newScope3.toFixed(2))
+		const tot = Number((s1 + s2 + s3).toFixed(2))
+
+		const newRow: EmissionRow = {
+			...row,
+			scope3: s3,
+			total: tot,
+		}
+
+		// Store category breakdown on target and long-term target rows
+		if (y === targetYear) {
+			newRow.scope3Categories = {}
+			for (let i = 1; i <= 15; i++) {
+				const val = targetCategoryValues[`targetCategory${i}`]
+				if (val !== undefined) {
+					newRow.scope3Categories[
+						`category${i}` as keyof typeof newRow.scope3Categories
+					] = Number(val.toFixed(2))
+				}
+			}
+		} else if (y === longTermTargetYear && ltCategoryValues) {
+			newRow.scope3Categories = {}
+			for (let i = 1; i <= 15; i++) {
+				const val = ltCategoryValues[`ltCategory${i}`]
+				if (val !== undefined) {
+					newRow.scope3Categories[
+						`category${i}` as keyof typeof newRow.scope3Categories
+					] = Number(val.toFixed(2))
+				}
+			}
+		}
+
+		return newRow
+	})
+}
+
+/**
  * Calculate overall reduction percentages from emission projections
  * Returns target and long-term reduction percentages relative to base year
  */
