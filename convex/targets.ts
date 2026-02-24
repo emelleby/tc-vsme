@@ -103,16 +103,37 @@ export const saveTargets = mutation({
 })
 
 /**
- * Get targets for the current organization.
+ * Get targets for the current organization with contributor name resolved.
  */
 export const getTargets = query({
   args: {},
   handler: async (ctx) => {
     const orgId = await requireOrgId(ctx)
 
-    return await ctx.db
+    const targets = await ctx.db
       .query("targets")
       .withIndex("by_organizationId", (q) => q.eq("organizationId", orgId))
       .first()
+
+    if (!targets) return null
+
+    // Resolve contributor name from lastModifiedBy
+    let contributor = { name: 'Unknown' }
+    if (targets.lastModifiedBy) {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_clerkId", (q) => q.eq("clerkId", targets.lastModifiedBy))
+        .first()
+      if (user) {
+        contributor = {
+          name: [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email || 'Unknown'
+        }
+      }
+    }
+
+    return {
+      ...targets,
+      contributor,
+    }
   },
 })
