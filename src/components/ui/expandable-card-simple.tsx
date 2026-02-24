@@ -148,15 +148,13 @@ export function FormCard({
 								</Badge>
 							)}
 						</div>
-						{version !== undefined && (
-							<div className="text-sm text-muted-foreground text-right">
-								<div>
-									Status:{' '}
-									<span className="font-medium capitalize">{status}</span>
-								</div>
-								<div>Version: {version}</div>
+
+						<div className="text-sm text-muted-foreground text-right min-h-10">
+							<div>
+								Status: <span className="font-medium capitalize">{status}</span>
 							</div>
-						)}
+							{version !== undefined && <div>Version: {version}</div>}
+						</div>
 					</div>
 
 					<motion.div

@@ -12,6 +12,7 @@ import { C4ClimateRiskForm } from '@/components/forms/c4-climate-risk-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
+import { C3TargetsForm } from './-c3-targets-card'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -43,6 +44,9 @@ function EnvironmentalPage() {
 			reportingYear,
 		},
 	)
+
+	// Fetch targets data for C3 card
+	const targetsData = useQuery(api.targets.getTargets, skipQuery ? 'skip' : {})
 
 	// Extract section-specific data with contributor already resolved
 	const energyEmissions = formSections?.energyEmissions
@@ -169,6 +173,21 @@ function EnvironmentalPage() {
 				}
 			>
 				<C2Scope3EmissionsForm />
+			</FormCard>
+
+			<FormCard
+				title="Emission reduction targets"
+				updatedDate={formatDate(targetsData?.lastModifiedAt)}
+				toolTip="View and manage your organization's emission reduction targets."
+				status={targetsData ? 'submitted' : 'not set'}
+				contributor={targetsData?.contributor || { name: 'Unknown' }}
+				code="C3"
+				module="Utvidet modul"
+			>
+				<C3TargetsForm
+					targets={targetsData}
+					isLoading={targetsData === undefined}
+				/>
 			</FormCard>
 
 			<FormCard
