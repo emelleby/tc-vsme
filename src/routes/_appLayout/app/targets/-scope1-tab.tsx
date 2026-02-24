@@ -7,11 +7,11 @@ import type { EmissionRow } from './-schemas'
 
 interface Scope1TabProps {
 	scope1Form: {
-		AppForm: ({ children }: { children: React.ReactNode }) => React.ReactNode
+		AppForm: any
 		AppField: React.ComponentType<any>
 		handleSubmit: () => void
-		getFieldValue: (name: string) => number | undefined
-		setFieldValue: (name: string, value: number) => void
+		getFieldValue: any
+		setFieldValue: any
 	}
 	isSavingScope1: boolean
 	existingTargets:
