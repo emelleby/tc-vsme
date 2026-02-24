@@ -81,4 +81,3 @@ export interface EmissionRow {
 	isTargetYear?: boolean
 	isLongTermTargetYear?: boolean
 }
-
