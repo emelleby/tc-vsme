@@ -13,6 +13,7 @@ const formSectionValidator = v.union(
   v.literal("resourceUseCircularEconomy"),
   v.literal("scope3Emissions"),
   v.literal("climateRiskAnalysis"),
+  v.literal("workforce"),
 )
 
 // Form data validators for each section
@@ -161,9 +162,33 @@ const formEnvironmentalDataValidator = v.union(
   // Add more environmental sections here as they are created
 )
 
-// Placeholder validators for social and governance forms
+// Social form data validators
+const workforceDataValidator = v.object({
+  reportingYear: v.string(),
+  heltidsansatte: v.number(),
+  deltidsansatte: v.number(),
+  midlertidigAnsatte: v.number(),
+  menn: v.number(),
+  kvinner: v.number(),
+  annet: v.number(),
+  ansattePerLand: v.array(
+    v.object({
+      id: v.string(),
+      land: v.string(),
+      antallAnsatte: v.number(),
+    })
+  ),
+  eventuellUtfyllendeInfo: v.optional(v.string()),
+})
+
+// Union validator for all social form sections
+const formSocialDataValidator = v.union(
+  workforceDataValidator,
+  // Add more social sections here as they are created
+)
+
+// Placeholder validator for governance forms
 // These will be expanded as new forms are added
-const formSocialDataValidator = v.any()
 const formGovernanceDataValidator = v.any()
 
 export default defineSchema({

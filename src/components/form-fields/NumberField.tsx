@@ -14,7 +14,8 @@ import { useFieldContext } from '@/hooks/form-context'
 
 interface NumberFieldProps {
 	hidden?: boolean
-	label: string
+	hideLabel?: boolean
+	label?: string
 	unit?: string
 	description?: string
 	placeholder?: string
@@ -22,10 +23,12 @@ interface NumberFieldProps {
 	step?: string | number
 	min?: string | number
 	max?: string | number
+	className?: string
 }
 
 export function NumberField({
 	hidden,
+	hideLabel,
 	label,
 	unit,
 	description,
@@ -34,6 +37,7 @@ export function NumberField({
 	step,
 	min,
 	max,
+	className,
 }: NumberFieldProps) {
 	const field = useFieldContext<number | undefined>()
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -46,7 +50,9 @@ export function NumberField({
 
 	return (
 		<Field data-invalid={isInvalid} hidden={hidden}>
-			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+			{!hideLabel && label && (
+				<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+			)}
 			{unit ? (
 				<InputGroup>
 					<InputGroupInput
@@ -62,6 +68,7 @@ export function NumberField({
 						aria-invalid={isInvalid}
 						placeholder={placeholder}
 						disabled={disabled}
+						className={className}
 					/>
 					<InputGroupAddon
 						align="inline-end"
@@ -84,6 +91,7 @@ export function NumberField({
 					aria-invalid={isInvalid}
 					placeholder={placeholder}
 					disabled={disabled}
+					className={className}
 				/>
 			)}
 			{description && <FieldDescription>{description}</FieldDescription>}

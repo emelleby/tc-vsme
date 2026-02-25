@@ -3,16 +3,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { itemVariants } from './-animations'
 import { createScopeFieldListeners } from './-field-listeners'
+import type { useScope1Form } from './-hooks'
 import type { EmissionRow } from './-schemas'
 
 interface Scope1TabProps {
-	scope1Form: {
-		AppForm: any
-		AppField: React.ComponentType<any>
-		handleSubmit: () => void
-		getFieldValue: any
-		setFieldValue: any
-	}
+	scope1Form: ReturnType<typeof useScope1Form>['form']
 	isSavingScope1: boolean
 	existingTargets:
 		| {
@@ -96,7 +91,7 @@ export function Scope1Tab({
 										name="targetReduction"
 										listeners={listeners.targetReduction}
 									>
-										{(field: any) => (
+										{(field) => (
 											<field.NumberField
 												label="Target reduction"
 												placeholder="e.g., 50"
@@ -109,7 +104,7 @@ export function Scope1Tab({
 										name="targetAbsolute"
 										listeners={listeners.targetAbsolute}
 									>
-										{(field: any) => (
+										{(field) => (
 											<field.NumberField
 												label="Target emissions"
 												placeholder="e.g., 500"
@@ -133,7 +128,7 @@ export function Scope1Tab({
 												name="longTermTargetReduction"
 												listeners={listeners.longTermTargetReduction}
 											>
-												{(field: any) => (
+												{(field) => (
 													<field.NumberField
 														label="Long term target reduction"
 														placeholder="e.g., 90"
@@ -146,7 +141,7 @@ export function Scope1Tab({
 												name="longTermTargetAbsolute"
 												listeners={listeners.longTermTargetAbsolute}
 											>
-												{(field: any) => (
+												{(field) => (
 													<field.NumberField
 														label="Long term target emissions"
 														placeholder="e.g., 100"

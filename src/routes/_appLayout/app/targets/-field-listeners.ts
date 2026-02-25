@@ -4,8 +4,10 @@
  */
 export function createReductionToAbsoluteListener(
 	form: {
-		getFieldValue: (name: string) => number | undefined
-		setFieldValue: (name: string, value: number) => void
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		getFieldValue: (name: any) => number | undefined
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		setFieldValue: (name: any, value: number) => void
 	},
 	baseValue: number,
 	absoluteFieldName: string,
@@ -29,8 +31,10 @@ export function createReductionToAbsoluteListener(
  */
 export function createAbsoluteToReductionListener(
 	form: {
-		getFieldValue: (name: string) => number | undefined
-		setFieldValue: (name: string, value: number) => void
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		getFieldValue: (name: any) => number | undefined
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		setFieldValue: (name: any, value: number) => void
 	},
 	baseValue: number,
 	reductionFieldName: string,
@@ -54,8 +58,10 @@ export function createAbsoluteToReductionListener(
  */
 export interface ScopeFieldListenersProps {
 	form: {
-		getFieldValue: (name: string) => number | undefined
-		setFieldValue: (name: string, value: number) => void
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		getFieldValue: (name: any) => number | undefined
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		setFieldValue: (name: any, value: number) => void
 	}
 	baseValue: number
 	targetReductionField: string
@@ -105,7 +111,8 @@ export function createScopeFieldListeners({
  */
 export function createScope3TotalToCategories(
 	form: {
-		setFieldValue: (name: string, value: number) => void
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		setFieldValue: (name: any, value: number) => void
 	},
 	proportions: number[],
 	isLongTerm: boolean = false,
@@ -131,8 +138,10 @@ export function createScope3TotalToCategories(
  */
 export function createScope3CategoryToTotal(
 	form: {
-		getFieldValue: (name: string) => number | undefined
-		setFieldValue: (name: string, value: number) => void
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		getFieldValue: (name: any) => number | undefined
+		// biome-ignore lint/suspicious/noExplicitAny: required for generic form function
+		setFieldValue: (name: any, value: number) => void
 	},
 	baseValue: number,
 	isLongTerm: boolean = false,
