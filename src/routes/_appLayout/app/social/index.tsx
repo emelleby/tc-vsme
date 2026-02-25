@@ -3,6 +3,8 @@ import { useStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { B8WorkforceForm } from '@/components/forms/social/B8Form'
+import { B9HealthSafetyForm } from '@/components/forms/social/B9Form'
+import { B10CompensationForm } from '@/components/forms/social/B10Form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -40,6 +42,8 @@ function SocialPage() {
 
 	// Extract section-specific data with contributor already resolved
 	const workforce = formSections?.workforce
+	const healthSafety = formSections?.healthSafety
+	const compensationCollective = formSections?.compensationCollective
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -69,7 +73,42 @@ function SocialPage() {
 			>
 				<B8WorkforceForm />
 			</FormCard>
+
+			<FormCard
+				title="Helse og sikkerhet"
+				updatedDate={formatDate(healthSafety?.lastModifiedAt)}
+				toolTip="Rapporter arbeidsulykker, sykefravær, HMS-opplæring og omkomne."
+				status={healthSafety?.status ?? 'draft'}
+				contributor={healthSafety?.contributor || { name: 'Unknown' }}
+				code="B9"
+				module="Grunnmodul"
+				version={
+					healthSafety?.versions?.length
+						? healthSafety.versions[healthSafety.versions.length - 1]?.version
+						: undefined
+				}
+			>
+				<B9HealthSafetyForm />
+			</FormCard>
+
+			<FormCard
+				title="Kompensasjon og kollektive forhandlinger"
+				updatedDate={formatDate(compensationCollective?.lastModifiedAt)}
+				toolTip="Rapporter tariffavtaledekning, gjennomsnittlig opplæring og minstelønnsansvar."
+				status={compensationCollective?.status ?? 'draft'}
+				contributor={compensationCollective?.contributor || { name: 'Unknown' }}
+				code="B10"
+				module="Grunnmodul"
+				version={
+					compensationCollective?.versions?.length
+						? compensationCollective.versions[
+								compensationCollective.versions.length - 1
+							]?.version
+						: undefined
+				}
+			>
+				<B10CompensationForm />
+			</FormCard>
 		</div>
 	)
 }
-
