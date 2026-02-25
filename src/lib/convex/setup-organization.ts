@@ -22,6 +22,12 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 	.inputValidator(
 		(data: {
 			orgId: string
+			orgName: string
+			orgSlug: string
+			userEmail: string
+			userFirstName?: string
+			userLastName?: string
+			userName?: string
 			orgNumber?: string
 			address?: {
 				street?: string[]
@@ -83,16 +89,8 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				}
 			}
 
-			// Get Clerk client
+			// Get Clerk client (only needed for metadata updates)
 			const client = await clerkClient()
-
-			// Fetch user details from Clerk
-			const user = await client.users.getUser(userId)
-
-			// Fetch organization details from Clerk
-			const organization = await client.organizations.getOrganization({
-				organizationId: data.orgId,
-			})
 
 			// Initialize Convex client (server-side)
 			const convex = new ConvexHttpClient(CONVEX_URL)
@@ -112,10 +110,8 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 			// Step 1: Upsert organization in Convex (create or update with correct data)
 			await convex.mutation(api.organizations.upsertOrganization, {
 				clerkOrgId: data.orgId,
-				name: organization.name,
-				slug:
-					organization.slug ||
-					organization.name.toLowerCase().replace(/\s+/g, '-'),
+				name: data.orgName,
+				slug: data.orgSlug,
 				orgNumber: data.orgNumber,
 				address: data.address,
 				orgForm: data.orgForm,
@@ -124,16 +120,18 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				industry: data.industry,
 				numberEmployees: data.numberEmployees,
 				businessModel: data.businessModel,
+				hasVsme: true,
 			})
 
 			// Step 2: Upsert user in Convex
 			await convex.mutation(api.users.upsertUser, {
 				clerkId: userId,
-				email: user.emailAddresses[0]?.emailAddress || '',
-				firstName: user.firstName || undefined,
-				lastName: user.lastName || undefined,
-				username: user.username || undefined,
+				email: data.userEmail,
+				firstName: data.userFirstName,
+				lastName: data.userLastName,
+				username: data.userName,
 				organizationId: data.orgId,
+				hasVsme: false,
 			})
 
 			// Step 3: Update Clerk organization metadata

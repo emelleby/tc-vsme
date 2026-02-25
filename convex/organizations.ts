@@ -61,6 +61,7 @@ export const upsertOrganization = mutation({
     industry: v.optional(v.string()),
     numberEmployees: v.optional(v.number()),
     businessModel: v.optional(v.string()),
+    hasVsme: v.optional(v.boolean()),
   },
   returns: v.id('organizations'),
   handler: async (ctx, args) => {
@@ -98,6 +99,7 @@ export const upsertOrganization = mutation({
         industry: args.industry,
         numberEmployees: args.numberEmployees,
         businessModel: args.businessModel,
+        hasVsme: args.hasVsme,
       })
       return existing._id
     }
@@ -115,6 +117,7 @@ export const upsertOrganization = mutation({
       industry: args.industry,
       numberEmployees: args.numberEmployees,
       businessModel: args.businessModel,
+      hasVsme: args.hasVsme,
     })
   },
 })
@@ -150,6 +153,7 @@ export const getByClerkOrgId = query({
       industry: v.optional(v.string()),
       numberEmployees: v.optional(v.number()),
       businessModel: v.optional(v.string()),
+      hasVsme: v.optional(v.boolean()),
     }),
     v.null()
   ),
@@ -189,10 +193,46 @@ export const exists = query({
   },
 })
 
+/**
+ * Get permission flags for an organization.
+ * Returns hasVsme flag and whether the organization exists in the database.
+ * The exists field replaces the concept of vsmeDb.
+ */
+export const getPermissionFlags = query({
+  args: {
+    clerkOrgId: v.string(),
+  },
+  returns: v.object({
+    hasVsme: v.boolean(),
+    exists: v.boolean(),
+  }),
+  handler: async (ctx, args) => {
+    // Require authentication
+    await requireUserId(ctx)
+
+    const org = await ctx.db
+      .query('organizations')
+      .withIndex('by_clerkOrgId', (q) => q.eq('clerkOrgId', args.clerkOrgId))
+      .unique()
+
+    if (!org) {
+      return { hasVsme: false, exists: false }
+    }
+
+    // If org exists but hasVsme is missing, default to true
+    // (because setup already ran — the record's existence proves it)
+    return {
+      hasVsme: org.hasVsme ?? true,
+      exists: true,
+    }
+  },
+})
+
 export default {
   createOrganization,
   upsertOrganization,
   getByClerkOrgId,
   exists,
+  getPermissionFlags,
 }
 

@@ -103,5 +103,61 @@ describe('organizations mutations', () => {
       expect(exists).toBe(false)
     })
   })
+
+  describe('getPermissionFlags', () => {
+    it('returns { hasVsme: true, exists: true } when org has hasVsme: true', async () => {
+      await t.mutation(api.organizations.upsertOrganization, {
+        clerkOrgId: 'org_with_vsme',
+        name: 'Org With VSME',
+        slug: 'org-with-vsme',
+        hasVsme: true,
+      })
+
+      const flags = await t.query(api.organizations.getPermissionFlags, {
+        clerkOrgId: 'org_with_vsme'
+      })
+
+      expect(flags).toEqual({ hasVsme: true, exists: true })
+    })
+
+    it('returns { hasVsme: true, exists: true } when org exists but hasVsme field is missing (default behavior)', async () => {
+      // Create org without hasVsme field
+      await t.mutation(api.organizations.createOrganization, {
+        clerkOrgId: 'org_no_flag',
+        name: 'Org Without Flag',
+        slug: 'org-no-flag'
+      })
+
+      const flags = await t.query(api.organizations.getPermissionFlags, {
+        clerkOrgId: 'org_no_flag'
+      })
+
+      // Should default to true because org exists (setup already ran)
+      expect(flags).toEqual({ hasVsme: true, exists: true })
+    })
+
+    it('returns { hasVsme: false, exists: false } for unknown clerkOrgId', async () => {
+      const flags = await t.query(api.organizations.getPermissionFlags, {
+        clerkOrgId: 'org_unknown'
+      })
+
+      expect(flags).toEqual({ hasVsme: false, exists: false })
+    })
+
+    it('returns { hasVsme: false, exists: true } when org has hasVsme: false', async () => {
+      await t.mutation(api.organizations.upsertOrganization, {
+        clerkOrgId: 'org_no_vsme',
+        name: 'Org Without VSME',
+        slug: 'org-no-vsme',
+        hasVsme: false,
+      })
+
+      const flags = await t.query(api.organizations.getPermissionFlags, {
+        clerkOrgId: 'org_no_vsme'
+      })
+
+      expect(flags).toEqual({ hasVsme: false, exists: true })
+    })
+  })
 })
 

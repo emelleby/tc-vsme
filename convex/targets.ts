@@ -14,6 +14,44 @@ export const saveTargets = mutation({
     targetReduction: v.number(),
     longTermTargetYear: v.optional(v.number()),
     longTermTargetReduction: v.optional(v.number()),
+    hasScopeSpecificTargets: v.optional(
+      v.object({
+        scope1: v.boolean(),
+        scope2: v.boolean(),
+        scope3: v.boolean(),
+      })
+    ),
+    projections: v.optional(
+      v.array(
+        v.object({
+          year: v.number(),
+          scope1: v.number(),
+          scope2: v.number(),
+          scope3: v.number(),
+          total: v.number(),
+          isBaseYear: v.optional(v.boolean()),
+          isTargetYear: v.optional(v.boolean()),
+          isLongTermTargetYear: v.optional(v.boolean()),
+          scope3Categories: v.optional(v.object({
+            category1: v.optional(v.number()),
+            category2: v.optional(v.number()),
+            category3: v.optional(v.number()),
+            category4: v.optional(v.number()),
+            category5: v.optional(v.number()),
+            category6: v.optional(v.number()),
+            category7: v.optional(v.number()),
+            category8: v.optional(v.number()),
+            category9: v.optional(v.number()),
+            category10: v.optional(v.number()),
+            category11: v.optional(v.number()),
+            category12: v.optional(v.number()),
+            category13: v.optional(v.number()),
+            category14: v.optional(v.number()),
+            category15: v.optional(v.number()),
+          })),
+        }),
+      ),
+    ),
   },
   handler: async (ctx, args) => {
     const userId = await requireUserId(ctx)
@@ -35,6 +73,8 @@ export const saveTargets = mutation({
         targetReduction: args.targetReduction,
         longTermTargetYear: args.longTermTargetYear,
         longTermTargetReduction: args.longTermTargetReduction,
+        hasScopeSpecificTargets: args.hasScopeSpecificTargets,
+        projections: args.projections,
         lastModifiedBy: userId,
         lastModifiedAt: now,
       })
@@ -51,6 +91,8 @@ export const saveTargets = mutation({
       // targetEmissions: args.targetEmissions,
       longTermTargetYear: args.longTermTargetYear,
       longTermTargetReduction: args.longTermTargetReduction,
+      hasScopeSpecificTargets: args.hasScopeSpecificTargets,
+      projections: args.projections,
       createdBy: userId,
       createdAt: now,
       lastModifiedBy: userId,
@@ -61,16 +103,37 @@ export const saveTargets = mutation({
 })
 
 /**
- * Get targets for the current organization.
+ * Get targets for the current organization with contributor name resolved.
  */
 export const getTargets = query({
   args: {},
   handler: async (ctx) => {
     const orgId = await requireOrgId(ctx)
 
-    return await ctx.db
+    const targets = await ctx.db
       .query("targets")
       .withIndex("by_organizationId", (q) => q.eq("organizationId", orgId))
       .first()
+
+    if (!targets) return null
+
+    // Resolve contributor name from lastModifiedBy
+    let contributor = { name: 'Unknown' }
+    if (targets.lastModifiedBy) {
+      const user = await ctx.db
+        .query("users")
+        .withIndex("by_clerkId", (q) => q.eq("clerkId", targets.lastModifiedBy))
+        .first()
+      if (user) {
+        contributor = {
+          name: [user.firstName, user.lastName].filter(Boolean).join(' ') || user.email || 'Unknown'
+        }
+      }
+    }
+
+    return {
+      ...targets,
+      contributor,
+    }
   },
 })

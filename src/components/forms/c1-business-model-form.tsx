@@ -57,49 +57,47 @@ export function C1BusinessModelForm() {
 	}
 
 	return (
-		<>
-			<form.AppForm>
-				<form
-					onSubmit={(e) => {
-						e.preventDefault()
-						e.stopPropagation()
-						form.handleSubmit()
-					}}
-				>
-					<fieldset disabled={status === 'submitted'} className="space-y-6">
-						{/* Hidden reporting year field */}
-						<form.AppField name="reportingYear">
-							{(field) => (
-								<field.TextField
-									label="Reporting Year"
-									placeholder="YYYY"
-									hidden
-								/>
-							)}
-						</form.AppField>
+		<form.AppForm>
+			<form
+				onSubmit={(e) => {
+					e.preventDefault()
+					e.stopPropagation()
+					form.handleSubmit()
+				}}
+			>
+				<fieldset disabled={status === 'submitted'} className="space-y-6">
+					{/* Hidden reporting year field */}
+					<form.AppField name="reportingYear">
+						{(field) => (
+							<field.TextField
+								label="Reporting Year"
+								placeholder="YYYY"
+								hidden
+							/>
+						)}
+					</form.AppField>
 
-						{/* Business Model Textarea */}
-						<form.AppField name="businessModel">
-							{(field) => (
-								<field.TextareaField
-									label="Business Model"
-									placeholder="Describe your organization's business model..."
-									rows={8}
-									description="Provide a description of your organization's business model, including key activities, value propositions, and revenue streams."
-								/>
-							)}
-						</form.AppField>
-					</fieldset>
+					{/* Business Model Textarea */}
+					<form.AppField name="businessModel">
+						{(field) => (
+							<field.TextareaField
+								label="Business Model"
+								placeholder="Describe your organization's business model..."
+								rows={8}
+								description="Provide a description of your organization's business model, including key activities, value propositions, and revenue streams."
+							/>
+						)}
+					</form.AppField>
+				</fieldset>
 
-					<FormButtons
-						status={status}
-						isSaving={isSaving}
-						onSaveDraft={saveDraft}
-						onSubmit={submit}
-						onReopen={reopen}
-					/>
-				</form>
-			</form.AppForm>
-		</>
+				<FormButtons
+					status={status}
+					isSaving={isSaving}
+					onSaveDraft={saveDraft}
+					onSubmit={submit}
+					onReopen={reopen}
+				/>
+			</form>
+		</form.AppForm>
 	)
 }
