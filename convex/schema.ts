@@ -14,6 +14,8 @@ const formSectionValidator = v.union(
   v.literal("scope3Emissions"),
   v.literal("climateRiskAnalysis"),
   v.literal("workforce"),
+  v.literal("healthSafety"),
+  v.literal("compensationCollective"),
 )
 
 // Form data validators for each section
@@ -181,9 +183,27 @@ const workforceDataValidator = v.object({
   eventuellUtfyllendeInfo: v.optional(v.string()),
 })
 
+const healthSafetyDataValidator = v.object({
+  reportingYear: v.string(),
+  arbeidsulykker: v.number(),
+  sykefravarProsent: v.number(),
+  hmsOpplaering: v.number(),
+  omkomne: v.number(),
+  eventuellUtfyllendeInfo: v.optional(v.string()),
+})
+
+const compensationCollectiveDataValidator = v.object({
+  reportingYear: v.string(),
+  tariffavtaledekning: v.optional(v.number()),
+  gjennomsnittligOpplaering: v.optional(v.number()),
+  minstelonnsansvar: v.boolean(),
+})
+
 // Union validator for all social form sections
 const formSocialDataValidator = v.union(
   workforceDataValidator,
+  healthSafetyDataValidator,
+  compensationCollectiveDataValidator,
   // Add more social sections here as they are created
 )
 

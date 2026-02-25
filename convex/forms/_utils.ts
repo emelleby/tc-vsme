@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 
 export type FormTable = "formGeneral" | "formEnvironmental" | "formSocial" | "formGovernance"
-export type FormSection = "companyInfo" | "sustainabilityInitiatives" | "businessModel" | "energyEmissions" | "pollution" | "biodiversity" | "waterManagement" | "resourceUseCircularEconomy" | "scope3Emissions" | "climateRiskAnalysis" | "workforce"
+export type FormSection = "companyInfo" | "sustainabilityInitiatives" | "businessModel" | "energyEmissions" | "pollution" | "biodiversity" | "waterManagement" | "resourceUseCircularEconomy" | "scope3Emissions" | "climateRiskAnalysis" | "workforce" | "healthSafety" | "compensationCollective"
 
 export const formTableValidator = v.union(
   v.literal("formGeneral"),
@@ -22,6 +22,8 @@ export const formSectionValidator = v.union(
   v.literal("scope3Emissions"),
   v.literal("climateRiskAnalysis"),
   v.literal("workforce"),
+  v.literal("healthSafety"),
+  v.literal("compensationCollective"),
 )
 
 export interface FieldChange {
