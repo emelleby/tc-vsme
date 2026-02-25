@@ -15,6 +15,9 @@ import {
 	createScope3TotalToCategories,
 	createScopeFieldListeners,
 } from './-field-listeners'
+// biome-ignore lint/style/useImportType: required for typeof
+import { useScope3Form } from './-hooks'
+
 import type { BaseYearEmissionsData, EmissionRow } from './-schemas'
 import { getScope3CategoryProportions } from './-utils'
 
@@ -37,13 +40,7 @@ const SCOPE3_CATEGORIES = [
 ]
 
 interface Scope3TabProps {
-	scope3Form: {
-		AppForm: any
-		AppField: React.ComponentType<any>
-		handleSubmit: () => void
-		getFieldValue: any
-		setFieldValue: any
-	}
+	scope3Form: ReturnType<typeof useScope3Form>['form']
 	isSavingScope3: boolean
 	existingTargets:
 		| {
@@ -156,7 +153,7 @@ export function Scope3Tab({
 										name="targetReduction"
 										listeners={topLevelListeners.targetReduction}
 									>
-										{(field: any) => (
+										{(field) => (
 											<field.NumberField
 												label="Overall Scope 3 target reduction"
 												placeholder="e.g., 50"
@@ -169,13 +166,13 @@ export function Scope3Tab({
 										name="targetAbsolute"
 										listeners={{
 											...topLevelListeners.targetAbsolute,
-											onBlur: (args: any) => {
+											onBlur: (args: { value: number | undefined }) => {
 												topLevelListeners.targetAbsolute.onBlur(args)
 												totalToCategoriesListener.onBlur(args)
 											},
 										}}
 									>
-										{(field: any) => (
+										{(field) => (
 											<field.NumberField
 												label="Overall Scope 3 target emissions"
 												placeholder="e.g., 500"
@@ -199,7 +196,7 @@ export function Scope3Tab({
 												name="longTermTargetReduction"
 												listeners={topLevelListeners.longTermTargetReduction}
 											>
-												{(field: any) => (
+												{(field) => (
 													<field.NumberField
 														label="Overall LT target reduction"
 														placeholder="e.g., 90"
@@ -212,7 +209,7 @@ export function Scope3Tab({
 												name="longTermTargetAbsolute"
 												listeners={{
 													...topLevelListeners.longTermTargetAbsolute,
-													onBlur: (args: any) => {
+													onBlur: (args: { value: number | undefined }) => {
 														topLevelListeners.longTermTargetAbsolute.onBlur(
 															args,
 														)
@@ -220,7 +217,7 @@ export function Scope3Tab({
 													},
 												}}
 											>
-												{(field: any) => (
+												{(field) => (
 													<field.NumberField
 														label="Overall LT target emissions"
 														placeholder="e.g., 100"
@@ -268,10 +265,11 @@ export function Scope3Tab({
 														</TableCell>
 														<TableCell className="text-right">
 															<AppField
-																name={`targetCategory${i + 1}`}
+																// biome-ignore lint/suspicious/noExplicitAny: dynamic field name
+																name={`targetCategory${i + 1}` as any}
 																listeners={categoryToTotalListener}
 															>
-																{(field: any) => (
+																{(field) => (
 																	<field.NumberField
 																		hideLabel
 																		unit="tCO2e"
@@ -283,10 +281,11 @@ export function Scope3Tab({
 														{existingTargets.longTermTargetYear && (
 															<TableCell className="text-right">
 																<AppField
-																	name={`ltCategory${i + 1}`}
+																	// biome-ignore lint/suspicious/noExplicitAny: dynamic field name
+																	name={`ltCategory${i + 1}` as any}
 																	listeners={categoryToTotalLtListener}
 																>
-																	{(field: any) => (
+																	{(field) => (
 																		<field.NumberField
 																			hideLabel
 																			unit="tCO2e"

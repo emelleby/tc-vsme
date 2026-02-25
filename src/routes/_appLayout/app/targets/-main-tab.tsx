@@ -3,19 +3,15 @@ import { EmissionsChart } from '@/components/emissions-chart'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { itemVariants } from './-animations'
+import type { useTargetsForm } from './-hooks'
 import type { BaseYearEmissionsData, EmissionRow } from './-schemas'
 import { EmissionsTable } from './-table'
 import { calculateTotalEmissions } from './-utils'
 
 interface MainTabProps {
-	form: {
-		AppForm: ({ children }: { children: React.ReactNode }) => React.ReactNode
-		AppField: React.ComponentType<any>
-		handleSubmit: () => void
-		setFieldValue: (name: string, value: any) => void
-		store: any
-	}
+	form: ReturnType<typeof useTargetsForm>['form']
 	isSaving: boolean
+
 	hasSpecificTargetsActive: boolean
 	selectedBaseYear: number | null
 	setSelectedBaseYear: (year: number | null) => void
@@ -182,7 +178,7 @@ export function MainTab({
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<AppField name="baseYear">
-									{(field: any) => (
+									{(field) => (
 										<field.NumberField
 											label="Base year"
 											placeholder="e.g., 2020"
@@ -191,7 +187,7 @@ export function MainTab({
 								</AppField>
 
 								<AppField name="baseYearEmissions">
-									{(field: any) => (
+									{(field) => (
 										<field.NumberField
 											label="Base year emissions (tCO2e)"
 											placeholder="e.g., 1000"
@@ -200,7 +196,7 @@ export function MainTab({
 								</AppField>
 
 								<AppField name="targetYear">
-									{(field: any) => (
+									{(field) => (
 										<field.NumberField
 											label="Target year"
 											placeholder="e.g., 2030"
@@ -209,7 +205,7 @@ export function MainTab({
 								</AppField>
 
 								<AppField name="targetReduction">
-									{(field: any) => (
+									{(field) => (
 										<field.NumberField
 											label="Target reduction"
 											placeholder="e.g., 50"
@@ -219,7 +215,7 @@ export function MainTab({
 								</AppField>
 
 								<AppField name="longTermTargetYear">
-									{(field: any) => (
+									{(field) => (
 										<field.NumberField
 											label="Long term target year"
 											placeholder="e.g., 2050"
@@ -228,7 +224,7 @@ export function MainTab({
 								</AppField>
 
 								<AppField name="longTermTargetReduction">
-									{(field: any) => (
+									{(field) => (
 										<field.NumberField
 											label="Long term target reduction"
 											placeholder="e.g., 90"

@@ -68,7 +68,7 @@ function TargetsPage() {
 	)
 
 	// Watch form values for table generation
-	const formValues = useStore(form.store, (state: any) => state.values)
+	const formValues = useStore(form.store, (state) => state.values)
 
 	// Compute derived values
 	const {

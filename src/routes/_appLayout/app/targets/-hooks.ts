@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from 'convex/react'
 import { useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import { useAppForm } from '@/hooks/tanstack-form'
+import type { useAppForm } from '@/hooks/tanstack-form'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { api } from '../../../../../convex/_generated/api'
 import type { Doc } from '../../../../../convex/_generated/dataModel'
