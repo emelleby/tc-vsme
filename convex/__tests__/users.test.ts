@@ -133,5 +133,54 @@ describe('users mutations', () => {
       expect(user).toBeNull()
     })
   })
+
+  describe('getPermissionFlags', () => {
+    it('returns { hasVsme: false } when user exists but flag is missing', async () => {
+      // Create user without hasVsme flag
+      await t.mutation(api.users.upsertUser, {
+        clerkId: 'user_no_flag',
+        email: 'noflag@example.com',
+        organizationId: 'org_test',
+      })
+
+      const flags = await t.query(api.users.getPermissionFlags, {})
+
+      // Should default to false (conservative)
+      expect(flags).toEqual({ hasVsme: false })
+    })
+
+    it('returns { hasVsme: true } when flag is set to true', async () => {
+      await t.mutation(api.users.upsertUser, {
+        clerkId: 'user_with_vsme',
+        email: 'withvsme@example.com',
+        organizationId: 'org_test',
+        hasVsme: true,
+      })
+
+      const flags = await t.query(api.users.getPermissionFlags, {})
+
+      expect(flags).toEqual({ hasVsme: true })
+    })
+
+    it('returns { hasVsme: false } when flag is explicitly set to false', async () => {
+      await t.mutation(api.users.upsertUser, {
+        clerkId: 'user_no_vsme',
+        email: 'novsme@example.com',
+        organizationId: 'org_test',
+        hasVsme: false,
+      })
+
+      const flags = await t.query(api.users.getPermissionFlags, {})
+
+      expect(flags).toEqual({ hasVsme: false })
+    })
+
+    it('returns { hasVsme: false } when user does not exist', async () => {
+      // Query without creating a user first
+      const flags = await t.query(api.users.getPermissionFlags, {})
+
+      expect(flags).toEqual({ hasVsme: false })
+    })
+  })
 })
 

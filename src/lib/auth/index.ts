@@ -9,7 +9,7 @@
  */
 
 // Server functions
-export { getAuthContext } from './context'
+export { getAuthContext, invalidateAuthContext } from './context'
 // Types
 export type {
 	AuthContext,

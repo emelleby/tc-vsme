@@ -23,6 +23,39 @@
  */
 
 /**
+ * Per-request identity cache.
+ *
+ * Uses WeakMap keyed on the ctx object to cache getUserIdentity() promises.
+ * This ensures that multiple auth utility calls within a single handler invocation
+ * only trigger one underlying getUserIdentity() call.
+ *
+ * Key properties:
+ * - Caches the Promise (not the resolved value) to handle concurrent calls correctly
+ * - WeakMap ensures automatic garbage collection when ctx goes out of scope
+ * - Different handler invocations get different ctx objects → zero cross-request leakage
+ */
+const identityCache = new WeakMap<object, Promise<any>>();
+
+/**
+ * Get cached user identity from context.
+ *
+ * Internal helper that implements per-request caching of getUserIdentity() calls.
+ * All auth utility functions should call this instead of ctx.auth.getUserIdentity() directly.
+ *
+ * @param ctx - The Convex function context
+ * @returns Promise resolving to the user identity or null
+ */
+function getCachedIdentity(ctx: any): Promise<any> {
+  const cached = identityCache.get(ctx);
+  if (cached) {
+    return cached;
+  }
+  const promise = ctx.auth.getUserIdentity();
+  identityCache.set(ctx, promise);
+  return promise;
+}
+
+/**
  * Extract user ID from authenticated context.
  * Throws error if user is not authenticated.
  *
@@ -31,7 +64,7 @@
  * @throws Error if user is not authenticated
  */
 export async function requireUserId(ctx: any): Promise<string> {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = await getCachedIdentity(ctx);
 
   if (!identity) {
     throw new Error("Unauthorized: User must be authenticated");
@@ -61,7 +94,7 @@ export async function requireUserId(ctx: any): Promise<string> {
  * @returns The organization ID from JWT custom 'org_id' claim, or null
  */
 export async function getOrgId(ctx: any): Promise<string | null> {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = await getCachedIdentity(ctx);
   if (!identity) {
     return null;
   }
@@ -104,7 +137,7 @@ export async function requireOrgId(ctx: any): Promise<string> {
  * @returns The full identity object with all JWT claims, or null
  */
 export async function getAuthIdentity(ctx: any) {
-  return await ctx.auth.getUserIdentity();
+  return await getCachedIdentity(ctx);
 }
 
 /**
@@ -115,7 +148,7 @@ export async function getAuthIdentity(ctx: any) {
  * @returns The user's email, or null
  */
 export async function getUserEmail(ctx: any): Promise<string | null> {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = await getCachedIdentity(ctx);
   if (!identity) {
     return null;
   }
@@ -130,7 +163,7 @@ export async function getUserEmail(ctx: any): Promise<string | null> {
  * @returns The user's name, or null
  */
 export async function getUserName(ctx: any): Promise<string | null> {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = await getCachedIdentity(ctx);
   if (!identity) {
     return null;
   }
@@ -145,7 +178,7 @@ export async function getUserName(ctx: any): Promise<string | null> {
  * @returns The user's organization role from JWT custom 'org_role' claim, or null
  */
 export async function getOrgRole(ctx: any): Promise<string | null> {
-  const identity = await ctx.auth.getUserIdentity();
+  const identity = await getCachedIdentity(ctx);
   if (!identity) {
     return null;
   }

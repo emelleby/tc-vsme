@@ -8,6 +8,7 @@ import * as todos from './todos'
 import * as schema from './schema'
 import * as auth from './_utils/auth'
 import * as emissions from './emissions'
+import * as targets from './targets'
 import * as formsSave from './forms/save'
 import * as formsGet from './forms/get'
 import * as formsSubmit from './forms/submit'
@@ -21,6 +22,7 @@ export const modules = {
   './schema.ts': () => Promise.resolve(schema),
   './_utils/auth.ts': () => Promise.resolve(auth),
   './emissions.ts': () => Promise.resolve(emissions),
+  './targets.ts': () => Promise.resolve(targets),
   './forms/save.ts': () => Promise.resolve(formsSave),
   './forms/get.ts': () => Promise.resolve(formsGet),
   './forms/submit.ts': () => Promise.resolve(formsSubmit),

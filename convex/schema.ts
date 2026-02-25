@@ -198,6 +198,7 @@ export default defineSchema({
     industry: v.optional(v.string()),
     numberEmployees: v.optional(v.number()),
     businessModel: v.optional(v.string()),
+    hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkOrgId', ['clerkOrgId'])
     .index('by_slug', ['slug'])
@@ -212,6 +213,7 @@ export default defineSchema({
     username: v.optional(v.string()),
     organizationIds: v.array(v.string()), // Array of Clerk org IDs
     updatedAt: v.number(), // Manual timestamp for updates
+    hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkId', ['clerkId'])
     .index('by_email', ['email']),
@@ -302,6 +304,43 @@ export default defineSchema({
     targetReduction: v.number(),
     longTermTargetYear: v.optional(v.number()),
     longTermTargetReduction: v.optional(v.number()),
+    hasScopeSpecificTargets: v.optional(
+      v.object({
+        scope1: v.boolean(),
+        scope2: v.boolean(),
+        scope3: v.boolean(),
+      })
+    ),
+    projections: v.optional(v.array(
+      v.object({
+        year: v.number(),
+        scope1: v.number(),
+        scope2: v.number(),
+        scope3: v.number(),
+        total: v.number(),
+        isBaseYear: v.optional(v.boolean()),
+        isTargetYear: v.optional(v.boolean()),
+        isLongTermTargetYear: v.optional(v.boolean()),
+        // Per-category Scope 3 breakdown stored on target/LT rows
+        scope3Categories: v.optional(v.object({
+          category1: v.optional(v.number()),
+          category2: v.optional(v.number()),
+          category3: v.optional(v.number()),
+          category4: v.optional(v.number()),
+          category5: v.optional(v.number()),
+          category6: v.optional(v.number()),
+          category7: v.optional(v.number()),
+          category8: v.optional(v.number()),
+          category9: v.optional(v.number()),
+          category10: v.optional(v.number()),
+          category11: v.optional(v.number()),
+          category12: v.optional(v.number()),
+          category13: v.optional(v.number()),
+          category14: v.optional(v.number()),
+          category15: v.optional(v.number()),
+        })),
+      })
+    )),
     createdBy: v.string(),
     createdAt: v.number(),
     lastModifiedBy: v.string(),
