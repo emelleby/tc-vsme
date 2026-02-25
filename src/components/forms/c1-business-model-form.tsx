@@ -57,64 +57,47 @@ export function C1BusinessModelForm() {
 	}
 
 	return (
-		<div className="w-full bg-card/50 p-4 border border-border rounded-lg shadow-sm">
-			<div className="mb-8 flex justify-between items-start">
-				<div>
-					<div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm mb-4">
-						C1
-					</div>
-					<h1 className="text-2xl font-semibold text-foreground inline-block ml-3 align-middle">
-						Business Model
-					</h1>
-				</div>
-				<div className="text-sm text-muted-foreground text-right">
-					<div>
-						Status: <span className="font-medium capitalize">{status}</span>
-					</div>
-				</div>
-			</div>
-			<form.AppForm>
-				<form
-					onSubmit={(e) => {
-						e.preventDefault()
-						e.stopPropagation()
-						form.handleSubmit()
-					}}
-				>
-					<fieldset disabled={status === 'submitted'} className="space-y-6">
-						{/* Hidden reporting year field */}
-						<form.AppField name="reportingYear">
-							{(field) => (
-								<field.TextField
-									label="Reporting Year"
-									placeholder="YYYY"
-									hidden
-								/>
-							)}
-						</form.AppField>
+		<form.AppForm>
+			<form
+				onSubmit={(e) => {
+					e.preventDefault()
+					e.stopPropagation()
+					form.handleSubmit()
+				}}
+			>
+				<fieldset disabled={status === 'submitted'} className="space-y-6">
+					{/* Hidden reporting year field */}
+					<form.AppField name="reportingYear">
+						{(field) => (
+							<field.TextField
+								label="Reporting Year"
+								placeholder="YYYY"
+								hidden
+							/>
+						)}
+					</form.AppField>
 
-						{/* Business Model Textarea */}
-						<form.AppField name="businessModel">
-							{(field) => (
-								<field.TextareaField
-									label="Business Model"
-									placeholder="Describe your organization's business model..."
-									rows={8}
-									description="Provide a description of your organization's business model, including key activities, value propositions, and revenue streams."
-								/>
-							)}
-						</form.AppField>
-					</fieldset>
+					{/* Business Model Textarea */}
+					<form.AppField name="businessModel">
+						{(field) => (
+							<field.TextareaField
+								label="Business Model"
+								placeholder="Describe your organization's business model..."
+								rows={8}
+								description="Provide a description of your organization's business model, including key activities, value propositions, and revenue streams."
+							/>
+						)}
+					</form.AppField>
+				</fieldset>
 
-					<FormButtons
-						status={status}
-						isSaving={isSaving}
-						onSaveDraft={saveDraft}
-						onSubmit={submit}
-						onReopen={reopen}
-					/>
-				</form>
-			</form.AppForm>
-		</div>
+				<FormButtons
+					status={status}
+					isSaving={isSaving}
+					onSaveDraft={saveDraft}
+					onSubmit={submit}
+					onReopen={reopen}
+				/>
+			</form>
+		</form.AppForm>
 	)
 }

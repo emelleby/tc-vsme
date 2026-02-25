@@ -1,4 +1,4 @@
-import { useOrganizationList } from '@clerk/clerk-react'
+import { useOrganizationList, useUser } from '@clerk/clerk-react'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { getAuthContext } from '@/lib/auth'
+import { getAuthContext, invalidateAuthContext } from '@/lib/auth'
 import { setupOrganization } from '@/lib/convex/setup-organization'
 
 /**
@@ -69,6 +69,7 @@ function CreateOrganizationPage() {
 		setActive,
 		isLoaded: isOrgListLoaded,
 	} = useOrganizationList()
+	const { user, isLoaded: isUserLoaded } = useUser()
 	const navigate = useNavigate()
 
 	const [selectedOrg, setSelectedOrg] = useState<BrregUnit | null>(null)
@@ -108,6 +109,12 @@ function CreateOrganizationPage() {
 			const result = await setupOrganization({
 				data: {
 					orgId: clerkOrg.id,
+					orgName: clerkOrg.name,
+					orgSlug: clerkOrg.slug || slug,
+					userEmail: user?.emailAddresses[0]?.emailAddress || '',
+					userFirstName: user?.firstName || undefined,
+					userLastName: user?.lastName || undefined,
+					userName: user?.username || undefined,
 					orgNumber: selectedOrg.organisasjonsnummer,
 					address: selectedOrg.forretningsadresse
 						? {
@@ -128,6 +135,9 @@ function CreateOrganizationPage() {
 			})
 
 			if (result.success) {
+				// Invalidate auth context cache to ensure fresh data on next navigation
+				await invalidateAuthContext()
+
 				// Success! Redirect to dashboard
 				navigate({ to: '/app' })
 			} else {
@@ -153,7 +163,7 @@ function CreateOrganizationPage() {
 		}
 	}
 
-	if (!isOrgListLoaded) {
+	if (!isOrgListLoaded || !isUserLoaded) {
 		return (
 			<div className="min-h-screen flex items-center justify-center">
 				<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />

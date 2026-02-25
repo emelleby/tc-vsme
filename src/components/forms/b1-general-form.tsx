@@ -1,8 +1,9 @@
 import { useStore } from '@tanstack/react-form'
+import { useQuery } from '@tanstack/react-query'
 import { useStore as useYearStore } from '@tanstack/react-store'
-import { useAction, useQuery } from 'convex/react'
-import { History, Plus, Trash2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useAction, useQuery as useConvexQuery } from 'convex/react'
+import { History, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -22,55 +23,81 @@ import {
 } from '../ui/accordion'
 import { FieldGroup } from '../ui/field'
 
+type MongoEmissionsData = {
+	Revenue?: number
+	[key: string]: unknown
+}
+
+/**
+ * Maps MongoDB emissions data to form default values.
+ * Extracts revenue from MongoDB for form pre-population.
+ */
+function mapMongoToFormDefaults(data: MongoEmissionsData | null | undefined): {
+	revenue?: number
+} {
+	if (!data || data.Revenue === undefined) return {}
+	return { revenue: data.Revenue }
+}
+
 export function B1GeneralForm() {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
 
 	// Guard against race conditions during org switching
 	const { organization, skipQuery } = useOrgGuard()
-	const orgData = useQuery(
+	const orgData = useConvexQuery(
 		api.organizations.getByClerkOrgId,
 		skipQuery || { clerkOrgId: organization?.id ?? '' },
 	)
 
-	// Fetch MongoDB emissions data for revenue default
+	// Fetch MongoDB emissions data with TanStack Query for caching
 	const getEmissions = useAction(api.emissions.getEmissionsByOrgId)
-	const [mongoDefaults, setMongoDefaults] = useState<{ revenue?: number }>({})
-	const [isFetchingMongo, setIsFetchingMongo] = useState(true)
-	const [mongoFetched, setMongoFetched] = useState(false)
+	const {
+		data: mongoDefaults,
+		isLoading: isMongoLoading,
+		isError,
+		refetch: refetchMongoData,
+		isFetching: isRefetching,
+	} = useQuery({
+		queryKey: ['emissions', organization?.id, reportingYear],
+		queryFn: async () => {
+			const result = await getEmissions({
+				orgIdToUse: organization!.id,
+				year: reportingYear,
+			})
 
-	// Fetch emissions data from MongoDB on mount
-	useEffect(() => {
-		const fetchMongoData = async () => {
-			if (!organization?.id) {
-				setIsFetchingMongo(false)
-				setMongoFetched(true)
-				return
+			if (result.success && result.data) {
+				return mapMongoToFormDefaults(result.data as MongoEmissionsData)
 			}
 
-			setIsFetchingMongo(true)
-			try {
-				const result = await getEmissions({
-					orgIdToUse: organization.id,
-					year: reportingYear,
-				})
+			return {}
+		},
+		enabled: !!organization?.id,
+		staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+		retry: 1, // Only retry once on failure
+	})
 
-				if (result.success && result.data) {
-					// MongoDB uses 'Revenue' (capitalized)
-					const emissionsData = result.data as { Revenue?: number }
-					if (emissionsData.Revenue !== undefined) {
-						setMongoDefaults({ revenue: emissionsData.Revenue })
-					}
-				}
-			} catch (error) {
-				console.error('Failed to fetch MongoDB emissions data:', error)
-			} finally {
-				setIsFetchingMongo(false)
-				setMongoFetched(true)
-			}
+	// Merge base defaults with org data and MongoDB defaults
+	const defaultValues = useMemo<B1GeneralFormValues>(() => {
+		const baseDefaults: B1GeneralFormValues = {
+			reportingYear: reportingYear.toString(),
+			organizationName: orgData?.name || '',
+			organizationNumber: orgData?.orgNumber || '',
+			naceCode: orgData?.naceCode || '',
+			revenue: 0,
+			balanceSheetTotal: 0,
+			employees: 0,
+			country: 'NOR',
+			reportType: false,
+			subsidiaries: [],
+			contactPersonName: '',
+			contactPersonEmail: '',
 		}
 
-		fetchMongoData()
-	}, [organization?.id, reportingYear, getEmissions])
+		return {
+			...baseDefaults,
+			...mongoDefaults,
+		} as B1GeneralFormValues
+	}, [reportingYear, orgData, mongoDefaults])
 
 	const {
 		form,
@@ -85,36 +112,17 @@ export function B1GeneralForm() {
 	} = useFormSubmission<B1GeneralFormValues>({
 		table: 'formGeneral',
 		reportingYear,
-		section: 'companyInfo', // NEW
+		section: 'companyInfo',
 		schema: b1GeneralSchema,
-		defaultValues: {
-			reportingYear: reportingYear.toString(),
-			organizationName: orgData?.name || '',
-			organizationNumber: orgData?.orgNumber || '',
-			naceCode: orgData?.naceCode || '',
-			revenue: mongoDefaults.revenue || 0,
-			balanceSheetTotal: 0,
-			employees: 0n,
-			country: 'NOR',
-			reportType: false,
-			subsidiaries: [],
-			contactPersonName: '',
-			contactPersonEmail: '',
-		} as B1GeneralFormValues,
+		defaultValues,
 	})
-
-	// Update form revenue when MongoDB defaults are fetched and there's no existing data
-	useEffect(() => {
-		if (mongoFetched && !existingData?.data && !existingData?.draftData) {
-			if (mongoDefaults.revenue !== undefined) {
-				form.setFieldValue('revenue', mongoDefaults.revenue)
-			}
-		}
-	}, [mongoFetched, mongoDefaults, existingData, form])
 
 	const reportType2 = useStore(form.store, (state) => state.values.reportType)
 
-	if (isLoading || isFetchingMongo) {
+	// Combined loading state (only for initial load, not refetch)
+	const isFormLoading = isLoading || isMongoLoading
+
+	if (isFormLoading) {
 		return (
 			<div className="p-8 text-center text-muted-foreground">
 				Loading form data...
@@ -123,31 +131,7 @@ export function B1GeneralForm() {
 	}
 
 	return (
-		<div className="w-full bg-card/50 p-4 border border-border rounded-lg shadow-sm">
-			<div className="mb-8 flex justify-between items-start">
-				<div>
-					<div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm mb-4">
-						B1
-					</div>
-					<h1 className="text-2xl font-semibold text-foreground inline-block ml-3 align-middle">
-						Grunnleggende informasjon
-					</h1>
-				</div>
-				{existingData && (
-					<div className="text-sm text-muted-foreground text-right">
-						<div>
-							Status: <span className="font-medium capitalize">{status}</span>
-						</div>
-						<div>
-							Version:{' '}
-							{existingData.versions.length
-								? existingData.versions[existingData.versions.length - 1]
-										.version
-								: 1}
-						</div>
-					</div>
-				)}
-			</div>
+		<>
 			<form.AppForm>
 				<form
 					onSubmit={(e) => {
@@ -194,10 +178,33 @@ export function B1GeneralForm() {
 						</div>
 
 						{/* Row 3: Revenue & Balance */}
+						{/* TODO: Add button to fetch data from Brønnøysundregistrene */}
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							<form.AppField name="revenue">
-								{(field) => <field.NumberField label="Omsetning" unit="NOK" />}
-							</form.AppField>
+							<div className="space-y-2">
+								<form.AppField name="revenue">
+									{(field) => (
+										<field.NumberField label="Omsetning" unit="NOK" />
+									)}
+								</form.AppField>
+								{/* Show retry button only on fetch error */}
+								{isError && (
+									<Button
+										type="button"
+										variant="ghost"
+										size="sm"
+										className="text-destructive hover:text-destructive hover:bg-destructive/10"
+										onClick={() => refetchMongoData()}
+										disabled={isRefetching}
+									>
+										<RefreshCw
+											className={`h-4 w-4 mr-2 ${isRefetching ? 'animate-spin' : ''}`}
+										/>
+										{isRefetching
+											? 'Retrying...'
+											: 'Retry fetching revenue data'}
+									</Button>
+								)}
+							</div>
 
 							<form.AppField name="balanceSheetTotal">
 								{(field) => <field.NumberField label="Balansesum" unit="NOK" />}
@@ -396,6 +403,6 @@ export function B1GeneralForm() {
 					</Accordion>
 				</div>
 			)}
-		</div>
+		</>
 	)
 }

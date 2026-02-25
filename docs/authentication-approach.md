@@ -1,5 +1,12 @@
 # Authentication Approach for TC-VSME
 
+> **⚠️ DEPRECATED**: This document has been consolidated into `docs/AUTH.md`.
+> Please refer to `docs/AUTH.md` for the current, comprehensive authentication documentation.
+>
+> **Last Updated**: 2026-02-19 (Consolidated into AUTH.md)
+
+---
+
 ## Summary
 
 This document explains the authentication strategy for TC-VSME using TanStack Start + Clerk.

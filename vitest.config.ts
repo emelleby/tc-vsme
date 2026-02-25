@@ -2,24 +2,41 @@ import { defineConfig } from 'vitest/config'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import { fileURLToPath } from 'url'
 
+const alias = {
+	'@': fileURLToPath(new URL('./src', import.meta.url)),
+}
+
+const tsconfigPaths = viteTsConfigPaths({
+	projects: ['./tsconfig.json'],
+})
+
 export default defineConfig({
-	plugins: [
-		viteTsConfigPaths({
-			projects: ['./tsconfig.json'],
-		}),
-	],
+	plugins: [tsconfigPaths],
 	test: {
 		globals: true,
-		environment: 'jsdom',
-		environmentMatchGlobs: [
-			// all tests in convex/ will run in edge-runtime
-			['convex/**', 'edge-runtime'],
-			// all other tests use jsdom
-			['**', 'jsdom'],
-		],
 		setupFiles: [],
-		include: ['**/__tests__/**/*.test.{ts,tsx}', '**/*.test.{ts,tsx}'],
 		exclude: ['node_modules', '.output', 'dist'],
+		projects: [
+			{
+				name: 'edge-runtime',
+				plugins: [tsconfigPaths],
+				resolve: { alias },
+				test: {
+					environment: 'edge-runtime',
+					include: ['convex/**/*.test.{ts,tsx}'],
+				},
+			},
+			{
+				name: 'jsdom',
+				plugins: [tsconfigPaths],
+				resolve: { alias },
+				test: {
+					environment: 'jsdom',
+					include: ['**/__tests__/**/*.test.{ts,tsx}', '**/*.test.{ts,tsx}'],
+					exclude: ['convex/**'],
+				},
+			},
+		],
 		server: {
 			deps: {
 				inline: ['convex-test'],
@@ -38,10 +55,6 @@ export default defineConfig({
 			],
 		},
 	},
-	resolve: {
-		alias: {
-			'@': fileURLToPath(new URL('./src', import.meta.url)),
-		},
-	},
+	resolve: { alias },
 })
 

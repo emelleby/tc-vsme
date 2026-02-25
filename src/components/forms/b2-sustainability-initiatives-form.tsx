@@ -1,7 +1,7 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -35,23 +35,7 @@ export function B2SustainabilityInitiativesForm() {
 	}
 
 	return (
-		<div className="w-full bg-card/50 p-4 border border-border rounded-lg shadow-sm">
-			<div className="mb-8 flex justify-between items-start">
-				<div>
-					<div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm mb-4">
-						B2
-					</div>
-					<h1 className="text-2xl font-semibold text-foreground inline-block ml-3 align-middle">
-						Sustainability Initiatives
-					</h1>
-				</div>
-				<div className="text-sm text-muted-foreground text-right">
-					<div>
-						Status: <span className="font-medium capitalize">{status}</span>
-					</div>
-				</div>
-			</div>
-
+		<>
 			<form.AppForm>
 				<form
 					onSubmit={(e) => {
@@ -94,23 +78,6 @@ export function B2SustainabilityInitiativesForm() {
 
 									{field.state.value?.map((item, i) => (
 										<Card key={item.id} className="relative">
-											<CardHeader className="pb-3">
-												<div className="flex items-center justify-between">
-													<CardTitle className="text-base">
-														Initiative {i + 1}
-													</CardTitle>
-													<Button
-														type="button"
-														variant="ghost"
-														size="icon"
-														className="text-destructive hover:text-destructive hover:bg-destructive/10"
-														onClick={() => field.removeValue(i)}
-														disabled={status === 'submitted'}
-													>
-														<Trash2 className="h-4 w-4" />
-													</Button>
-												</div>
-											</CardHeader>
 											<CardContent className="space-y-4">
 												<form.AppField name={`initiatives[${i}].title`}>
 													{(f) => (
@@ -143,29 +110,50 @@ export function B2SustainabilityInitiativesForm() {
 													)}
 												</form.AppField>
 
-												<form.AppField
-													name={`initiatives[${i}].responsiblePerson`}
-												>
-													{(f) => (
-														<f.TextField
-															label="Responsible Person"
-															placeholder="Name of the person responsible"
-														/>
-													)}
-												</form.AppField>
+												<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+													<form.AppField
+														name={`initiatives[${i}].responsiblePerson`}
+													>
+														{(f) => (
+															<f.TextField
+																label="Responsible Person"
+																placeholder="Name of the person responsible"
+															/>
+														)}
+													</form.AppField>
 
-												<form.AppField name={`initiatives[${i}].status`}>
-													{(f) => (
-														<f.SelectField
-															label="Status"
-															options={[
-																{ label: 'Not Started', value: 'not_started' },
-																{ label: 'In Progress', value: 'in_progress' },
-																{ label: 'Completed', value: 'completed' },
-															]}
-														/>
-													)}
-												</form.AppField>
+													<form.AppField name={`initiatives[${i}].status`}>
+														{(f) => (
+															<f.SelectField
+																label="Status"
+																options={[
+																	{
+																		label: 'Not Started',
+																		value: 'not_started',
+																	},
+																	{
+																		label: 'In Progress',
+																		value: 'in_progress',
+																	},
+																	{ label: 'Completed', value: 'completed' },
+																]}
+															/>
+														)}
+													</form.AppField>
+												</div>
+												<div className="flex justify-end">
+													<Button
+														type="button"
+														variant="outline"
+														size="sm"
+														className="text-destructive border-destructive/20 hover:bg-destructive/10"
+														onClick={() => field.removeValue(i)}
+														disabled={status === 'submitted'}
+													>
+														<Trash2 className="h-4 w-4" />
+														Remove
+													</Button>
+												</div>
 											</CardContent>
 										</Card>
 									))}
@@ -203,7 +191,6 @@ export function B2SustainabilityInitiativesForm() {
 					/>
 				</form>
 			</form.AppForm>
-		</div>
+		</>
 	)
 }
-

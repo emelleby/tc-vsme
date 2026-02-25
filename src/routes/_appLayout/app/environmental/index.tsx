@@ -3,9 +3,16 @@ import { useStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
 import { B3EnergyEmissionsForm } from '@/components/forms/b3-energy-emissions'
+import { B4PollutionForm } from '@/components/forms/b4-pollution-form'
+import { B5BiodiversityForm } from '@/components/forms/b5-biodiversity-form'
+import { B6WaterManagementForm } from '@/components/forms/b6-water-form'
+import { B7ResourceUseCircularEconomyForm } from '@/components/forms/b7-resource-use-circular-economy-form'
+import { C2Scope3EmissionsForm } from '@/components/forms/c2-scope3-emissions-form'
+import { C4ClimateRiskForm } from '@/components/forms/c4-climate-risk-form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
+import { C3TargetsForm } from './-c3-targets-card'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -38,10 +45,17 @@ function EnvironmentalPage() {
 		},
 	)
 
+	// Fetch targets data for C3 card
+	const targetsData = useQuery(api.targets.getTargets, skipQuery ? 'skip' : {})
+
 	// Extract section-specific data with contributor already resolved
 	const energyEmissions = formSections?.energyEmissions
-	const section2 = formSections?.section2
-	const section3 = formSections?.section3
+	const pollution = formSections?.pollution
+	const biodiversity = formSections?.biodiversity
+	const waterManagement = formSections?.waterManagement
+	const resourceUseCircularEconomy = formSections?.resourceUseCircularEconomy
+	const scope3Emissions = formSections?.scope3Emissions
+	const climateRiskAnalysis = formSections?.climateRiskAnalysis
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -60,27 +74,139 @@ function EnvironmentalPage() {
 				toolTip="Click to expand"
 				status={energyEmissions?.status ?? 'draft'}
 				contributor={energyEmissions?.contributor || { name: 'Unknown' }}
+				code="B3"
+				version={
+					energyEmissions?.versions?.length
+						? energyEmissions.versions[energyEmissions.versions.length - 1]
+								?.version
+						: undefined
+				}
 			>
 				<B3EnergyEmissionsForm />
 			</FormCard>
 
 			<FormCard
-				title="Environmental Section 2"
-				updatedDate={formatDate(section2?.lastModifiedAt)}
-				toolTip="Click to expand"
-				status={section2?.status ?? 'draft'}
-				contributor={section2?.contributor || { name: 'Unknown' }}
+				title="Air, Water and Soil Pollution"
+				updatedDate={formatDate(pollution?.lastModifiedAt)}
+				toolTip="Document your organization's emissions to air, water, and soil, including types and quantities of pollutants."
+				status={pollution?.status ?? 'draft'}
+				contributor={pollution?.contributor || { name: 'Unknown' }}
+				code="B4"
+				version={
+					pollution?.versions?.length
+						? pollution.versions[pollution.versions.length - 1]?.version
+						: undefined
+				}
 			>
-				{/* Content will be added later */}
+				<B4PollutionForm />
 			</FormCard>
+
 			<FormCard
-				title="Environmental Section 3"
-				updatedDate={formatDate(section3?.lastModifiedAt)}
+				title="Biodiversity"
+				updatedDate={formatDate(biodiversity?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={section3?.status ?? 'draft'}
-				contributor={section3?.contributor || { name: 'Unknown' }}
+				status={biodiversity?.status ?? 'draft'}
+				contributor={biodiversity?.contributor || { name: 'Unknown' }}
+				code="B5"
+				module="Grunnmodul"
+				version={
+					biodiversity?.versions?.length
+						? biodiversity.versions[biodiversity.versions.length - 1]?.version
+						: undefined
+				}
 			>
-				{/* Content will be added later */}
+				<B5BiodiversityForm />
+			</FormCard>
+
+			<FormCard
+				title="Water Management"
+				updatedDate={formatDate(waterManagement?.lastModifiedAt)}
+				toolTip="Click to expand"
+				status={waterManagement?.status ?? 'draft'}
+				contributor={waterManagement?.contributor || { name: 'Unknown' }}
+				code="B6"
+				module="Grunnmodul"
+				version={
+					waterManagement?.versions?.length
+						? waterManagement.versions[waterManagement.versions.length - 1]
+								?.version
+						: undefined
+				}
+			>
+				<B6WaterManagementForm />
+			</FormCard>
+
+			<FormCard
+				title="Resource Use and Circular Economy"
+				updatedDate={formatDate(resourceUseCircularEconomy?.lastModifiedAt)}
+				toolTip="Click to expand"
+				status={resourceUseCircularEconomy?.status ?? 'draft'}
+				contributor={
+					resourceUseCircularEconomy?.contributor || { name: 'Unknown' }
+				}
+				code="B7"
+				module="Grunnmodul"
+				version={
+					resourceUseCircularEconomy?.versions?.length
+						? resourceUseCircularEconomy.versions[
+								resourceUseCircularEconomy.versions.length - 1
+							]?.version
+						: undefined
+				}
+			>
+				<B7ResourceUseCircularEconomyForm />
+			</FormCard>
+
+			<FormCard
+				title="Scope 3 Emissions"
+				updatedDate={formatDate(scope3Emissions?.lastModifiedAt)}
+				toolTip="Click to expand"
+				status={scope3Emissions?.status ?? 'draft'}
+				contributor={scope3Emissions?.contributor || { name: 'Unknown' }}
+				code="C2"
+				module="Utvidet modul"
+				version={
+					scope3Emissions?.versions?.length
+						? scope3Emissions.versions[scope3Emissions.versions.length - 1]
+								?.version
+						: undefined
+				}
+			>
+				<C2Scope3EmissionsForm />
+			</FormCard>
+
+			<FormCard
+				title="Emission reduction targets"
+				updatedDate={formatDate(targetsData?.lastModifiedAt)}
+				toolTip="View and manage your organization's emission reduction targets."
+				status={targetsData ? 'submitted' : 'not set'}
+				contributor={targetsData?.contributor || { name: 'Unknown' }}
+				code="C3"
+				module="Utvidet modul"
+			>
+				<C3TargetsForm
+					targets={targetsData}
+					isLoading={targetsData === undefined}
+				/>
+			</FormCard>
+
+			<FormCard
+				title="Climate Risk Analysis"
+				updatedDate={formatDate(climateRiskAnalysis?.lastModifiedAt)}
+				toolTip="Describe climate-related risks that may affect the business."
+				status={climateRiskAnalysis?.status ?? 'draft'}
+				contributor={climateRiskAnalysis?.contributor || { name: 'Unknown' }}
+				code="C4"
+				module="Utvidet modul"
+				version={
+					climateRiskAnalysis?.versions?.length
+						? climateRiskAnalysis.versions[
+								climateRiskAnalysis.versions.length - 1
+							]?.version
+						: undefined
+				}
+			>
+				<C4ClimateRiskForm />
 			</FormCard>
 		</div>
 	)

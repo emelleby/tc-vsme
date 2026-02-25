@@ -1,8 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { BadgeQuestionMarkIcon, ChevronRightIcon } from 'lucide-react'
-import React, { useRef } from 'react'
+import { BadgeQuestionMarkIcon, ChevronRightIcon, InfoIcon } from 'lucide-react'
+import type { ReactNode } from 'react'
+import { useRef } from 'react'
+
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
@@ -23,8 +25,10 @@ interface FormCardProps {
 	onClick?: () => void
 	toolTip: string
 	buttonText?: string
-	children?: React.ReactNode
+	children?: ReactNode
 	module?: 'Grunnmodul' | 'Utvidet modul'
+	code: string
+	version?: number
 }
 
 export function FormCard({
@@ -37,19 +41,22 @@ export function FormCard({
 	buttonText,
 	children,
 	module,
+	code,
+	version,
 }: FormCardProps) {
 	const { isExpanded, toggleExpand } = useExpandable()
 	const contentRef = useRef<HTMLDivElement>(null)
+	const hasHelpButton = Boolean(buttonText)
 
 	return (
 		<Card
 			className={cn(
-				'mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg',
+				'mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg gap-2',
 				module === 'Utvidet modul' && 'bg-accent/20',
 			)}
 		>
 			<CardHeader
-				className="space-y-1 cursor-pointer"
+				className="cursor-pointer"
 				onClick={toggleExpand}
 				role="button"
 				tabIndex={0}
@@ -61,7 +68,17 @@ export function FormCard({
 				}}
 			>
 				<div className="flex justify-between items-start w-full">
-					<div className="flex gap-2">
+					<div className="flex gap-2 items-center">
+						<div
+							className={cn(
+								'inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
+								module === 'Utvidet modul'
+									? 'bg-secondary text-secondary-foreground'
+									: 'bg-primary text-primary-foreground',
+							)}
+						>
+							{code}
+						</div>
 						<h3 className="text-xl font-semibold text-secondary">{title}</h3>
 						<ChevronRightIcon
 							className={cn(
@@ -70,56 +87,74 @@ export function FormCard({
 							)}
 						/>
 					</div>
-					<div className="flex gap-2">
+					<div className="flex items-center gap-2">
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<Button
-										type="button"
-										className="flex gap-2"
-										variant="ghost"
-										size="default"
-										onClick={(e) => {
-											e.stopPropagation()
-											console.log('Button clicked in FormCard')
-											onClick()
-										}}
-										onPointerDown={(e) => e.stopPropagation()}
-									>
-										<BadgeQuestionMarkIcon className="h-6 w-6" />
-										<span>{buttonText}</span>
-									</Button>
+									<InfoIcon
+										className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-help"
+										onClick={(e) => e.stopPropagation()}
+									/>
 								</TooltipTrigger>
 								<TooltipContent>
 									<p>{toolTip}</p>
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
+						{hasHelpButton && (
+							<Button
+								type="button"
+								className="flex gap-2"
+								variant="ghost"
+								size="default"
+								onClick={(e) => {
+									e.stopPropagation()
+									onClick()
+								}}
+								onPointerDown={(e) => e.stopPropagation()}
+							>
+								<BadgeQuestionMarkIcon className="h-6 w-6" />
+								<span>{buttonText}</span>
+							</Button>
+						)}
 					</div>
 				</div>
 			</CardHeader>
 
 			<CardContent>
-				<div className="space-y-4">
-					<div className="flex gap-2">
-						<Badge
-							variant="secondary"
-							className={
-								status === 'submitted'
-									? 'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300'
-									: 'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300'
-							}
-						>
-							{status === 'submitted' ? 'Completed' : 'In Progress'}
-						</Badge>
-						{module && (
+				<div className="space-y-0">
+					<div className="flex justify-between items-center">
+						<div className="flex gap-2">
 							<Badge
 								variant="secondary"
-								className="bg-blue-100 border-blue-600 text-blue-600 dark:bg-blue-800 dark:text-blue-300"
+								className={
+									status === 'submitted'
+										? 'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300'
+										: 'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300'
+								}
 							>
-								{module}
+								{status === 'submitted' ? 'Completed' : 'In Progress'}
 							</Badge>
-						)}
+							{module && (
+								<Badge
+									variant="secondary"
+									className={cn(
+										'bg-secondary text-secondary-foreground',
+										module === 'Grunnmodul' &&
+											'bg-primary text-primary-foreground',
+									)}
+								>
+									{module}
+								</Badge>
+							)}
+						</div>
+
+						<div className="text-sm text-muted-foreground text-right min-h-10">
+							<div>
+								Status: <span className="font-medium capitalize">{status}</span>
+							</div>
+							{version !== undefined && <div>Version: {version}</div>}
+						</div>
 					</div>
 
 					<motion.div

@@ -7,6 +7,12 @@ const formSectionValidator = v.union(
   v.literal("sustainabilityInitiatives"),
   v.literal("businessModel"),
   v.literal("energyEmissions"),
+  v.literal("pollution"),
+  v.literal("biodiversity"),
+  v.literal("waterManagement"),
+  v.literal("resourceUseCircularEconomy"),
+  v.literal("scope3Emissions"),
+  v.literal("climateRiskAnalysis"),
 )
 
 // Form data validators for each section
@@ -72,9 +78,86 @@ const energyEmissionsDataValidator = v.object({
   dataUncertainty: v.string(),
 })
 
+const pollutionDataValidator = v.object({
+  reportingYear: v.string(),
+  pollutants: v.array(
+    v.object({
+      id: v.string(),
+      pollutionType: v.string(),
+      emissionType: v.union(v.literal('Air'), v.literal('Water'), v.literal('Soil')),
+      amount: v.number(),
+      unit: v.string(),
+    })
+  ),
+})
+
+const biodiversityDataValidator = v.object({
+  reportingYear: v.string(),
+  hasSensitiveBiodiversityAreas: v.boolean(),
+  totalAreaHectares: v.optional(v.number()),
+  protectedAreaHectares: v.optional(v.number()),
+  nonProtectedAreaHectares: v.optional(v.number()),
+  protectedSpeciesCount: v.optional(v.string()),
+  redListedSpeciesCount: v.optional(v.string()),
+})
+
+const waterManagementDataValidator = v.object({
+  reportingYear: v.string(),
+  waterConsumption: v.optional(v.number()),
+  waterStress: v.optional(v.number()),
+})
+
+const resourceUseCircularEconomyDataValidator = v.object({
+  reportingYear: v.string(),
+  totalWaste: v.number(),
+  recyclingRate: v.number(),
+  energyRecovery: v.number(),
+  landfill: v.number(),
+  hazardousWaste: v.number(),
+  recycledMaterials: v.array(
+    v.object({
+      id: v.string(),
+      materialType: v.string(),
+      amount: v.number(),
+      unit: v.union(v.literal('tonn'), v.literal('kg')),
+    })
+  ),
+})
+
+const scope3EmissionsDataValidator = v.object({
+  reportingYear: v.string(),
+  totalScope3Emissions: v.number(),
+  category1: v.number(),
+  category2: v.number(),
+  category3: v.number(),
+  category4: v.number(),
+  category5: v.number(),
+  category6: v.number(),
+  category7: v.number(),
+  category8: v.number(),
+  category9: v.number(),
+  category10: v.number(),
+  category11: v.number(),
+  category12: v.number(),
+  category13: v.number(),
+  category14: v.number(),
+  category15: v.number(),
+})
+
+const climateRiskAnalysisDataValidator = v.object({
+  reportingYear: v.string(),
+  climateRiskDescription: v.string(),
+})
+
 // Union validator for all environmental form sections
 const formEnvironmentalDataValidator = v.union(
   energyEmissionsDataValidator,
+  pollutionDataValidator,
+  biodiversityDataValidator,
+  waterManagementDataValidator,
+  resourceUseCircularEconomyDataValidator,
+  scope3EmissionsDataValidator,
+  climateRiskAnalysisDataValidator,
   // Add more environmental sections here as they are created
 )
 
@@ -115,6 +198,7 @@ export default defineSchema({
     industry: v.optional(v.string()),
     numberEmployees: v.optional(v.number()),
     businessModel: v.optional(v.string()),
+    hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkOrgId', ['clerkOrgId'])
     .index('by_slug', ['slug'])
@@ -129,6 +213,7 @@ export default defineSchema({
     username: v.optional(v.string()),
     organizationIds: v.array(v.string()), // Array of Clerk org IDs
     updatedAt: v.number(), // Manual timestamp for updates
+    hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkId', ['clerkId'])
     .index('by_email', ['email']),
@@ -209,4 +294,57 @@ export default defineSchema({
     .index("by_org_year_section", ["orgId", "reportingYear", "section"])
     .index("by_orgNumber_year", ["orgNumber", "reportingYear"])
     .index("by_orgId", ["orgId"]),
+
+  // Targets table for emissions reduction targets
+  targets: defineTable({
+    organizationId: v.string(),
+    baseYear: v.number(),
+    baseYearEmissions: v.number(),
+    targetYear: v.number(),
+    targetReduction: v.number(),
+    longTermTargetYear: v.optional(v.number()),
+    longTermTargetReduction: v.optional(v.number()),
+    hasScopeSpecificTargets: v.optional(
+      v.object({
+        scope1: v.boolean(),
+        scope2: v.boolean(),
+        scope3: v.boolean(),
+      })
+    ),
+    projections: v.optional(v.array(
+      v.object({
+        year: v.number(),
+        scope1: v.number(),
+        scope2: v.number(),
+        scope3: v.number(),
+        total: v.number(),
+        isBaseYear: v.optional(v.boolean()),
+        isTargetYear: v.optional(v.boolean()),
+        isLongTermTargetYear: v.optional(v.boolean()),
+        // Per-category Scope 3 breakdown stored on target/LT rows
+        scope3Categories: v.optional(v.object({
+          category1: v.optional(v.number()),
+          category2: v.optional(v.number()),
+          category3: v.optional(v.number()),
+          category4: v.optional(v.number()),
+          category5: v.optional(v.number()),
+          category6: v.optional(v.number()),
+          category7: v.optional(v.number()),
+          category8: v.optional(v.number()),
+          category9: v.optional(v.number()),
+          category10: v.optional(v.number()),
+          category11: v.optional(v.number()),
+          category12: v.optional(v.number()),
+          category13: v.optional(v.number()),
+          category14: v.optional(v.number()),
+          category15: v.optional(v.number()),
+        })),
+      })
+    )),
+    createdBy: v.string(),
+    createdAt: v.number(),
+    lastModifiedBy: v.string(),
+    lastModifiedAt: v.number(),
+  })
+    .index("by_organizationId", ["organizationId"]),
 })

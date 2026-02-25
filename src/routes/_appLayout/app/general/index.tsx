@@ -2,13 +2,16 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
+import { useState } from 'react'
 import { B1GeneralForm } from '@/components/forms/b1-general-form'
 import { B2SustainabilityInitiativesForm } from '@/components/forms/b2-sustainability-initiatives-form'
 
 import { C1BusinessModelForm } from '@/components/forms/c1-business-model-form'
+import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
+import { GeneralHelp } from './-initiatives-help'
 
 export const Route = createFileRoute('/_appLayout/app/general/')({
 	component: GeneralPage,
@@ -28,6 +31,7 @@ function formatDate(timestamp: number | undefined): string {
 
 function GeneralPage() {
 	const reportingYear = useStore(yearStore, (state) => state.selectedYear)
+	const [isInitiativesHelpOpen, setInitiativesHelpOpen] = useState(false)
 
 	// Guard against race conditions during org switching
 	const { skipQuery, isLoading: isOrgLoading } = useOrgGuard()
@@ -46,13 +50,9 @@ function GeneralPage() {
 	const sustainability = formSections?.sustainabilityInitiatives
 	const businessModel = formSections?.businessModel
 
-	// Show loading state during organization switching
-	if (isOrgLoading) {
-		return (
-			<div className="flex items-center justify-center p-8 text-muted-foreground">
-				Loading organization...
-			</div>
-		)
+	// Show loading state
+	if (isOrgLoading || formSections === undefined) {
+		return <div>Loading...</div>
 	}
 
 	return (
@@ -67,6 +67,13 @@ function GeneralPage() {
 				status={companyInfo?.status ?? 'draft'}
 				toolTip="Click to learn more"
 				contributor={companyInfo?.contributor || { name: 'Unknown' }}
+				code="B1"
+				module="Grunnmodul"
+				version={
+					companyInfo?.versions?.length
+						? companyInfo.versions[companyInfo.versions.length - 1].version
+						: undefined
+				}
 			>
 				<B1GeneralForm />
 			</FormCard>
@@ -76,9 +83,27 @@ function GeneralPage() {
 				toolTip="Click to expand"
 				status={sustainability?.status ?? 'draft'}
 				contributor={sustainability?.contributor || { name: 'Unknown' }}
+				code="B2"
+				buttonText="Hjelp"
+				onClick={() => setInitiativesHelpOpen(true)}
+				module="Grunnmodul"
+				version={
+					sustainability?.versions?.length
+						? sustainability.versions[sustainability.versions.length - 1]
+								.version
+						: undefined
+				}
 			>
 				<B2SustainabilityInitiativesForm />
 			</FormCard>
+			<HelpSheet
+				open={isInitiativesHelpOpen}
+				onOpenChange={setInitiativesHelpOpen}
+				title="Sustainability initiatives"
+				description="Guidance and examples for selecting sustainability initiatives."
+			>
+				<GeneralHelp />
+			</HelpSheet>
 
 			<hr />
 			<FormCard
@@ -87,7 +112,13 @@ function GeneralPage() {
 				toolTip="Click to expand"
 				status={businessModel?.status ?? 'draft'}
 				contributor={businessModel?.contributor || { name: 'Unknown' }}
+				code="C1"
 				module="Utvidet modul"
+				version={
+					businessModel?.versions?.length
+						? businessModel.versions[businessModel.versions.length - 1].version
+						: undefined
+				}
 			>
 				<C1BusinessModelForm />
 			</FormCard>

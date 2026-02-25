@@ -78,76 +78,84 @@ const data = {
 					url: '/app/emissions',
 				},
 				{
+					title: 'Targets',
+					url: '/app/targets',
+				},
+				{
 					title: 'Settings',
 					url: '/app/settings',
 				},
 			],
 		},
 		{
-			title: 'Models',
+			title: 'Tillegg',
 			url: '#',
 			icon: Bot,
 			items: [
 				{
-					title: 'Genesis',
+					title: 'Analyse og tiltak',
 					url: '#',
 				},
 				{
-					title: 'Explorer',
+					title: 'Dobbel vesentlighet',
 					url: '#',
 				},
 				{
-					title: 'Quantum',
+					title: 'Korrupsjonsrisikoanalyse',
+					url: '#',
+				},
+				{
+					title: 'Rappotering',
 					url: '#',
 				},
 			],
 		},
-		{
-			title: 'Documentation',
-			url: '#',
-			icon: BookOpen,
-			items: [
-				{
-					title: 'Introduction',
-					url: '#',
-				},
-				{
-					title: 'Get Started',
-					url: '#',
-				},
-				{
-					title: 'Tutorials',
-					url: '#',
-				},
-				{
-					title: 'Changelog',
-					url: '#',
-				},
-			],
-		},
-		{
-			title: 'Settings',
-			url: '/app/settings',
-			icon: Settings2,
-			items: [
-				{
-					title: 'General',
-					url: '#',
-				},
-				{
-					title: 'Team',
-					url: '#',
-				},
-				{
-					title: 'Billing',
-					url: '#',
-				},
-				{
-					title: 'Limits',
-					url: '#',
-				},
-			],
-		},
+		// {
+		// 	title: 'Documentation',
+		// 	url: '#',
+		// 	icon: BookOpen,
+		// 	items: [
+		// 		{
+		// 			title: 'Introduction',
+		// 			url: '#',
+		// 		},
+		// 		{
+		// 			title: 'Get Started',
+		// 			url: '#',
+		// 		},
+		// 		{
+		// 			title: 'Tutorials',
+		// 			url: '#',
+		// 		},
+		// 		{
+		// 			title: 'Changelog',
+		// 			url: '#',
+		// 		},
+		// 	],
+		// },
+		// {
+		// 	title: 'Settings',
+		// 	url: '/app/settings',
+		// 	icon: Settings2,
+		// 	items: [
+		// 		{
+		// 			title: 'General',
+		// 			url: '#',
+		// 		},
+		// 		{
+		// 			title: 'Team',
+		// 			url: '#',
+		// 		},
+		// 		{
+		// 			title: 'Billing',
+		// 			url: '#',
+		// 		},
+		// 		{
+		// 			title: 'Limits',
+		// 			url: '#',
+		// 		},
+		// 	],
+		// },
 	],
 	projects: [
 		{
@@ -202,7 +210,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />
-				<NavProjects projects={data.projects} />
+				{/* <NavProjects projects={data.projects} /> */}
 			</SidebarContent>
 			<SidebarFooter>
 				<Link to="/demo">Demo</Link>
