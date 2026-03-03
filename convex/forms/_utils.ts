@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 
 export type FormTable = "formGeneral" | "formEnvironmental" | "formSocial" | "formGovernance"
-export type FormSection = "companyInfo" | "sustainabilityInitiatives" | "businessModel" | "energyEmissions" | "pollution" | "biodiversity" | "waterManagement" | "resourceUseCircularEconomy" | "scope3Emissions" | "climateRiskAnalysis" | "workforce" | "healthSafety" | "compensationCollective" | "workLifeBalance" | "additionalWorkforce" | "humanRightsPolicies" | "seriousHumanRightsIncidents"
+export type FormSection = "companyInfo" | "sustainabilityInitiatives" | "businessModel" | "energyEmissions" | "pollution" | "biodiversity" | "waterManagement" | "resourceUseCircularEconomy" | "scope3Emissions" | "climateRiskAnalysis" | "workforce" | "healthSafety" | "compensationCollective" | "workLifeBalance" | "additionalWorkforce" | "humanRightsPolicies" | "seriousHumanRightsIncidents" | "finesPenalties" | "sectorInvolvement" | "boardComposition"
 
 export const formTableValidator = v.union(
   v.literal("formGeneral"),
@@ -28,6 +28,9 @@ export const formSectionValidator = v.union(
   v.literal("additionalWorkforce"),
   v.literal("humanRightsPolicies"),
   v.literal("seriousHumanRightsIncidents"),
+  v.literal("finesPenalties"),
+  v.literal("sectorInvolvement"),
+  v.literal("boardComposition"),
 )
 
 export interface FieldChange {

@@ -41,6 +41,7 @@ import { Route as DemoLayoutDemoGuitarsIndexRouteImport } from './routes/_demoLa
 import { Route as AppLayoutAppTargetsIndexRouteImport } from './routes/_appLayout/app/targets/index'
 import { Route as AppLayoutAppSocialIndexRouteImport } from './routes/_appLayout/app/social/index'
 import { Route as AppLayoutAppSettingsIndexRouteImport } from './routes/_appLayout/app/settings/index'
+import { Route as AppLayoutAppGovernanceIndexRouteImport } from './routes/_appLayout/app/governance/index'
 import { Route as AppLayoutAppGeneralIndexRouteImport } from './routes/_appLayout/app/general/index'
 import { Route as AppLayoutAppEnvironmentalIndexRouteImport } from './routes/_appLayout/app/environmental/index'
 import { Route as DemoLayoutDemoStartServerFuncsRouteImport } from './routes/_demoLayout/demo/start.server-funcs'
@@ -225,6 +226,12 @@ const AppLayoutAppSettingsIndexRoute =
     path: '/app/settings/',
     getParentRoute: () => AppLayoutRouteRoute,
   } as any)
+const AppLayoutAppGovernanceIndexRoute =
+  AppLayoutAppGovernanceIndexRouteImport.update({
+    id: '/app/governance/',
+    path: '/app/governance/',
+    getParentRoute: () => AppLayoutRouteRoute,
+  } as any)
 const AppLayoutAppGeneralIndexRoute =
   AppLayoutAppGeneralIndexRouteImport.update({
     id: '/app/general/',
@@ -381,6 +388,7 @@ export interface FileRoutesByFullPath {
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
   '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
   '/app/general': typeof AppLayoutAppGeneralIndexRoute
+  '/app/governance': typeof AppLayoutAppGovernanceIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/app/social': typeof AppLayoutAppSocialIndexRoute
   '/app/targets': typeof AppLayoutAppTargetsIndexRoute
@@ -433,6 +441,7 @@ export interface FileRoutesByTo {
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
   '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
   '/app/general': typeof AppLayoutAppGeneralIndexRoute
+  '/app/governance': typeof AppLayoutAppGovernanceIndexRoute
   '/app/settings': typeof AppLayoutAppSettingsIndexRoute
   '/app/social': typeof AppLayoutAppSocialIndexRoute
   '/app/targets': typeof AppLayoutAppTargetsIndexRoute
@@ -488,6 +497,7 @@ export interface FileRoutesById {
   '/_demoLayout/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
   '/_appLayout/app/environmental/': typeof AppLayoutAppEnvironmentalIndexRoute
   '/_appLayout/app/general/': typeof AppLayoutAppGeneralIndexRoute
+  '/_appLayout/app/governance/': typeof AppLayoutAppGovernanceIndexRoute
   '/_appLayout/app/settings/': typeof AppLayoutAppSettingsIndexRoute
   '/_appLayout/app/social/': typeof AppLayoutAppSocialIndexRoute
   '/_appLayout/app/targets/': typeof AppLayoutAppTargetsIndexRoute
@@ -542,6 +552,7 @@ export interface FileRouteTypes {
     | '/demo/start/server-funcs'
     | '/app/environmental'
     | '/app/general'
+    | '/app/governance'
     | '/app/settings'
     | '/app/social'
     | '/app/targets'
@@ -594,6 +605,7 @@ export interface FileRouteTypes {
     | '/demo/start/server-funcs'
     | '/app/environmental'
     | '/app/general'
+    | '/app/governance'
     | '/app/settings'
     | '/app/social'
     | '/app/targets'
@@ -648,6 +660,7 @@ export interface FileRouteTypes {
     | '/_demoLayout/demo/start/server-funcs'
     | '/_appLayout/app/environmental/'
     | '/_appLayout/app/general/'
+    | '/_appLayout/app/governance/'
     | '/_appLayout/app/settings/'
     | '/_appLayout/app/social/'
     | '/_appLayout/app/targets/'
@@ -906,6 +919,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutAppSettingsIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
+    '/_appLayout/app/governance/': {
+      id: '/_appLayout/app/governance/'
+      path: '/app/governance'
+      fullPath: '/app/governance'
+      preLoaderRoute: typeof AppLayoutAppGovernanceIndexRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
     '/_appLayout/app/general/': {
       id: '/_appLayout/app/general/'
       path: '/app/general'
@@ -1055,6 +1075,7 @@ interface AppLayoutRouteRouteChildren {
   AppLayoutAppIndexRoute: typeof AppLayoutAppIndexRoute
   AppLayoutAppEnvironmentalIndexRoute: typeof AppLayoutAppEnvironmentalIndexRoute
   AppLayoutAppGeneralIndexRoute: typeof AppLayoutAppGeneralIndexRoute
+  AppLayoutAppGovernanceIndexRoute: typeof AppLayoutAppGovernanceIndexRoute
   AppLayoutAppSettingsIndexRoute: typeof AppLayoutAppSettingsIndexRoute
   AppLayoutAppSocialIndexRoute: typeof AppLayoutAppSocialIndexRoute
   AppLayoutAppTargetsIndexRoute: typeof AppLayoutAppTargetsIndexRoute
@@ -1066,6 +1087,7 @@ const AppLayoutRouteRouteChildren: AppLayoutRouteRouteChildren = {
   AppLayoutAppIndexRoute: AppLayoutAppIndexRoute,
   AppLayoutAppEnvironmentalIndexRoute: AppLayoutAppEnvironmentalIndexRoute,
   AppLayoutAppGeneralIndexRoute: AppLayoutAppGeneralIndexRoute,
+  AppLayoutAppGovernanceIndexRoute: AppLayoutAppGovernanceIndexRoute,
   AppLayoutAppSettingsIndexRoute: AppLayoutAppSettingsIndexRoute,
   AppLayoutAppSocialIndexRoute: AppLayoutAppSocialIndexRoute,
   AppLayoutAppTargetsIndexRoute: AppLayoutAppTargetsIndexRoute,

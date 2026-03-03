@@ -70,6 +70,10 @@ const data = {
 					url: '/app/social',
 				},
 				{
+					title: 'Governance',
+					url: '/app/governance',
+				},
+				{
 					title: 'Demo',
 					url: '/demo',
 				},
