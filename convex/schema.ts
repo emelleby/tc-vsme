@@ -20,6 +20,9 @@ const formSectionValidator = v.union(
   v.literal("additionalWorkforce"),
   v.literal("humanRightsPolicies"),
   v.literal("seriousHumanRightsIncidents"),
+  v.literal("finesPenalties"),
+  v.literal("sectorInvolvement"),
+  v.literal("boardComposition"),
 )
 
 // Form data validators for each section
@@ -251,9 +254,38 @@ const formSocialDataValidator = v.union(
   // Add more social sections here as they are created
 )
 
-// Placeholder validator for governance forms
-// These will be expanded as new forms are added
-const formGovernanceDataValidator = v.any()
+const finesPenaltiesDataValidator = v.object({
+  reportingYear: v.string(),
+  hasCorruptionFines: v.boolean(),
+  corruptionFinesDescription: v.optional(v.string()),
+})
+
+const sectorInvolvementDataValidator = v.object({
+  reportingYear: v.string(),
+  controversialWeapons: v.boolean(),
+  controversialWeaponsRevenue: v.optional(v.number()),
+  fossilFuels: v.boolean(),
+  fossilFuelRevenue: v.optional(v.number()),
+  fossilFuelsBreakdown: v.optional(v.string()),
+  agriculturalChemicals: v.boolean(),
+  agriculturalChemicalsRevenue: v.optional(v.number()),
+  euBenchmarksExclusion: v.boolean(),
+})
+
+const boardCompositionDataValidator = v.object({
+  reportingYear: v.string(),
+  totalMembers: v.number(),
+  femaleMembers: v.number(),
+  maleMembers: v.number(),
+  otherMembers: v.number(),
+})
+
+// Union validator for all governance form sections
+const formGovernanceDataValidator = v.union(
+  finesPenaltiesDataValidator,
+  sectorInvolvementDataValidator,
+  boardCompositionDataValidator,
+)
 
 export default defineSchema({
   products: defineTable({
