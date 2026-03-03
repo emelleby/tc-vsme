@@ -5,6 +5,7 @@ import { useQuery } from 'convex/react'
 import { B8WorkforceForm } from '@/components/forms/social/B8Form'
 import { B9HealthSafetyForm } from '@/components/forms/social/B9Form'
 import { B10CompensationForm } from '@/components/forms/social/B10Form'
+import { B11WorkLifeBalanceForm } from '@/components/forms/social/B11Form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -44,6 +45,7 @@ function SocialPage() {
 	const workforce = formSections?.workforce
 	const healthSafety = formSections?.healthSafety
 	const compensationCollective = formSections?.compensationCollective
+	const workLifeBalance = formSections?.workLifeBalance
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -108,6 +110,24 @@ function SocialPage() {
 				}
 			>
 				<B10CompensationForm />
+			</FormCard>
+
+			<FormCard
+				title="Arbeid-privatliv-balanse"
+				updatedDate={formatDate(workLifeBalance?.lastModifiedAt)}
+				toolTip="Rapporter foreldrepermisjon og relaterte ordninger."
+				status={workLifeBalance?.status ?? 'draft'}
+				contributor={workLifeBalance?.contributor || { name: 'Unknown' }}
+				code="B11"
+				module="Grunnmodul"
+				version={
+					workLifeBalance?.versions?.length
+						? workLifeBalance.versions[workLifeBalance.versions.length - 1]
+								?.version
+						: undefined
+				}
+			>
+				<B11WorkLifeBalanceForm />
 			</FormCard>
 		</div>
 	)
