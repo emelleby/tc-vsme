@@ -19,6 +19,7 @@ const formSectionValidator = v.union(
   v.literal("workLifeBalance"),
   v.literal("additionalWorkforce"),
   v.literal("humanRightsPolicies"),
+  v.literal("seriousHumanRightsIncidents"),
 )
 
 // Form data validators for each section
@@ -224,6 +225,20 @@ const humanRightsPoliciesDataValidator = v.object({
   otherPolicies: v.optional(v.string()),
 })
 
+const seriousHumanRightsIncidentsDataValidator = v.object({
+  reportingYear: v.string(),
+  childLabor: v.boolean(),
+  childLaborMeasures: v.optional(v.string()),
+  forcedLabor: v.boolean(),
+  forcedLaborMeasures: v.optional(v.string()),
+  humanTrafficking: v.boolean(),
+  humanTraffickingMeasures: v.optional(v.string()),
+  discrimination: v.boolean(),
+  discriminationMeasures: v.optional(v.string()),
+  other: v.boolean(),
+  otherMeasures: v.optional(v.string()),
+})
+
 // Union validator for all social form sections
 const formSocialDataValidator = v.union(
   workforceDataValidator,
@@ -232,6 +247,7 @@ const formSocialDataValidator = v.union(
   workLifeBalanceDataValidator,
   additionalWorkforceDataValidator,
   humanRightsPoliciesDataValidator,
+  seriousHumanRightsIncidentsDataValidator,
   // Add more social sections here as they are created
 )
 

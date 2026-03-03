@@ -8,6 +8,7 @@ import { B10CompensationForm } from '@/components/forms/social/B10Form'
 import { B11WorkLifeBalanceForm } from '@/components/forms/social/B11Form'
 import { C5AdditionalWorkforceForm } from '@/components/forms/social/C5Form'
 import { C6HumanRightsPoliciesForm } from '@/components/forms/social/C6Form'
+import { C7SeriousHumanRightsForm } from '@/components/forms/social/C7Form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -50,6 +51,7 @@ function SocialPage() {
 	const workLifeBalance = formSections?.workLifeBalance
 	const additionalWorkforce = formSections?.additionalWorkforce
 	const humanRightsPolicies = formSections?.humanRightsPolicies
+	const seriousHumanRightsIncidents = formSections?.seriousHumanRightsIncidents
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -139,9 +141,7 @@ function SocialPage() {
 				updatedDate={formatDate(additionalWorkforce?.lastModifiedAt)}
 				toolTip="Rapporter antall selvstendig næringsdrivende og innleide arbeidere."
 				status={additionalWorkforce?.status ?? 'draft'}
-				contributor={
-					additionalWorkforce?.contributor || { name: 'Unknown' }
-				}
+				contributor={additionalWorkforce?.contributor || { name: 'Unknown' }}
 				code="C5"
 				module="Utvidet modul"
 				version={
@@ -160,9 +160,7 @@ function SocialPage() {
 				updatedDate={formatDate(humanRightsPolicies?.lastModifiedAt)}
 				toolTip="Rapporter policyer knyttet til menneskerettigheter, barnearbeid og tvangsarbeid."
 				status={humanRightsPolicies?.status ?? 'draft'}
-				contributor={
-					humanRightsPolicies?.contributor || { name: 'Unknown' }
-				}
+				contributor={humanRightsPolicies?.contributor || { name: 'Unknown' }}
 				code="C6"
 				module="Utvidet modul"
 				version={
@@ -174,6 +172,27 @@ function SocialPage() {
 				}
 			>
 				<C6HumanRightsPoliciesForm />
+			</FormCard>
+
+			<FormCard
+				title="Alvorlige brudd på menneskerettigheter"
+				updatedDate={formatDate(seriousHumanRightsIncidents?.lastModifiedAt)}
+				toolTip="Rapporter bekreftede hendelser med alvorlige brudd på menneskerettigheter i egen arbeidsstyrke og tiltak som er iverksatt."
+				status={seriousHumanRightsIncidents?.status ?? 'draft'}
+				contributor={
+					seriousHumanRightsIncidents?.contributor || { name: 'Unknown' }
+				}
+				code="C7"
+				module="Utvidet modul"
+				version={
+					seriousHumanRightsIncidents?.versions?.length
+						? seriousHumanRightsIncidents.versions[
+								seriousHumanRightsIncidents.versions.length - 1
+							]?.version
+						: undefined
+				}
+			>
+				<C7SeriousHumanRightsForm />
 			</FormCard>
 		</div>
 	)
