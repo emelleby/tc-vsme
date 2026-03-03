@@ -51,6 +51,8 @@ export const submitForm = mutation({
       'category15',
       'femaleParentalLeave',
       'maleParentalLeave',
+      'selfEmployedWorkers',
+      'contractWorkers',
     ]
     for (const key of numericFields) {
       if (typeof dataToSubmit[key] === 'string' && dataToSubmit[key] !== '') {
