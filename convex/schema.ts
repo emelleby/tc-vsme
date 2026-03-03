@@ -16,6 +16,7 @@ const formSectionValidator = v.union(
   v.literal("workforce"),
   v.literal("healthSafety"),
   v.literal("compensationCollective"),
+  v.literal("workLifeBalance"),
 )
 
 // Form data validators for each section
@@ -199,11 +200,19 @@ const compensationCollectiveDataValidator = v.object({
   minstelonnsansvar: v.boolean(),
 })
 
+const workLifeBalanceDataValidator = v.object({
+  reportingYear: v.string(),
+  femaleParentalLeave: v.number(),
+  maleParentalLeave: v.number(),
+  parentalLeavePolicyDescription: v.string(),
+})
+
 // Union validator for all social form sections
 const formSocialDataValidator = v.union(
   workforceDataValidator,
   healthSafetyDataValidator,
   compensationCollectiveDataValidator,
+  workLifeBalanceDataValidator,
   // Add more social sections here as they are created
 )
 
