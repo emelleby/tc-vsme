@@ -9,6 +9,7 @@ import {
 	SwitchField,
 	TextareaField,
 	TextField,
+	CheckboxField,
 } from '@/components/form-fields'
 import {
 	FormButtons,
@@ -65,6 +66,7 @@ const { useAppForm, withForm, withFieldGroup } = createFormHook({
 		SwitchField,
 		ComboboxField,
 		NumberField,
+		CheckboxField,
 	},
 	formComponents: {
 		SubmitButton,

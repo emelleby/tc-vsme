@@ -6,6 +6,8 @@ import { B8WorkforceForm } from '@/components/forms/social/B8Form'
 import { B9HealthSafetyForm } from '@/components/forms/social/B9Form'
 import { B10CompensationForm } from '@/components/forms/social/B10Form'
 import { B11WorkLifeBalanceForm } from '@/components/forms/social/B11Form'
+import { C5AdditionalWorkforceForm } from '@/components/forms/social/C5Form'
+import { C6HumanRightsPoliciesForm } from '@/components/forms/social/C6Form'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
@@ -46,6 +48,8 @@ function SocialPage() {
 	const healthSafety = formSections?.healthSafety
 	const compensationCollective = formSections?.compensationCollective
 	const workLifeBalance = formSections?.workLifeBalance
+	const additionalWorkforce = formSections?.additionalWorkforce
+	const humanRightsPolicies = formSections?.humanRightsPolicies
 
 	// Show loading state
 	if (isOrgLoading || formSections === undefined) {
@@ -128,6 +132,48 @@ function SocialPage() {
 				}
 			>
 				<B11WorkLifeBalanceForm />
+			</FormCard>
+
+			<FormCard
+				title="Tilleggsarbeidsstyrke"
+				updatedDate={formatDate(additionalWorkforce?.lastModifiedAt)}
+				toolTip="Rapporter antall selvstendig næringsdrivende og innleide arbeidere."
+				status={additionalWorkforce?.status ?? 'draft'}
+				contributor={
+					additionalWorkforce?.contributor || { name: 'Unknown' }
+				}
+				code="C5"
+				module="Utvidet modul"
+				version={
+					additionalWorkforce?.versions?.length
+						? additionalWorkforce.versions[
+								additionalWorkforce.versions.length - 1
+							]?.version
+						: undefined
+				}
+			>
+				<C5AdditionalWorkforceForm />
+			</FormCard>
+
+			<FormCard
+				title="Menneskerettigheter"
+				updatedDate={formatDate(humanRightsPolicies?.lastModifiedAt)}
+				toolTip="Rapporter policyer knyttet til menneskerettigheter, barnearbeid og tvangsarbeid."
+				status={humanRightsPolicies?.status ?? 'draft'}
+				contributor={
+					humanRightsPolicies?.contributor || { name: 'Unknown' }
+				}
+				code="C6"
+				module="Utvidet modul"
+				version={
+					humanRightsPolicies?.versions?.length
+						? humanRightsPolicies.versions[
+								humanRightsPolicies.versions.length - 1
+							]?.version
+						: undefined
+				}
+			>
+				<C6HumanRightsPoliciesForm />
 			</FormCard>
 		</div>
 	)
