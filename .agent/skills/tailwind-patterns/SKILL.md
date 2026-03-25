@@ -1,6 +1,6 @@
 ---
 name: tailwind-patterns
-description: Tailwind CSS v4 principles. CSS-first configuration, canonical shorthands, container queries, modern patterns, design token architecture.
+description: Tailwind CSS v4 principles. CSS-first configuration, container queries, modern patterns, design token architecture.
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
@@ -14,23 +14,22 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### What Changed from v3
 
-| v3 (Legacy)          | v4 (Current)                 |
-| -------------------- | ---------------------------- |
+| v3 (Legacy) | v4 (Current) |
+|-------------|--------------|
 | `tailwind.config.js` | CSS-based `@theme` directive |
-| PostCSS plugin       | Oxide engine (10x faster)    |
-| JIT mode             | Native, always-on            |
-| Plugin system        | CSS-native features          |
-| `@apply` directive   | Still works, discouraged     |
+| PostCSS plugin | Oxide engine (10x faster) |
+| JIT mode | Native, always-on |
+| Plugin system | CSS-native features |
+| `@apply` directive | Still works, discouraged |
 
 ### v4 Core Concepts
 
-| Concept               | Description                                |
-| --------------------- | ------------------------------------------ |
-| **CSS-first**         | Configuration in CSS, not JavaScript       |
-| **Oxide Engine**      | Rust-based compiler, much faster           |
-| **Native Nesting**    | CSS nesting without PostCSS                |
-| **CSS Variables**     | All tokens exposed as `--*` vars           |
-| **Canonical Classes** | Shorthand syntax for variables & modifiers |
+| Concept | Description |
+|---------|-------------|
+| **CSS-first** | Configuration in CSS, not JavaScript |
+| **Oxide Engine** | Rust-based compiler, much faster |
+| **Native Nesting** | CSS nesting without PostCSS |
+| **CSS Variables** | All tokens exposed as `--*` vars |
 
 ---
 
@@ -59,10 +58,10 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### When to Extend vs Override
 
-| Action              | Use When                                   |
-| ------------------- | ------------------------------------------ |
-| **Extend**          | Adding new values alongside defaults       |
-| **Override**        | Replacing default scale entirely           |
+| Action | Use When |
+|--------|----------|
+| **Extend** | Adding new values alongside defaults |
+| **Override** | Replacing default scale entirely |
 | **Semantic tokens** | Project-specific naming (primary, surface) |
 
 ---
@@ -71,26 +70,26 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### Breakpoint vs Container
 
-| Type                         | Responds To          |
-| ---------------------------- | -------------------- |
-| **Breakpoint** (`md:`)       | Viewport width       |
+| Type | Responds To |
+|------|-------------|
+| **Breakpoint** (`md:`) | Viewport width |
 | **Container** (`@container`) | Parent element width |
 
 ### Container Query Usage
 
-| Pattern              | Classes                            |
-| -------------------- | ---------------------------------- |
-| Define container     | `@container` on parent             |
+| Pattern | Classes |
+|---------|---------|
+| Define container | `@container` on parent |
 | Container breakpoint | `@sm:`, `@md:`, `@lg:` on children |
-| Named containers     | `@container/card` for specificity  |
+| Named containers | `@container/card` for specificity |
 
 ### When to Use
 
-| Scenario                   | Use                                     |
-| -------------------------- | --------------------------------------- |
-| Page-level layouts         | Viewport breakpoints                    |
-| Component-level responsive | Container queries                       |
-| Reusable components        | Container queries (context-independent) |
+| Scenario | Use |
+|----------|-----|
+| Page-level layouts | Viewport breakpoints |
+| Component-level responsive | Container queries |
+| Reusable components | Container queries (context-independent) |
 
 ---
 
@@ -98,14 +97,14 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### Breakpoint System
 
-| Prefix | Min Width | Target                     |
-| ------ | --------- | -------------------------- |
-| (none) | 0px       | Mobile-first base          |
-| `sm:`  | 640px     | Large phone / small tablet |
-| `md:`  | 768px     | Tablet                     |
-| `lg:`  | 1024px    | Laptop                     |
-| `xl:`  | 1280px    | Desktop                    |
-| `2xl:` | 1536px    | Large desktop              |
+| Prefix | Min Width | Target |
+|--------|-----------|--------|
+| (none) | 0px | Mobile-first base |
+| `sm:` | 640px | Large phone / small tablet |
+| `md:` | 768px | Tablet |
+| `lg:` | 1024px | Laptop |
+| `xl:` | 1280px | Desktop |
+| `2xl:` | 1536px | Large desktop |
 
 ### Mobile-First Principle
 
@@ -119,19 +118,19 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### Configuration Strategies
 
-| Method     | Behavior                  | Use When              |
-| ---------- | ------------------------- | --------------------- |
-| `class`    | `.dark` class toggles     | Manual theme switcher |
-| `media`    | Follows system preference | No user control       |
-| `selector` | Custom selector (v4)      | Complex theming       |
+| Method | Behavior | Use When |
+|--------|----------|----------|
+| `class` | `.dark` class toggles | Manual theme switcher |
+| `media` | Follows system preference | No user control |
+| `selector` | Custom selector (v4) | Complex theming |
 
 ### Dark Mode Pattern
 
-| Element    | Light             | Dark                   |
-| ---------- | ----------------- | ---------------------- |
-| Background | `bg-white`        | `dark:bg-zinc-900`     |
-| Text       | `text-zinc-900`   | `dark:text-zinc-100`   |
-| Borders    | `border-zinc-200` | `dark:border-zinc-700` |
+| Element | Light | Dark |
+|---------|-------|------|
+| Background | `bg-white` | `dark:bg-zinc-900` |
+| Text | `text-zinc-900` | `dark:text-zinc-100` |
+| Borders | `border-zinc-200` | `dark:border-zinc-700` |
 
 ---
 
@@ -139,21 +138,21 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### Flexbox Patterns
 
-| Pattern            | Classes                             |
-| ------------------ | ----------------------------------- |
-| Center (both axes) | `flex items-center justify-center`  |
-| Vertical stack     | `flex flex-col gap-4`               |
-| Horizontal row     | `flex gap-4`                        |
-| Space between      | `flex justify-between items-center` |
-| Wrap grid          | `flex flex-wrap gap-4`              |
+| Pattern | Classes |
+|---------|---------|
+| Center (both axes) | `flex items-center justify-center` |
+| Vertical stack | `flex flex-col gap-4` |
+| Horizontal row | `flex gap-4` |
+| Space between | `flex justify-between items-center` |
+| Wrap grid | `flex flex-wrap gap-4` |
 
 ### Grid Patterns
 
-| Pattern             | Classes                                               |
-| ------------------- | ----------------------------------------------------- |
+| Pattern | Classes |
+|---------|---------|
 | Auto-fit responsive | `grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))]` |
-| Asymmetric (Bento)  | `grid grid-cols-3 grid-rows-2` with spans             |
-| Sidebar layout      | `grid grid-cols-[auto_1fr]`                           |
+| Asymmetric (Bento) | `grid grid-cols-3 grid-rows-2` with spans |
+| Sidebar layout | `grid grid-cols-[auto_1fr]` |
 
 > **Note:** Prefer asymmetric/Bento layouts over symmetric 3-column grids.
 
@@ -163,19 +162,19 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### OKLCH vs RGB/HSL
 
-| Format    | Advantage                               |
-| --------- | --------------------------------------- |
+| Format | Advantage |
+|--------|-----------|
 | **OKLCH** | Perceptually uniform, better for design |
-| **HSL**   | Intuitive hue/saturation                |
-| **RGB**   | Legacy compatibility                    |
+| **HSL** | Intuitive hue/saturation |
+| **RGB** | Legacy compatibility |
 
 ### Color Token Architecture
 
-| Layer         | Example           | Purpose              |
-| ------------- | ----------------- | -------------------- |
-| **Primitive** | `--blue-500`      | Raw color values     |
-| **Semantic**  | `--color-primary` | Purpose-based naming |
-| **Component** | `--button-bg`     | Component-specific   |
+| Layer | Example | Purpose |
+|-------|---------|---------|
+| **Primitive** | `--blue-500` | Raw color values |
+| **Semantic** | `--color-primary` | Purpose-based naming |
+| **Component** | `--button-bg` | Component-specific |
 
 ---
 
@@ -183,21 +182,21 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### Font Stack Pattern
 
-| Type    | Recommended                                |
-| ------- | ------------------------------------------ |
-| Sans    | `'Inter', 'SF Pro', system-ui, sans-serif` |
-| Mono    | `'JetBrains Mono', 'Fira Code', monospace` |
-| Display | `'Outfit', 'Poppins', sans-serif`          |
+| Type | Recommended |
+|------|-------------|
+| Sans | `'Inter', 'SF Pro', system-ui, sans-serif` |
+| Mono | `'JetBrains Mono', 'Fira Code', monospace` |
+| Display | `'Outfit', 'Poppins', sans-serif` |
 
 ### Type Scale
 
-| Class       | Size     | Use              |
-| ----------- | -------- | ---------------- |
-| `text-xs`   | 0.75rem  | Labels, captions |
-| `text-sm`   | 0.875rem | Secondary text   |
-| `text-base` | 1rem     | Body text        |
-| `text-lg`   | 1.125rem | Lead text        |
-| `text-xl`+  | 1.25rem+ | Headings         |
+| Class | Size | Use |
+|-------|------|-----|
+| `text-xs` | 0.75rem | Labels, captions |
+| `text-sm` | 0.875rem | Secondary text |
+| `text-base` | 1rem | Body text |
+| `text-lg` | 1.125rem | Lead text |
+| `text-xl`+ | 1.25rem+ | Headings |
 
 ---
 
@@ -205,21 +204,21 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### Built-in Animations
 
-| Class            | Effect               |
-| ---------------- | -------------------- |
-| `animate-spin`   | Continuous rotation  |
-| `animate-ping`   | Attention pulse      |
-| `animate-pulse`  | Subtle opacity pulse |
-| `animate-bounce` | Bouncing effect      |
+| Class | Effect |
+|-------|--------|
+| `animate-spin` | Continuous rotation |
+| `animate-ping` | Attention pulse |
+| `animate-pulse` | Subtle opacity pulse |
+| `animate-bounce` | Bouncing effect |
 
 ### Transition Patterns
 
-| Pattern        | Classes                                |
-| -------------- | -------------------------------------- |
-| All properties | `transition-all duration-200`          |
-| Specific       | `transition-colors duration-150`       |
-| With easing    | `ease-out` or `ease-in-out`            |
-| Hover effect   | `hover:scale-105 transition-transform` |
+| Pattern | Classes |
+|---------|---------|
+| All properties | `transition-all duration-200` |
+| Specific | `transition-colors duration-150` |
+| With easing | `ease-out` or `ease-in-out` |
+| Hover effect | `hover:scale-105 transition-transform` |
 
 ---
 
@@ -227,88 +226,43 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 
 ### When to Extract
 
-| Signal                    | Action             |
-| ------------------------- | ------------------ |
-| Same class combo 3+ times | Extract component  |
-| Complex state variants    | Extract component  |
-| Design system element     | Extract + document |
+| Signal | Action |
+|--------|--------|
+| Same class combo 3+ times | Extract component |
+| Complex state variants | Extract component |
+| Design system element | Extract + document |
 
 ### Extraction Methods
 
-| Method                  | Use When             |
-| ----------------------- | -------------------- |
-| **React/Vue component** | Dynamic, JS needed   |
-| **@apply in CSS**       | Static, no JS needed |
-| **Design tokens**       | Reusable values      |
+| Method | Use When |
+|--------|----------|
+| **React/Vue component** | Dynamic, JS needed |
+| **@apply in CSS** | Static, no JS needed |
+| **Design tokens** | Reusable values |
 
 ---
 
 ## 11. Anti-Patterns
 
-| Don't                       | Do                         |
-| --------------------------- | -------------------------- |
-| Arbitrary values everywhere | Use design system scale    |
-| `!important`                | Fix specificity properly   |
-| Inline `style=`             | Use utilities              |
-| Duplicate long class lists  | Extract component          |
-| Mix v3 config with v4       | Migrate fully to CSS-first |
-| Use `@apply` heavily        | Prefer components          |
+| Don't | Do |
+|-------|-----|
+| Arbitrary values everywhere | Use design system scale |
+| `!important` | Fix specificity properly |
+| Inline `style=` | Use utilities |
+| Duplicate long class lists | Extract component |
+| Mix v3 config with v4 | Migrate fully to CSS-first |
+| Use `@apply` heavily | Prefer components |
 
 ---
 
-## 13. Tailwind v4 Canonical Syntax
+## 12. Performance Principles
 
-Tailwind v4 introduces more concise shorthands for variables, modifiers, and gradients to reduce bracket usage.
-
-### Variable Shorthand
-Instead of arbitrary variable brackets, use the native variable syntax:
-
-| Legacy (v3/Early v4)     | Canonical v4              |
-| ------------------------ | ------------------------- |
-| `bg-[var(--sky)]`        | `bg-(--sky)`              |
-| `text-[var(--teal)]/50`  | `text-(--teal)/50`        |
-| `border-[var(--copper)]` | `hover:border-(--copper)` |
-| `h-[var(--height)]`      | `h-(--height)`            |
-
-### Data Attribute Shorthand
-Shorthand for Radix/Headless UI state attributes:
-
-| Legacy (v3)              | Canonical v4           |
-| ------------------------ | ---------------------- |
-| `data-[state=open]:...`  | `data-state-open:...`  |
-| `data-[side=bottom]:...` | `data-side-bottom:...` |
-| `data-[disabled]:...`    | `data-disabled:...`    |
-| `data-[placeholder]:...` | `data-placeholder:...` |
-
-### Gradient Shorthand
-Modern syntax for linear gradients:
-
-| Legacy (v3)           | Canonical v4      |
-| --------------------- | ----------------- |
-| `bg-gradient-to-r`    | `bg-linear-to-r`  |
-| `bg-gradient-to-tr`   | `bg-linear-to-tr` |
-| `from-[var(--color)]` | `from-(--color)`  |
-
-### Modern Utilities
-Refined utilities for spacing, sizing, and layout:
-
-| Legacy (v3)     | Canonical v4                        |
-| --------------- | ----------------------------------- |
-| `flex-shrink-0` | `shrink-0`                          |
-| `flex-grow`     | `grow`                              |
-| `aspect-[16/9]` | `aspect-16/9`                       |
-| `min-w-[8rem]`  | `min-w-32` (scales up to any value) |
-
----
-
-## 14. Performance Principles
-
-| Principle          | Implementation             |
-| ------------------ | -------------------------- |
-| **Purge unused**   | Automatic in v4            |
+| Principle | Implementation |
+|-----------|----------------|
+| **Purge unused** | Automatic in v4 |
 | **Avoid dynamism** | No template string classes |
-| **Use Oxide**      | Default in v4, 10x faster  |
-| **Cache builds**   | CI/CD caching              |
+| **Use Oxide** | Default in v4, 10x faster |
+| **Cache builds** | CI/CD caching |
 
 ---
 
