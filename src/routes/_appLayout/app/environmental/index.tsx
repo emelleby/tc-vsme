@@ -9,10 +9,13 @@ import { B6WaterManagementForm } from '@/components/forms/b6-water-form'
 import { B7ResourceUseCircularEconomyForm } from '@/components/forms/b7-resource-use-circular-economy-form'
 import { C2Scope3EmissionsForm } from '@/components/forms/c2-scope3-emissions-form'
 import { C4ClimateRiskForm } from '@/components/forms/c4-climate-risk-form'
+import { useState } from 'react'
+import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
 import { C3TargetsForm } from './-c3-targets-card'
+import { CircularHelp } from './-circular-help'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -32,6 +35,7 @@ function formatDate(timestamp: number | undefined): string {
 
 function EnvironmentalPage() {
 	const reportingYear = useStore(yearStore, (state) => state.selectedYear)
+	const [isCircularHelpOpen, setCircularHelpOpen] = useState(false)
 
 	// Guard against race conditions during org switching
 	const { skipQuery, isLoading: isOrgLoading } = useOrgGuard()
@@ -146,6 +150,8 @@ function EnvironmentalPage() {
 				}
 				code="B7"
 				module="Grunnmodul"
+				buttonText="Hjelp"
+				onClick={() => setCircularHelpOpen(true)}
 				version={
 					resourceUseCircularEconomy?.versions?.length
 						? resourceUseCircularEconomy.versions[
@@ -156,6 +162,15 @@ function EnvironmentalPage() {
 			>
 				<B7ResourceUseCircularEconomyForm />
 			</FormCard>
+
+			<HelpSheet
+				open={isCircularHelpOpen}
+				onOpenChange={setCircularHelpOpen}
+				title="Veiledning for sirkulærøkonomi"
+				description="Informasjon om sirkulærøkonomiske prinsipper og praktisk veiledning for avfallshåndtering."
+			>
+				<CircularHelp />
+			</HelpSheet>
 
 			<FormCard
 				title="Scope 3 Emissions"
