@@ -46,7 +46,8 @@ export function generateEmissionRows(
 	targetReduction: number,
 	longTermTargetYear: number | undefined,
 	longTermTargetReduction: number | undefined,
-	baseEmissions: BaseYearEmissionsData,
+	baseEmissions: BaseYearEmissionsData | null | undefined,
+	manualBaseYearEmissions: number,
 ): EmissionRow[] {
 	const rows: EmissionRow[] = []
 	const startYear = baseYear
@@ -57,26 +58,42 @@ export function generateEmissionRows(
 			? longTermTargetYear
 			: targetYear
 
+	const totalBase = calculateTotalEmissions(baseEmissions || null)
+	let baseS1 = 0
+	let baseS2 = 0
+	let baseS3 = 0
+
+	if (totalBase > 0) {
+		baseS1 = manualBaseYearEmissions * ((baseEmissions?.scope1Emissions ?? 0) / totalBase)
+		baseS2 = manualBaseYearEmissions * ((baseEmissions?.scope2EmissionsMarketBased ?? 0) / totalBase)
+		baseS3 = manualBaseYearEmissions * ((baseEmissions?.totalScope3Emissions ?? 0) / totalBase)
+	} else {
+		// Evenly distribute if no specific data is configured
+		baseS1 = manualBaseYearEmissions / 3
+		baseS2 = (manualBaseYearEmissions - baseS1) / 2
+		baseS3 = manualBaseYearEmissions - baseS1 - baseS2
+	}
+
 	// Initial values
-	let currentScope1 = baseEmissions.scope1Emissions ?? 0
-	let currentScope2 = baseEmissions.scope2EmissionsMarketBased ?? 0
-	let currentScope3 = baseEmissions.totalScope3Emissions ?? 0
+	let currentScope1 = baseS1
+	let currentScope2 = baseS2
+	let currentScope3 = baseS3
 
 	// 1. Calculate rate for Base -> Target
 	const rate1Scope1 = calculateCompoundReduction(
-		baseEmissions.scope1Emissions ?? 0,
+		baseS1,
 		baseYear,
 		targetYear,
 		targetReduction,
 	)
 	const rate1Scope2 = calculateCompoundReduction(
-		baseEmissions.scope2EmissionsMarketBased ?? 0,
+		baseS2,
 		baseYear,
 		targetYear,
 		targetReduction,
 	)
 	const rate1Scope3 = calculateCompoundReduction(
-		baseEmissions.totalScope3Emissions ?? 0,
+		baseS3,
 		baseYear,
 		targetYear,
 		targetReduction,
@@ -93,24 +110,15 @@ export function generateEmissionRows(
 		longTermTargetYear > targetYear
 	) {
 		// We need the values AT target year to calculate the next leg
-		const targetScope1 =
-			(baseEmissions.scope1Emissions ?? 0) * (1 - targetReduction / 100)
-		const targetScope2 =
-			(baseEmissions.scope2EmissionsMarketBased ?? 0) *
-			(1 - targetReduction / 100)
-		const targetScope3 =
-			(baseEmissions.totalScope3Emissions ?? 0) * (1 - targetReduction / 100)
+		const targetScope1 = baseS1 * (1 - targetReduction / 100)
+		const targetScope2 = baseS2 * (1 - targetReduction / 100)
+		const targetScope3 = baseS3 * (1 - targetReduction / 100)
 
 		// Calculate rate from Target Year value -> Long Term value relative to Base Year
 		// The Long Term Reduction is usually relative to Base Year
-		const longTermValueScope1 =
-			(baseEmissions.scope1Emissions ?? 0) * (1 - longTermTargetReduction / 100)
-		const longTermValueScope2 =
-			(baseEmissions.scope2EmissionsMarketBased ?? 0) *
-			(1 - longTermTargetReduction / 100)
-		const longTermValueScope3 =
-			(baseEmissions.totalScope3Emissions ?? 0) *
-			(1 - longTermTargetReduction / 100)
+		const longTermValueScope1 = baseS1 * (1 - longTermTargetReduction / 100)
+		const longTermValueScope2 = baseS2 * (1 - longTermTargetReduction / 100)
+		const longTermValueScope3 = baseS3 * (1 - longTermTargetReduction / 100)
 
 		// Calculate annual reduction rate for the second period
 		// Formula: (Final / Intermediate)^(1 / n_years_period_2)

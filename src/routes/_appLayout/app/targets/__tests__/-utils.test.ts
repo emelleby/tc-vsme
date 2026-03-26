@@ -160,6 +160,7 @@ describe('generateEmissionRows', () => {
 			undefined,
 			undefined,
 			baseEmissions,
+			600,
 		)
 
 		expect(rows).toHaveLength(11) // 2020 to 2030 inclusive
@@ -175,6 +176,7 @@ describe('generateEmissionRows', () => {
 			undefined,
 			undefined,
 			baseEmissions,
+			600,
 		)
 
 		const baseRow = rows.find((r) => r.isBaseYear)
@@ -192,6 +194,7 @@ describe('generateEmissionRows', () => {
 			undefined,
 			undefined,
 			baseEmissions,
+			600,
 		)
 
 		const baseRow = rows[0]
@@ -209,6 +212,7 @@ describe('generateEmissionRows', () => {
 			undefined,
 			undefined,
 			baseEmissions,
+			600,
 		)
 
 		const targetRow = rows.find((r) => r.isTargetYear)
@@ -216,21 +220,21 @@ describe('generateEmissionRows', () => {
 	})
 
 	it('should generate rows to long-term target year when provided', () => {
-		const rows = generateEmissionRows(2020, 2030, 50, 2050, 90, baseEmissions)
+		const rows = generateEmissionRows(2020, 2030, 50, 2050, 90, baseEmissions, 600)
 
 		expect(rows).toHaveLength(31) // 2020 to 2050 inclusive
 		expect(rows[30].year).toBe(2050)
 	})
 
 	it('should mark long-term target year correctly', () => {
-		const rows = generateEmissionRows(2020, 2030, 50, 2050, 90, baseEmissions)
+		const rows = generateEmissionRows(2020, 2030, 50, 2050, 90, baseEmissions, 600)
 
 		const longTermRow = rows.find((r) => r.isLongTermTargetYear)
 		expect(longTermRow?.year).toBe(2050)
 	})
 
 	it('should reduce emissions by approximately 90% at long-term target year', () => {
-		const rows = generateEmissionRows(2020, 2030, 50, 2050, 90, baseEmissions)
+		const rows = generateEmissionRows(2020, 2030, 50, 2050, 90, baseEmissions, 600)
 
 		const longTermRow = rows.find((r) => r.isLongTermTargetYear)
 		expect(longTermRow?.total).toBeCloseTo(60, 0) // 10% of 600
@@ -251,6 +255,7 @@ describe('generateEmissionRows', () => {
 			undefined,
 			undefined,
 			zeroEmissions,
+			0,
 		)
 
 		expect(rows[0].total).toBe(0)
@@ -265,6 +270,7 @@ describe('generateEmissionRows', () => {
 			undefined,
 			undefined,
 			baseEmissions,
+			600,
 		)
 
 		// Check that all values are rounded to 2 decimals
