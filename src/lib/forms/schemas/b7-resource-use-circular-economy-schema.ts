@@ -13,8 +13,23 @@ const recycledMaterialSchema = z.object({
 	unit: z.enum(RECYCLED_MATERIAL_UNITS),
 })
 
+const annualMassFlowSchema = z.object({
+	id: z.string(),
+	materialType: z
+		.string({ message: 'Dette feltet er påkrevd' })
+		.min(1, 'Dette feltet er påkrevd'),
+	volume: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	unit: z.enum(RECYCLED_MATERIAL_UNITS),
+})
+
 export const b7ResourceUseCircularEconomySchema = z.object({
 	reportingYear: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
+	applyCircularEconomyPrinciples: z.boolean().default(false),
+	circularEconomyDescription: z.string().optional(),
+	significantMaterialFlows: z.boolean().default(false),
+	annualMassFlows: z.array(annualMassFlowSchema).default([]),
 	totalWaste: z
 		.number({ message: 'Dette feltet er påkrevd' })
 		.min(0, 'Må være 0 eller mer'),
