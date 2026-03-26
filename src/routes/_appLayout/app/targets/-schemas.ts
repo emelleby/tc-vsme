@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 // Schema for the targets form - required fields for submission
 export const targetsFormSchema = z.object({
+	baseYear_with_data: z.string().optional(),
 	baseYear: z
 		.number('Base year is required')
 		.min(2015, 'Base year must be at least 2015')
