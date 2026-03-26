@@ -1,12 +1,14 @@
 import { z } from 'zod'
 
+const currentYear = new Date().getFullYear()
+
 // Schema for the targets form - required fields for submission
 export const targetsFormSchema = z.object({
 	baseYear_with_data: z.string().optional(),
 	baseYear: z
 		.number('Base year is required')
-		.min(2015, 'Base year must be at least 2015')
-		.max(2024, 'Base year must be at most 2024'),
+		.min(1990, 'Base year must be at least 1990')
+		.max(currentYear, `Base year must be at most ${currentYear}`),
 	baseYearEmissions: z
 		.number('Base year emissions is required')
 		.min(0, 'Base year emissions must be at least 0'),

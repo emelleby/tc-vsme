@@ -83,26 +83,28 @@ export function MainTab({
 						>
 							{/* Base Year with data selector */}
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								<div className="space-y-2">
-									<div className="text-sm font-medium">Base Year with data</div>
-									<select
-										className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-										value={selectedBaseYear ?? ''}
-										onChange={(e) => {
-											const year = e.target.value
-												? Number.parseInt(e.target.value, 10)
+								<AppField
+									name="baseYear_with_data"
+									listeners={{
+										onChange: ({ value }) => {
+											const year = value
+												? Number.parseInt(value.toString(), 10)
 												: undefined
 											setSelectedBaseYear(year ?? null)
-											form.setFieldValue('baseYear', year as any)
-										}}
-									>
-										{yearOptions.map((option) => (
-											<option key={option.value} value={option.value}>
-												{option.label}
-											</option>
-										))}
-									</select>
-								</div>
+											if (year) {
+												form.setFieldValue('baseYear', year as any)
+											}
+										},
+									}}
+								>
+									{(field) => (
+										<field.SelectField
+											label="Base Year with data"
+											placeholder="Select year"
+											options={yearOptions}
+										/>
+									)}
+								</AppField>
 							</div>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
