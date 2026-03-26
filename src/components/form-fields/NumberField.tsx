@@ -48,6 +48,10 @@ export function NumberField({
 		field.handleChange(value)
 	}
 
+	const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+		e.currentTarget.select()
+	}
+
 	return (
 		<Field data-invalid={isInvalid} hidden={hidden}>
 			{!hideLabel && label && (
@@ -64,6 +68,7 @@ export function NumberField({
 						max={max}
 						value={field.state.value ?? ''}
 						onBlur={field.handleBlur}
+						onFocus={handleFocus}
 						onChange={(e) => handleChange(e.target.value)}
 						aria-invalid={isInvalid}
 						placeholder={placeholder}
@@ -87,6 +92,7 @@ export function NumberField({
 					max={max}
 					value={field.state.value ?? ''}
 					onBlur={field.handleBlur}
+					onFocus={handleFocus}
 					onChange={(e) => handleChange(e.target.value)}
 					aria-invalid={isInvalid}
 					placeholder={placeholder}

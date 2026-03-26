@@ -183,7 +183,11 @@ export function B1GeneralForm() {
 							<div className="space-y-2">
 								<form.AppField name="revenue">
 									{(field) => (
-										<field.NumberField label="Omsetning" unit="NOK" />
+										<field.NumberField
+											label="Omsetning"
+											unit="NOK"
+											placeholder="0"
+										/>
 									)}
 								</form.AppField>
 								{/* Show retry button only on fetch error */}

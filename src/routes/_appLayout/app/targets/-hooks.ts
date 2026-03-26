@@ -77,13 +77,10 @@ export function useTargetsData(
 
 	// Convert years to select options
 	const yearOptions = useMemo(() => {
-		return [
-			{ label: '- Select year -', value: '' },
-			...(environmentalYears ?? []).map((year) => ({
-				label: year.toString(),
-				value: year.toString(),
-			})),
-		]
+		return (environmentalYears ?? []).map((year) => ({
+			label: year.toString(),
+			value: year.toString(),
+		}))
 	}, [environmentalYears])
 
 	const companyName = orgData?.name || 'Your Company'
