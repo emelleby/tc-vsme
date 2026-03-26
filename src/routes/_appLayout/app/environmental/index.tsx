@@ -16,6 +16,7 @@ import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
 import { C3TargetsForm } from './-c3-targets-card'
 import { CircularHelp } from './-circular-help'
+import { WaterHelp } from './-water-help'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -36,6 +37,7 @@ function formatDate(timestamp: number | undefined): string {
 function EnvironmentalPage() {
 	const reportingYear = useStore(yearStore, (state) => state.selectedYear)
 	const [isCircularHelpOpen, setCircularHelpOpen] = useState(false)
+	const [isWaterHelpOpen, setWaterHelpOpen] = useState(false)
 
 	// Guard against race conditions during org switching
 	const { skipQuery, isLoading: isOrgLoading } = useOrgGuard()
@@ -130,6 +132,8 @@ function EnvironmentalPage() {
 				contributor={waterManagement?.contributor || { name: 'Unknown' }}
 				code="B6"
 				module="Grunnmodul"
+				buttonText="Hjelp"
+				onClick={() => setWaterHelpOpen(true)}
 				version={
 					waterManagement?.versions?.length
 						? waterManagement.versions[waterManagement.versions.length - 1]
@@ -170,6 +174,15 @@ function EnvironmentalPage() {
 				description="Informasjon om sirkulærøkonomiske prinsipper og praktisk veiledning for avfallshåndtering."
 			>
 				<CircularHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isWaterHelpOpen}
+				onOpenChange={setWaterHelpOpen}
+				title="Veiledning for vannforvaltning"
+				description="Informasjon om vannforvaltning og praktisk veiledning for vannuttak og utslipp."
+			>
+				<WaterHelp />
 			</HelpSheet>
 
 			<FormCard

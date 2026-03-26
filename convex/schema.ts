@@ -113,12 +113,28 @@ const biodiversityDataValidator = v.object({
 
 const waterManagementDataValidator = v.object({
   reportingYear: v.string(),
-  waterConsumption: v.optional(v.number()),
-  waterStress: v.optional(v.number()),
+  waterWithdrawal: v.optional(v.number()),
+  waterWithdrawalStress: v.optional(v.number()),
+  waterDischarge: v.optional(v.number()),
+  waterConsumption: v.number(),
+  waterStress: v.optional(v.number()), // Legacy field
 })
 
 const resourceUseCircularEconomyDataValidator = v.object({
   reportingYear: v.string(),
+  applyCircularEconomyPrinciples: v.optional(v.boolean()),
+  circularEconomyDescription: v.optional(v.string()),
+  significantMaterialFlows: v.optional(v.boolean()),
+  annualMassFlows: v.optional(
+    v.array(
+      v.object({
+        id: v.string(),
+        materialType: v.string(),
+        volume: v.number(),
+        unit: v.union(v.literal('tonn'), v.literal('kg'), v.literal('m³')),
+      })
+    )
+  ),
   totalWaste: v.number(),
   recyclingRate: v.number(),
   energyRecovery: v.number(),
@@ -129,7 +145,7 @@ const resourceUseCircularEconomyDataValidator = v.object({
       id: v.string(),
       materialType: v.string(),
       amount: v.number(),
-      unit: v.union(v.literal('tonn'), v.literal('kg')),
+      unit: v.union(v.literal('tonn'), v.literal('kg'), v.literal('m³')),
     })
   ),
 })
