@@ -86,14 +86,15 @@ export function FormCard({
 								isExpanded && 'rotate-90',
 							)}
 						/>
-					</div>
-					<div className="flex items-center gap-2">
 						<TooltipProvider>
 							<Tooltip>
 								<TooltipTrigger asChild>
 									<InfoIcon
 										className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors cursor-help"
-										onClick={(e) => e.stopPropagation()}
+										onClick={(e) => {
+											e.stopPropagation()
+											toggleExpand()
+										}}
 									/>
 								</TooltipTrigger>
 								<TooltipContent>
@@ -101,11 +102,13 @@ export function FormCard({
 								</TooltipContent>
 							</Tooltip>
 						</TooltipProvider>
+					</div>
+					<div className="flex items-center gap-2">
 						{hasHelpButton && (
 							<Button
 								type="button"
 								className="flex gap-2"
-								variant="ghost"
+								variant="outline"
 								size="default"
 								onClick={(e) => {
 									e.stopPropagation()
