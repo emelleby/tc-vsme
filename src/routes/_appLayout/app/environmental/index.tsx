@@ -17,6 +17,7 @@ import { yearStore } from '@/lib/year-store'
 import { C3TargetsForm } from './-c3-targets-card'
 import { CircularHelp } from './-circular-help'
 import { WaterHelp } from './-water-help'
+import { BiodiversityHelp } from './-biodiversity-help'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -38,6 +39,7 @@ function EnvironmentalPage() {
 	const reportingYear = useStore(yearStore, (state) => state.selectedYear)
 	const [isCircularHelpOpen, setCircularHelpOpen] = useState(false)
 	const [isWaterHelpOpen, setWaterHelpOpen] = useState(false)
+	const [isBiodiversityHelpOpen, setBiodiversityHelpOpen] = useState(false)
 
 	// Guard against race conditions during org switching
 	const { skipQuery, isLoading: isOrgLoading } = useOrgGuard()
@@ -115,6 +117,8 @@ function EnvironmentalPage() {
 				contributor={biodiversity?.contributor || { name: 'Unknown' }}
 				code="B5"
 				module="Grunnmodul"
+				buttonText="Hjelp"
+				onClick={() => setBiodiversityHelpOpen(true)}
 				version={
 					biodiversity?.versions?.length
 						? biodiversity.versions[biodiversity.versions.length - 1]?.version
@@ -183,6 +187,15 @@ function EnvironmentalPage() {
 				description="Informasjon om vannforvaltning og praktisk veiledning for vannuttak og utslipp."
 			>
 				<WaterHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isBiodiversityHelpOpen}
+				onOpenChange={setBiodiversityHelpOpen}
+				title="Veiledning for arealbeslag og biologisk mangfold"
+				description="Informasjon om arealbeslag, forseglet areal og naturmangfold."
+			>
+				<BiodiversityHelp />
 			</HelpSheet>
 
 			<FormCard
