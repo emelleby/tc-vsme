@@ -24,6 +24,16 @@ export const propertyLocationSchema = z.object({
 
 export type PropertyLocation = z.infer<typeof propertyLocationSchema>
 
+export const certificationSchema = z.object({
+	id: z.string(),
+	name: z.string().min(1, 'Navn på sertifisering er påkrevd'),
+	issuer: z.string().min(1, 'Utsteder er påkrevd'),
+	date: z.string().optional(),
+	assessment: z.string().optional(),
+})
+
+export type Certification = z.infer<typeof certificationSchema>
+
 export const b1GeneralSchema = z.object({
 	reportingYear: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
 	organizationName: z.string().min(1, 'Organization name is required'),
@@ -64,6 +74,7 @@ export const b1GeneralSchema = z.object({
 	contactPersonPhone: z.string().optional(),
 	/** Owned/operated properties with geocoordinates */
 	properties: z.array(propertyLocationSchema).optional(),
+	certifications: z.array(certificationSchema).optional(),
 })
 
 export type B1GeneralFormValues = z.infer<typeof b1GeneralSchema>

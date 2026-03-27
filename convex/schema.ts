@@ -59,10 +59,21 @@ const companyInfoDataValidator = v.object({
         country: v.string(),
         countryCode: v.string(),
         placeId: v.string(),
-        lat: v.number(),
-        lng: v.number(),
-      }),
-    ),
+		lat: v.number(),
+		lng: v.number(),
+	  }),
+	),
+  ),
+  certifications: v.optional(
+	v.array(
+	  v.object({
+		id: v.string(),
+		name: v.string(),
+		issuer: v.string(),
+		date: v.optional(v.string()),
+		assessment: v.optional(v.string()),
+	  }),
+	),
   ),
 })
 
