@@ -2,8 +2,8 @@ import { useStore } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useAction, useQuery as useConvexQuery } from 'convex/react'
-import { Building2, History, Plus, RefreshCw, Trash2 } from 'lucide-react'
-import { useEffect, useMemo } from 'react'
+import { Award, Building2, History, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -92,6 +92,7 @@ export function B1GeneralForm() {
 			contactPersonName: '',
 			contactPersonEmail: '',
 			properties: [],
+			certifications: [],
 		}
 
 		return {
@@ -159,12 +160,19 @@ export function B1GeneralForm() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<form.AppField name="reportingYear">
 								{(field) => (
-									<field.TextField label="Rapporteringsår" placeholder="YYYY" />
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										disabled
+										hidden
+									/>
 								)}
 							</form.AppField>
 
 							<form.AppField name="organizationNumber">
-								{(field) => <field.TextField label="Organisasjonsnummer" />}
+								{(field) => (
+									<field.TextField label="Organisasjonsnummer" hidden />
+								)}
 							</form.AppField>
 						</div>
 
@@ -338,17 +346,116 @@ export function B1GeneralForm() {
 								</FieldGroup>
 							)}
 						</form.Subscribe>
-						{/* Row 7: Properties / Owned Locations */}
-						<FieldGroup>
-							<div className="pt-4 border-t border-border">
+						{/* Row 7: Certifications & Properties in a grid for lg screens */}
+						<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4 border-t border-border">
+							{/* Certifications Section */}
+							<FieldGroup>
+								<div className="flex items-center gap-2 mb-1">
+									<Award className="h-5 w-5 text-muted-foreground" />
+									<h2 className="text-lg font-medium">
+										Sertifiseringer og merkeordninger
+									</h2>
+								</div>
+								<p className="text-sm text-muted-foreground mb-4">
+									F.eks. ISO 14001, EMAS, EU Ecolabel, Miljøfyrtårn
+								</p>
+
+								<form.AppField name="certifications">
+									{(field) => (
+										<div className="space-y-4">
+											{field.state.value?.map((item, i) => (
+												<div
+													key={item.id}
+													className="relative rounded-lg border border-border bg-card p-4 space-y-4"
+												>
+													<div className="flex items-center justify-between">
+														<span className="text-sm font-medium text-muted-foreground">
+															Sertifisering {i + 1}
+														</span>
+														<Button
+															type="button"
+															variant="ghost"
+															size="icon"
+															className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+															onClick={() => field.removeValue(i)}
+															disabled={status === 'submitted'}
+															aria-label={`Fjern sertifisering ${i + 1}`}
+														>
+															<Trash2 className="h-4 w-4" />
+														</Button>
+													</div>
+
+													<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+														<form.AppField name={`certifications[${i}].name`}>
+															{(f) => (
+																<f.TextField
+																	label="Sertifisering/merkeordning"
+																	placeholder="Sertifisering/merkeordning"
+																/>
+															)}
+														</form.AppField>
+														<form.AppField name={`certifications[${i}].issuer`}>
+															{(f) => (
+																<f.TextField
+																	label="Utsteder"
+																	placeholder="Utsteder"
+																/>
+															)}
+														</form.AppField>
+														<form.AppField name={`certifications[${i}].date`}>
+															{(f) => (
+																<f.DateField
+																	label="Dato"
+																	placeholder="dd.mm.åååå"
+																/>
+															)}
+														</form.AppField>
+														<form.AppField
+															name={`certifications[${i}].assessment`}
+														>
+															{(f) => (
+																<f.TextField
+																	label="Vurdering/poengsum"
+																	placeholder="Vurdering/poengsum"
+																/>
+															)}
+														</form.AppField>
+													</div>
+												</div>
+											))}
+
+											<Button
+												type="button"
+												variant="outline"
+												className="w-full"
+												onClick={() =>
+													field.pushValue({
+														id: crypto.randomUUID(),
+														name: '',
+														issuer: '',
+														date: '',
+														assessment: '',
+													})
+												}
+												disabled={status === 'submitted'}
+											>
+												<Plus className="h-4 w-4 mr-2" />
+												Legg til sertifisering
+											</Button>
+										</div>
+									)}
+								</form.AppField>
+							</FieldGroup>
+
+							{/* Properties Section */}
+							<FieldGroup>
 								<div className="flex items-center gap-2 mb-1">
 									<Building2 className="h-5 w-5 text-muted-foreground" />
 									<h2 className="text-lg font-medium">Eiendommer</h2>
 								</div>
 								<p className="text-sm text-muted-foreground mb-4">
 									Legg til adresser og geolokasjon for eiendommer som eies eller
-									driftes av virksomheten. Ikke obligatorisk, men adresse og
-									geolokasjon er påkrevd for hvert oppføring.
+									driftes av virksomheten.
 								</p>
 
 								<form.AppField name="properties">
@@ -391,7 +498,7 @@ export function B1GeneralForm() {
 											<Button
 												type="button"
 												variant="outline"
-												className="w-full md:w-auto"
+												className="w-full"
 												onClick={() =>
 													field.pushValue({
 														id: crypto.randomUUID(),
@@ -414,8 +521,8 @@ export function B1GeneralForm() {
 										</div>
 									)}
 								</form.AppField>
-							</div>
-						</FieldGroup>
+							</FieldGroup>
+						</div>
 					</fieldset>
 
 					<FormButtons
