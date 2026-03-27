@@ -2,14 +2,15 @@ import { createFormHook, revalidateLogic, useStore } from '@tanstack/react-form'
 import type { VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import {
+	CheckboxField,
 	ComboboxField,
 	CountryField,
 	NumberField,
+	PropertyLocationField,
 	SelectField,
 	SwitchField,
 	TextareaField,
 	TextField,
-	CheckboxField,
 } from '@/components/form-fields'
 import {
 	FormButtons,
@@ -67,6 +68,7 @@ const { useAppForm, withForm, withFieldGroup } = createFormHook({
 		ComboboxField,
 		NumberField,
 		CheckboxField,
+		PropertyLocationField,
 	},
 	formComponents: {
 		SubmitButton,

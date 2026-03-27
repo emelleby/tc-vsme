@@ -2,8 +2,8 @@ import { useStore } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useAction, useQuery as useConvexQuery } from 'convex/react'
-import { History, Plus, RefreshCw, Trash2 } from 'lucide-react'
-import { useMemo } from 'react'
+import { Building2, History, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -91,6 +91,7 @@ export function B1GeneralForm() {
 			subsidiaries: [],
 			contactPersonName: '',
 			contactPersonEmail: '',
+			properties: [],
 		}
 
 		return {
@@ -117,6 +118,17 @@ export function B1GeneralForm() {
 		defaultValues,
 	})
 
+	// Ensure org-sourced fields are always populated from live data,
+	// overriding any stale empty values that may have been saved in a draft.
+	// useEffect(() => {
+	// 	if (orgData?.orgNumber) {
+	// 		form.setFieldValue('organizationNumber', orgData.orgNumber)
+	// 	}
+	// 	if (orgData?.name) {
+	// 		form.setFieldValue('organizationName', orgData.name)
+	// 	}
+	// }, [orgData?.orgNumber, orgData?.name, form])
+
 	const reportType2 = useStore(form.store, (state) => state.values.reportType)
 
 	// Combined loading state (only for initial load, not refetch)
@@ -129,6 +141,7 @@ export function B1GeneralForm() {
 			</div>
 		)
 	}
+	console.log(orgData)
 
 	return (
 		<>
@@ -146,18 +159,12 @@ export function B1GeneralForm() {
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 							<form.AppField name="reportingYear">
 								{(field) => (
-									<field.TextField
-										label="Rapporteringsår"
-										placeholder="YYYY"
-										hidden
-									/>
+									<field.TextField label="Rapporteringsår" placeholder="YYYY" />
 								)}
 							</form.AppField>
 
 							<form.AppField name="organizationNumber">
-								{(field) => (
-									<field.TextField label="Organisasjonsnummer" hidden />
-								)}
+								{(field) => <field.TextField label="Organisasjonsnummer" />}
 							</form.AppField>
 						</div>
 
@@ -331,6 +338,84 @@ export function B1GeneralForm() {
 								</FieldGroup>
 							)}
 						</form.Subscribe>
+						{/* Row 7: Properties / Owned Locations */}
+						<FieldGroup>
+							<div className="pt-4 border-t border-border">
+								<div className="flex items-center gap-2 mb-1">
+									<Building2 className="h-5 w-5 text-muted-foreground" />
+									<h2 className="text-lg font-medium">Eiendommer</h2>
+								</div>
+								<p className="text-sm text-muted-foreground mb-4">
+									Legg til adresser og geolokasjon for eiendommer som eies eller
+									driftes av virksomheten. Ikke obligatorisk, men adresse og
+									geolokasjon er påkrevd for hvert oppføring.
+								</p>
+
+								<form.AppField name="properties">
+									{(field) => (
+										<div className="space-y-4">
+											{field.state.value?.map((item, i) => (
+												<div
+													key={item.id}
+													className="relative rounded-lg border border-border bg-card p-4"
+												>
+													<div className="flex items-center justify-between mb-3">
+														<span className="text-sm font-medium text-muted-foreground">
+															Eiendom {i + 1}
+														</span>
+														<Button
+															type="button"
+															variant="ghost"
+															size="icon"
+															className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+															onClick={() => field.removeValue(i)}
+															disabled={status === 'submitted'}
+															aria-label={`Fjern eiendom ${i + 1}`}
+														>
+															<Trash2 className="h-4 w-4" />
+														</Button>
+													</div>
+
+													<form.AppField name={`properties[${i}]`}>
+														{(f) => (
+															<f.PropertyLocationField
+																label="Adresse"
+																description="Søk etter adressen ved hjelp av Google Maps"
+																disabled={status === 'submitted'}
+															/>
+														)}
+													</form.AppField>
+												</div>
+											))}
+
+											<Button
+												type="button"
+												variant="outline"
+												className="w-full md:w-auto"
+												onClick={() =>
+													field.pushValue({
+														id: crypto.randomUUID(),
+														formattedAddress: '',
+														streetAddress: '',
+														city: '',
+														postalCode: '',
+														country: '',
+														countryCode: '',
+														placeId: '',
+														lat: 0,
+														lng: 0,
+													})
+												}
+												disabled={status === 'submitted'}
+											>
+												<Plus className="h-4 w-4 mr-2" />
+												Legg til eiendom
+											</Button>
+										</div>
+									)}
+								</form.AppField>
+							</div>
+						</FieldGroup>
 					</fieldset>
 
 					<FormButtons

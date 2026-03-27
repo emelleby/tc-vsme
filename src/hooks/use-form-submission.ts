@@ -12,7 +12,7 @@ interface UseFormSubmissionProps<TData> {
 	reportingYear: number
 	section: FormSection // NEW
 	defaultValues: TData
-	schema: import('zod').ZodType<TData>
+	schema: import('zod').ZodType<TData, any, any>
 }
 
 export function useFormSubmission<TData>({
@@ -52,6 +52,7 @@ export function useFormSubmission<TData>({
 		},
 		onSubmitInvalid: ({ formApi }) => {
 			focusFirstError(formApi)
+			toast.error('Skjemaet inneholder feil. Vennligst rett dem og prøv igjen.')
 		},
 		onSubmit: async ({ value }) => {
 			await handleFinalSubmit(value)
