@@ -47,6 +47,23 @@ const companyInfoDataValidator = v.object({
   ),
   contactPersonName: v.string(),
   contactPersonEmail: v.string(),
+  /** Owned/operated properties with geocoordinates */
+  properties: v.optional(
+    v.array(
+      v.object({
+        id: v.string(),
+        formattedAddress: v.string(),
+        streetAddress: v.string(),
+        city: v.string(),
+        postalCode: v.string(),
+        country: v.string(),
+        countryCode: v.string(),
+        placeId: v.string(),
+        lat: v.number(),
+        lng: v.number(),
+      }),
+    ),
+  ),
 })
 
 const sustainabilityInitiativesDataValidator = v.object({

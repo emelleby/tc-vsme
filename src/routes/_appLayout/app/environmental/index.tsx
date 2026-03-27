@@ -18,6 +18,8 @@ import { C3TargetsForm } from './-c3-targets-card'
 import { CircularHelp } from './-circular-help'
 import { WaterHelp } from './-water-help'
 import { BiodiversityHelp } from './-biodiversity-help'
+import { EnergyHelp } from './-energy-help'
+import { PollutionHelp } from './-pollution-help'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -40,6 +42,8 @@ function EnvironmentalPage() {
 	const [isCircularHelpOpen, setCircularHelpOpen] = useState(false)
 	const [isWaterHelpOpen, setWaterHelpOpen] = useState(false)
 	const [isBiodiversityHelpOpen, setBiodiversityHelpOpen] = useState(false)
+	const [isEnergyHelpOpen, setEnergyHelpOpen] = useState(false)
+	const [isPollutionHelpOpen, setPollutionHelpOpen] = useState(false)
 
 	// Guard against race conditions during org switching
 	const { skipQuery, isLoading: isOrgLoading } = useOrgGuard()
@@ -83,6 +87,8 @@ function EnvironmentalPage() {
 				status={energyEmissions?.status ?? 'draft'}
 				contributor={energyEmissions?.contributor || { name: 'Unknown' }}
 				code="B3"
+				buttonText="Hjelp"
+				onClick={() => setEnergyHelpOpen(true)}
 				version={
 					energyEmissions?.versions?.length
 						? energyEmissions.versions[energyEmissions.versions.length - 1]
@@ -100,6 +106,8 @@ function EnvironmentalPage() {
 				status={pollution?.status ?? 'draft'}
 				contributor={pollution?.contributor || { name: 'Unknown' }}
 				code="B4"
+				buttonText="Hjelp"
+				onClick={() => setPollutionHelpOpen(true)}
 				version={
 					pollution?.versions?.length
 						? pollution.versions[pollution.versions.length - 1]?.version
@@ -178,6 +186,24 @@ function EnvironmentalPage() {
 				description="Informasjon om sirkulærøkonomiske prinsipper og praktisk veiledning for avfallshåndtering."
 			>
 				<CircularHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isEnergyHelpOpen}
+				onOpenChange={setEnergyHelpOpen}
+				title="Veiledning for energiforbruk og utslipp"
+				description="Informasjon om energiforbruk, utslippsberegninger og energikilder."
+			>
+				<EnergyHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isPollutionHelpOpen}
+				onOpenChange={setPollutionHelpOpen}
+				title="Veiledning for forurensningsrapportering"
+				description="Informasjon om rapporteringsplikt for forurensende stoffer."
+			>
+				<PollutionHelp />
 			</HelpSheet>
 
 			<HelpSheet
