@@ -19,6 +19,8 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '../ui/accordion'
+import { Card, CardContent } from '../ui/card'
+import { FieldSet } from '../ui/field'
 
 type MongoEmissionsData = {
 	renewable?: number
@@ -144,105 +146,109 @@ export function B3EnergyEmissionsForm() {
 						form.handleSubmit()
 					}}
 				>
-					<fieldset disabled={status === 'submitted'} className="space-y-6">
-						<form.AppField name="reportingYear">
-							{(field) => (
-								<field.TextField
-									label="Rapporteringsår"
-									placeholder="YYYY"
-									hidden
-								/>
-							)}
-						</form.AppField>
+					<Card>
+						<CardContent className="space-y-6">
+							<FieldSet disabled={status === 'submitted'} className="">
+								<form.AppField name="reportingYear">
+									{(field) => (
+										<field.TextField
+											label="Rapporteringsår"
+											placeholder="YYYY"
+											hidden
+										/>
+									)}
+								</form.AppField>
 
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-							<form.AppField name="renewableElectricity">
-								{(field) => (
-									<field.NumberField
-										label="Renewable Electricity"
-										unit="kWh"
-										description="Total electricity consumption from renewable sources like solar, wind, and hydro"
-									/>
-								)}
-							</form.AppField>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+									<form.AppField name="renewableElectricity">
+										{(field) => (
+											<field.NumberField
+												label="Renewable Electricity"
+												unit="kWh"
+												description="Total electricity consumption from renewable sources like solar, wind, and hydro"
+											/>
+										)}
+									</form.AppField>
 
-							<form.AppField name="nonRenewableElectricity">
-								{(field) => (
-									<field.NumberField
-										label="Non-Renewable Electricity"
-										unit="kWh"
-										description="Total electricity consumption from non-renewable sources like coal and gas"
-									/>
-								)}
-							</form.AppField>
+									<form.AppField name="nonRenewableElectricity">
+										{(field) => (
+											<field.NumberField
+												label="Non-Renewable Electricity"
+												unit="kWh"
+												description="Total electricity consumption from non-renewable sources like coal and gas"
+											/>
+										)}
+									</form.AppField>
 
-							<form.AppField name="emissionsIntensity">
-								{(field) => (
-									<field.NumberField
-										label="Emissions Intensity"
-										unit="kgCO₂e/tNOK"
-										step="0.01"
-										description="Total emissions per unit of revenue (kgCO₂e/tNOK)"
-									/>
-								)}
-							</form.AppField>
+									<form.AppField name="emissionsIntensity">
+										{(field) => (
+											<field.NumberField
+												label="Emissions Intensity"
+												unit="kgCO₂e/tNOK"
+												step="0.01"
+												description="Total emissions per unit of revenue (kgCO₂e/tNOK)"
+											/>
+										)}
+									</form.AppField>
 
-							<form.AppField name="scope1Emissions">
-								{(field) => (
-									<field.NumberField
-										label="Scope 1 Emissions"
-										unit="tCO₂e"
-										step="0.001"
-										description="Direct emissions from owned or controlled sources"
-									/>
-								)}
-							</form.AppField>
+									<form.AppField name="scope1Emissions">
+										{(field) => (
+											<field.NumberField
+												label="Scope 1 Emissions"
+												unit="tCO₂e"
+												step="0.001"
+												description="Direct emissions from owned or controlled sources"
+											/>
+										)}
+									</form.AppField>
 
-							<form.AppField name="scope2EmissionsLocationBased">
-								{(field) => (
-									<field.NumberField
-										label="Scope 2 Emissions (Location-based)"
-										unit="tCO₂e"
-										step="0.001"
-										description="Indirect emissions using average grid emission factors"
-									/>
-								)}
-							</form.AppField>
+									<form.AppField name="scope2EmissionsLocationBased">
+										{(field) => (
+											<field.NumberField
+												label="Scope 2 Emissions (Location-based)"
+												unit="tCO₂e"
+												step="0.001"
+												description="Indirect emissions using average grid emission factors"
+											/>
+										)}
+									</form.AppField>
 
-							<form.AppField name="scope2EmissionsMarketBased">
-								{(field) => (
-									<field.NumberField
-										label="Scope 2 Emissions (Market-based)"
-										unit="tCO₂e"
-										step="0.001"
-										description="Indirect emissions using supplier-specific emission factors"
-									/>
-								)}
-							</form.AppField>
-						</div>
+									<form.AppField name="scope2EmissionsMarketBased">
+										{(field) => (
+											<field.NumberField
+												label="Scope 2 Emissions (Market-based)"
+												unit="tCO₂e"
+												step="0.001"
+												description="Indirect emissions using supplier-specific emission factors"
+											/>
+										)}
+									</form.AppField>
+								</div>
 
-						<div className="grid grid-cols-1 gap-6">
-							<form.AppField name="climateDataCollectionMethod">
-								{(field) => (
-									<field.TextareaField
-										label="Climate data collection method"
-										placeholder="E.g. accounting data, measurements, estimates, third-party tools..."
-										description="Describe how climate data was collected and calculated"
-									/>
-								)}
-							</form.AppField>
+								<div className="grid grid-cols-1 gap-6">
+									<form.AppField name="climateDataCollectionMethod">
+										{(field) => (
+											<field.TextareaField
+												label="Climate data collection method"
+												placeholder="E.g. accounting data, measurements, estimates, third-party tools..."
+												description="Describe how climate data was collected and calculated"
+											/>
+										)}
+									</form.AppField>
 
-							<form.AppField name="dataUncertainty">
-								{(field) => (
-									<field.TextareaField
-										label="Data uncertainty"
-										placeholder="E.g. estimated values, missing data for parts of the year..."
-										description="Describe any uncertainties or limitations in the climate data"
-									/>
-								)}
-							</form.AppField>
-						</div>
-					</fieldset>
+									<form.AppField name="dataUncertainty">
+										{(field) => (
+											<field.TextareaField
+												label="Data uncertainty"
+												placeholder="E.g. estimated values, missing data for parts of the year..."
+												description="Describe any uncertainties or limitations in the climate data"
+											/>
+										)}
+									</form.AppField>
+								</div>
+							</FieldSet>
+						</CardContent>
+					</Card>
 
 					<FormButtons
 						status={status as 'draft' | 'submitted'}

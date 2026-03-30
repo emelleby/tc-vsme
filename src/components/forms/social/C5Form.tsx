@@ -1,4 +1,5 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -40,38 +41,42 @@ export function C5AdditionalWorkforceForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
+							</form.AppField>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<form.AppField name="selfEmployedWorkers">
-							{(field) => (
-								<field.NumberField
-									label="Self-employed Workers"
-									description="Number of self-employed individuals working for the organization"
-								/>
-							)}
-						</form.AppField>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="selfEmployedWorkers">
+									{(field) => (
+										<field.NumberField
+											label="Self-employed Workers"
+											description="Number of self-employed individuals working for the organization"
+										/>
+									)}
+								</form.AppField>
 
-						<form.AppField name="contractWorkers">
-							{(field) => (
-								<field.NumberField
-									label="Contract Workers"
-									description="Number of workers on contract or temporary arrangements"
-								/>
-							)}
-						</form.AppField>
-					</div>
-				</fieldset>
+								<form.AppField name="contractWorkers">
+									{(field) => (
+										<field.NumberField
+											label="Contract Workers"
+											description="Number of workers on contract or temporary arrangements"
+										/>
+									)}
+								</form.AppField>
+							</div>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}

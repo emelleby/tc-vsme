@@ -1,5 +1,6 @@
 import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -46,59 +47,65 @@ export function B10CompensationForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
+							</form.AppField>
 
-					{/* Tariffavtaledekning + Gjennomsnittlig opplæring */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<form.AppField name="tariffavtaledekning">
-							{(field) => (
-								<field.NumberField
-									label="Tariffavtaledekning"
-									description="Prosentandel ansatte dekket av tariffavtaler"
-									unit="%"
-									step="0.1"
-									min="0"
-									max="100"
-								/>
-							)}
-						</form.AppField>
+							{/* Tariffavtaledekning + Gjennomsnittlig opplæring */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="tariffavtaledekning">
+									{(field) => (
+										<field.NumberField
+											label="Tariffavtaledekning"
+											description="Prosentandel ansatte dekket av tariffavtaler"
+											unit="%"
+											step="0.1"
+											min="0"
+											max="100"
+										/>
+									)}
+								</form.AppField>
 
-						<form.AppField name="gjennomsnittligOpplaering">
-							{(field) => (
-								<field.NumberField
-									label="Gjennomsnittlig opplæring"
-									description="Gjennomsnittlig antall opplæringstimer per ansatt per år"
-									step="0.1"
-									min="0"
-								/>
-							)}
-						</form.AppField>
-					</div>
+								<form.AppField name="gjennomsnittligOpplaering">
+									{(field) => (
+										<field.NumberField
+											label="Gjennomsnittlig opplæring"
+											description="Gjennomsnittlig antall opplæringstimer per ansatt per år"
+											step="0.1"
+											min="0"
+										/>
+									)}
+								</form.AppField>
+							</div>
 
-					{/* Minstelønnsansvar */}
-					<div className="flex flex-col items-start gap-3">
-						<h3 className="text-base font-semibold">Minstelønnsansvar</h3>
-						<form.AppField name="minstelonnsansvar">
-							{(field) => (
-								<field.SwitchField
-									label=""
-									description="Mottar de ansatte lønn som er lik eller over minstelønnen i landet det opereres i?"
-								/>
-							)}
-						</form.AppField>
-						<span className="text-sm">{minstelonnsansvar ? 'Ja' : 'Nei'}</span>
-					</div>
-				</fieldset>
+							{/* Minstelønnsansvar */}
+							<div className="flex flex-col items-start gap-3">
+								<h3 className="text-base font-semibold">Minstelønnsansvar</h3>
+								<form.AppField name="minstelonnsansvar">
+									{(field) => (
+										<field.SwitchField
+											label=""
+											description="Mottar de ansatte lønn som er lik eller over minstelønnen i landet det opereres i?"
+										/>
+									)}
+								</form.AppField>
+								<span className="text-sm">
+									{minstelonnsansvar ? 'Ja' : 'Nei'}
+								</span>
+							</div>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}

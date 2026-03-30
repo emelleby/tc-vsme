@@ -1,4 +1,5 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -42,58 +43,62 @@ export function C9BoardCompositionForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
+							</form.AppField>
 
-					<div className="text-sm font-medium">C9  Styrets kjønnsbalanse</div>
+							<div className="font-semibold">Styrets kjønnsbalanse</div>
 
-					<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-						<form.AppField name="totalMembers">
-							{(field) => (
-								<field.NumberField 
-									label="Total Members" 
-									description="Total number of board members" 
-								/>
-							)}
-						</form.AppField>
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+								<form.AppField name="totalMembers">
+									{(field) => (
+										<field.NumberField
+											label="Total Members"
+											description="Total number of board members"
+										/>
+									)}
+								</form.AppField>
 
-						<form.AppField name="femaleMembers">
-							{(field) => (
-								<field.NumberField 
-									label="Female Members" 
-									description="Number of female board members" 
-								/>
-							)}
-						</form.AppField>
+								<form.AppField name="femaleMembers">
+									{(field) => (
+										<field.NumberField
+											label="Female Members"
+											description="Number of female board members"
+										/>
+									)}
+								</form.AppField>
 
-						<form.AppField name="maleMembers">
-							{(field) => (
-								<field.NumberField 
-									label="Male Members" 
-									description="Number of male board members" 
-								/>
-							)}
-						</form.AppField>
+								<form.AppField name="maleMembers">
+									{(field) => (
+										<field.NumberField
+											label="Male Members"
+											description="Number of male board members"
+										/>
+									)}
+								</form.AppField>
 
-						<form.AppField name="otherMembers">
-							{(field) => (
-								<field.NumberField 
-									label="Other Members" 
-									description="Number of board members with other gender identities" 
-								/>
-							)}
-						</form.AppField>
-					</div>
-				</fieldset>
+								<form.AppField name="otherMembers">
+									{(field) => (
+										<field.NumberField
+											label="Other Members"
+											description="Number of board members with other gender identities"
+										/>
+									)}
+								</form.AppField>
+							</div>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}

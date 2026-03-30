@@ -76,6 +76,8 @@ export function B2SustainabilityInitiativesForm() {
 							)}
 						</form.AppField>
 
+						{/* Publicly available switch */}
+
 						{/* Initiatives array */}
 						<form.AppField name="initiatives">
 							{(field) => (
@@ -99,16 +101,25 @@ export function B2SustainabilityInitiativesForm() {
 									{field.state.value?.map((item, i) => (
 										<Card key={item.id} className="relative">
 											<CardContent className="space-y-4">
-												<form.AppField name={`initiatives[${i}].title`}>
-													{(f) => (
-														<f.ComboboxField
-															label="Initiative Title"
-															options={PREDEFINED_TITLES}
-															placeholder="Select from list or type a custom title..."
-															helperText="💡 Tip: You can type a custom title if none match"
-														/>
-													)}
-												</form.AppField>
+												<div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-end">
+													<form.AppField name={`initiatives[${i}].title`}>
+														{(f) => (
+															<f.ComboboxField
+																label="Initiative Title"
+																options={PREDEFINED_TITLES}
+																placeholder="Select or type a custom title..."
+																helperText="💡 Tip: You can type a custom title if none match"
+															/>
+														)}
+													</form.AppField>
+													<form.AppField
+														name={`initiatives[${i}].publiclyAvailable`}
+													>
+														{(field) => (
+															<field.SwitchField label="Publicly available" />
+														)}
+													</form.AppField>
+												</div>
 
 												<form.AppField name={`initiatives[${i}].description`}>
 													{(f) => (
@@ -190,6 +201,7 @@ export function B2SustainabilityInitiativesForm() {
 												goals: '',
 												responsiblePerson: '',
 												status: 'not_started',
+												publiclyAvailable: false,
 											})
 										}
 										disabled={status === 'submitted'}

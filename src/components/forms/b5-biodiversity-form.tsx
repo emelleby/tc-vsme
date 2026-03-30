@@ -57,7 +57,7 @@ export function B5BiodiversityForm() {
 					</form.AppField>
 
 					<Card>
-						<CardContent className="pt-6 space-y-6">
+						<CardContent className="space-y-6">
 							<form.AppField
 								name="hasSensitiveBiodiversityAreas"
 								listeners={{

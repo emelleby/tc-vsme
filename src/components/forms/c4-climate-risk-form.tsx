@@ -52,7 +52,7 @@ export function C4ClimateRiskForm() {
 					</form.AppField>
 
 					<Card>
-						<CardContent className="pt-6 space-y-6">
+						<CardContent className="space-y-6">
 							<form.AppField name="climateRiskDescription">
 								{(field) => (
 									<field.TextareaField
