@@ -93,7 +93,10 @@ const sustainabilityInitiativesDataValidator = v.object({
 
 const businessModelDataValidator = v.object({
   reportingYear: v.string(),
-  businessModel: v.optional(v.string()),
+  productsAndServices: v.optional(v.string()),
+  markets: v.optional(v.string()),
+  businessRelationships: v.optional(v.string()),
+  sustainabilityStrategy: v.optional(v.string()),
 })
 
 // Union validator for all general form sections
@@ -362,7 +365,10 @@ export default defineSchema({
     naceCode: v.optional(v.string()),
     industry: v.optional(v.string()),
     numberEmployees: v.optional(v.number()),
-    businessModel: v.optional(v.string()),
+    productsAndServices: v.optional(v.string()),
+    markets: v.optional(v.string()),
+    businessRelationships: v.optional(v.string()),
+    sustainabilityStrategy: v.optional(v.string()),
     hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkOrgId', ['clerkOrgId'])
