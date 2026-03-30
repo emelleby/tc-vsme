@@ -1,5 +1,6 @@
 import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -47,59 +48,70 @@ export function B11FinesPenaltiesForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
+							</form.AppField>
 
-					<div className="flex flex-col items-start gap-3">
-						<h3 className="text-base font-semibold">
-							B11 Bøter og straffer for korrupsjon
-						</h3>
+							<div className="flex flex-col items-start gap-3">
+								<h3 className="text-base font-semibold">
+									Bøter og straffer for korrupsjon
+								</h3>
 
-						<form.AppField
-							name="hasCorruptionFines"
-							listeners={{
-								onChange: ({ value, fieldApi }) => {
-									if (!value) {
-										fieldApi.form.setFieldValue('corruptionFinesDescription', '')
+								<form.AppField
+									name="hasCorruptionFines"
+									listeners={{
+										onChange: ({ value, fieldApi }) => {
+											if (!value) {
+												fieldApi.form.setFieldValue(
+													'corruptionFinesDescription',
+													'',
+												)
+											}
+										},
+									}}
+								>
+									{(field) => (
+										<field.SwitchField
+											label=""
+											description="Has fines or penalties during the period related to violations of anti-corruption or anti-bribery laws?"
+										/>
+									)}
+								</form.AppField>
+								<span className="text-sm">
+									{hasCorruptionFines ? 'Ja' : 'Nei'}
+								</span>
+
+								<form.Subscribe
+									selector={(state) => state.values.hasCorruptionFines}
+								>
+									{(hasFines) =>
+										hasFines ? (
+											<form.AppField name="corruptionFinesDescription">
+												{(field) => (
+													<field.TextareaField
+														label="Description"
+														placeholder="Provide more information..."
+														rows={4}
+													/>
+												)}
+											</form.AppField>
+										) : null
 									}
-								},
-							}}
-						>
-							{(field) => (
-								<field.SwitchField
-									label=""
-									description="Has fines or penalties during the period related to violations of anti-corruption or anti-bribery laws?"
-								/>
-							)}
-						</form.AppField>
-						<span className="text-sm">{hasCorruptionFines ? 'Ja' : 'Nei'}</span>
-
-						<form.Subscribe selector={(state) => state.values.hasCorruptionFines}>
-							{(hasFines) =>
-								hasFines ? (
-									<form.AppField name="corruptionFinesDescription">
-										{(field) => (
-											<field.TextareaField
-												label="Description"
-												placeholder="Provide more information..."
-												rows={4}
-											/>
-										)}
-									</form.AppField>
-								) : null
-							}
-						</form.Subscribe>
-					</div>
-				</fieldset>
+								</form.Subscribe>
+							</div>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}

@@ -49,140 +49,148 @@ export function B8WorkforceForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
-
-					{/* Ansettelsestype */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<form.AppField name="heltidsansatte">
-							{(field) => (
-								<field.NumberField
-									label="Heltidsansatte"
-									description="Antall ansatte som jobber standard heltid"
-								/>
-							)}
-						</form.AppField>
-
-						<form.AppField name="deltidsansatte">
-							{(field) => (
-								<field.NumberField
-									label="Deltidsansatte"
-									description="Antall ansatte som jobber mindre enn heltid"
-								/>
-							)}
-						</form.AppField>
-					</div>
-
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<form.AppField name="midlertidigAnsatte">
-							{(field) => (
-								<field.NumberField
-									label="Midlertidig ansatte"
-									description="Antall ansatte med tidsbegrensede kontrakter"
-								/>
-							)}
-						</form.AppField>
-					</div>
-
-					{/* Kjønnsfordeling */}
-					<div>
-						<h3 className="text-base font-semibold mb-3">Kjønnsfordeling</h3>
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-							<form.AppField name="menn">
-								{(field) => <field.NumberField label="Menn" />}
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
 							</form.AppField>
 
-							<form.AppField name="kvinner">
-								{(field) => <field.NumberField label="Kvinner" />}
-							</form.AppField>
+							{/* Ansettelsestype */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="heltidsansatte">
+									{(field) => (
+										<field.NumberField
+											label="Heltidsansatte"
+											description="Antall ansatte som jobber standard heltid"
+										/>
+									)}
+								</form.AppField>
 
-							<form.AppField name="annet">
-								{(field) => <field.NumberField label="Annet" />}
-							</form.AppField>
-						</div>
-					</div>
+								<form.AppField name="deltidsansatte">
+									{(field) => (
+										<field.NumberField
+											label="Deltidsansatte"
+											description="Antall ansatte som jobber mindre enn heltid"
+										/>
+									)}
+								</form.AppField>
+							</div>
 
-					{/* Ansatte per land */}
-					<div>
-						<h3 className="text-base font-semibold mb-3">
-							Ansatte per land, dersom foretaket driver virksomhet i mer enn ett
-							land
-						</h3>
-						<form.AppField name="ansattePerLand">
-							{(field) => (
-								<div className="space-y-3">
-									{field.state.value?.map((item, i) => (
-										<Card key={item.id} className="border">
-											<CardContent className="pt-4 pb-3">
-												<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-													<form.AppField name={`ansattePerLand[${i}].land`}>
-														{(f) => <f.CountryField label="Land" />}
-													</form.AppField>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="midlertidigAnsatte">
+									{(field) => (
+										<field.NumberField
+											label="Midlertidig ansatte"
+											description="Antall ansatte med tidsbegrensede kontrakter"
+										/>
+									)}
+								</form.AppField>
+							</div>
 
-													<form.AppField
-														name={`ansattePerLand[${i}].antallAnsatte`}
-													>
-														{(f) => <f.NumberField label="Antall ansatte" />}
-													</form.AppField>
-												</div>
-												<div className="flex justify-end mt-3">
-													<Button
-														type="button"
-														variant="outline"
-														size="sm"
-														className="text-destructive border-destructive/20 hover:bg-destructive/10"
-														onClick={() => field.removeValue(i)}
-														disabled={status === 'submitted'}
-													>
-														<Trash2 className="h-4 w-4 mr-1" />
-														Fjern
-													</Button>
-												</div>
-											</CardContent>
-										</Card>
-									))}
+							{/* Kjønnsfordeling */}
+							<div>
+								<h3 className="text-base font-semibold mb-3">
+									Kjønnsfordeling
+								</h3>
+								<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+									<form.AppField name="menn">
+										{(field) => <field.NumberField label="Menn" />}
+									</form.AppField>
 
-									<Button
-										type="button"
-										variant="outline"
-										className="w-full"
-										onClick={() =>
-											field.pushValue({
-												id: crypto.randomUUID(),
-												land: '',
-												antallAnsatte: 0,
-											})
-										}
-										disabled={status === 'submitted'}
-									>
-										<Plus className="h-4 w-4 mr-2" />
-										Legg til land
-									</Button>
+									<form.AppField name="kvinner">
+										{(field) => <field.NumberField label="Kvinner" />}
+									</form.AppField>
+
+									<form.AppField name="annet">
+										{(field) => <field.NumberField label="Annet" />}
+									</form.AppField>
 								</div>
-							)}
-						</form.AppField>
-					</div>
+							</div>
 
-					{/* Eventuell utfyllende info */}
-					<form.AppField name="eventuellUtfyllendeInfo">
-						{(field) => (
-							<field.TextareaField
-								label="Eventuell utfyllende info"
-								placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
-								description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
-							/>
-						)}
-					</form.AppField>
-				</fieldset>
+							{/* Ansatte per land */}
+							<div>
+								<h3 className="text-base font-semibold mb-3">
+									Ansatte per land, dersom foretaket driver virksomhet i mer enn
+									ett land
+								</h3>
+								<form.AppField name="ansattePerLand">
+									{(field) => (
+										<div className="space-y-4">
+											{field.state.value?.map((item, i) => (
+												<Card key={item.id} className="border">
+													<CardContent>
+														<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+															<form.AppField name={`ansattePerLand[${i}].land`}>
+																{(f) => <f.CountryField label="Land" />}
+															</form.AppField>
+
+															<form.AppField
+																name={`ansattePerLand[${i}].antallAnsatte`}
+															>
+																{(f) => (
+																	<f.NumberField label="Antall ansatte" />
+																)}
+															</form.AppField>
+														</div>
+														<div className="flex justify-end mt-3">
+															<Button
+																type="button"
+																variant="outline"
+																size="sm"
+																className="text-destructive border-destructive/20 hover:bg-destructive/10"
+																onClick={() => field.removeValue(i)}
+																disabled={status === 'submitted'}
+															>
+																<Trash2 className="h-4 w-4 mr-1" />
+																Fjern
+															</Button>
+														</div>
+													</CardContent>
+												</Card>
+											))}
+
+											<Button
+												type="button"
+												variant="outline"
+												className="w-full"
+												onClick={() =>
+													field.pushValue({
+														id: crypto.randomUUID(),
+														land: '',
+														antallAnsatte: 0,
+													})
+												}
+												disabled={status === 'submitted'}
+											>
+												<Plus className="h-4 w-4 mr-2" />
+												Legg til land
+											</Button>
+										</div>
+									)}
+								</form.AppField>
+							</div>
+
+							{/* Eventuell utfyllende info */}
+							<form.AppField name="eventuellUtfyllendeInfo">
+								{(field) => (
+									<field.TextareaField
+										label="Eventuell utfyllende info"
+										placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
+										description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
+									/>
+								)}
+							</form.AppField>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}

@@ -72,8 +72,8 @@ export function B6WaterManagementForm() {
 					</form.AppField>
 
 					<Card>
-						<CardContent className="pt-6">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-6 mb-6">
+						<CardContent className="">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 								<form.AppField name="waterWithdrawal">
 									{(field) => (
 										<field.NumberField
@@ -107,16 +107,14 @@ export function B6WaterManagementForm() {
 								</form.AppField>
 
 								<div className="space-y-3">
-									<div className="text-sm font-medium">Vannforbruk</div>
-									<div className="h-10 px-3 py-2 rounded-md border border-input bg-muted/50 flex items-center justify-between">
+									<div className="text-sm font-bold">Vannforbruk</div>
+									<div className="h-9 px-3 py-2 rounded-md border border-input bg-secondary/10 flex items-center justify-between">
 										<span className="text-sm font-semibold">
 											{(withdrawal ?? 0) - (discharge ?? 0)}
 										</span>
-										<span className="text-muted-foreground text-xs uppercase">
-											m³
-										</span>
+										<span className="text-muted-foreground text-sm">m³</span>
 									</div>
-									<p className="text-[0.8rem] text-muted-foreground">
+									<p className="text-sm text-muted-foreground">
 										Beregnet: vannuttak minus vannutslipp
 									</p>
 									{/* Hidden field to satisfy validation and form submission */}

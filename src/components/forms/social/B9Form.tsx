@@ -1,4 +1,5 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -39,75 +40,79 @@ export function B9HealthSafetyForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
+							</form.AppField>
 
-					{/* Arbeidsulykker + Sykefravær */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<form.AppField name="arbeidsulykker">
-							{(field) => (
-								<field.NumberField
-									label="Arbeidsulykker"
-									description="Antall rapporterte arbeidsulykker i perioden"
-								/>
-							)}
-						</form.AppField>
+							{/* Arbeidsulykker + Sykefravær */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="arbeidsulykker">
+									{(field) => (
+										<field.NumberField
+											label="Arbeidsulykker"
+											description="Antall rapporterte arbeidsulykker i perioden"
+										/>
+									)}
+								</form.AppField>
 
-						<form.AppField name="sykefravarProsent">
-							{(field) => (
-								<field.NumberField
-									label="Sykefravær"
-									description="Sykefravær i prosent"
-									unit="%"
-									step="0.1"
-									min="0"
-									max="100"
-								/>
-							)}
-						</form.AppField>
-					</div>
+								<form.AppField name="sykefravarProsent">
+									{(field) => (
+										<field.NumberField
+											label="Sykefravær"
+											description="Sykefravær i prosent"
+											unit="%"
+											step="0.1"
+											min="0"
+											max="100"
+										/>
+									)}
+								</form.AppField>
+							</div>
 
-					{/* HMS-opplæring + Omkomne */}
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-						<form.AppField name="hmsOpplaering">
-							{(field) => (
-								<field.NumberField
-									label="HMS-opplæring"
-									description="Totalt antall timer med HMS-opplæring"
-								/>
-							)}
-						</form.AppField>
+							{/* HMS-opplæring + Omkomne */}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="hmsOpplaering">
+									{(field) => (
+										<field.NumberField
+											label="HMS-opplæring"
+											description="Totalt antall timer med HMS-opplæring"
+										/>
+									)}
+								</form.AppField>
 
-						<form.AppField name="omkomne">
-							{(field) => (
-								<field.NumberField
-									label="Omkomne"
-									description="Antall omkomne som følge av arbeidsskader eller arbeidsrelatert helse"
-								/>
-							)}
-						</form.AppField>
-					</div>
+								<form.AppField name="omkomne">
+									{(field) => (
+										<field.NumberField
+											label="Omkomne"
+											description="Antall omkomne som følge av arbeidsskader eller arbeidsrelatert helse"
+										/>
+									)}
+								</form.AppField>
+							</div>
 
-					{/* Eventuell utfyllende info */}
-					<form.AppField name="eventuellUtfyllendeInfo">
-						{(field) => (
-							<field.TextareaField
-								label="Eventuell utfyllende info"
-								placeholder="Beskriv eventuelle ekstraordinære hendelser, forbedringstiltak, eller annen relevant kontekst..."
-								description="Oppgi eventuell tilleggsinformasjon eller forklaringer til helse- og sikkerhetsdata"
-							/>
-						)}
-					</form.AppField>
-				</fieldset>
+							{/* Eventuell utfyllende info */}
+							<form.AppField name="eventuellUtfyllendeInfo">
+								{(field) => (
+									<field.TextareaField
+										label="Eventuell utfyllende info"
+										placeholder="Beskriv eventuelle ekstraordinære hendelser, forbedringstiltak, eller annen relevant kontekst..."
+										description="Oppgi eventuell tilleggsinformasjon eller forklaringer til helse- og sikkerhetsdata"
+									/>
+								)}
+							</form.AppField>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}
@@ -120,4 +125,3 @@ export function B9HealthSafetyForm() {
 		</form.AppForm>
 	)
 }
-

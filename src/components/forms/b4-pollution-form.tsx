@@ -82,7 +82,7 @@ export function B4PollutionForm() {
 												Pollution {i + 1}
 											</CardTitle>
 										</CardHeader>
-										<CardContent className="pt-6 space-y-6">
+										<CardContent className="space-y-6">
 											<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 												<form.AppField name={`pollutants[${i}].pollutionType`}>
 													{(f) => (

@@ -1,4 +1,5 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -92,60 +93,64 @@ export function C7SeriousHumanRightsForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
+							</form.AppField>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						{INCIDENT_ITEMS.map((item) => (
-							<div key={item.boolField} className="flex flex-col gap-2">
-								<form.AppField
-									name={item.boolField}
-									listeners={{
-										onChange: ({ value, fieldApi }) => {
-											if (!value) {
-												fieldApi.form.setFieldValue(item.measuresField, '')
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								{INCIDENT_ITEMS.map((item) => (
+									<div key={item.boolField} className="flex flex-col gap-2">
+										<form.AppField
+											name={item.boolField}
+											listeners={{
+												onChange: ({ value, fieldApi }) => {
+													if (!value) {
+														fieldApi.form.setFieldValue(item.measuresField, '')
+													}
+												},
+											}}
+										>
+											{(field) => (
+												<field.CheckboxField
+													label={item.label}
+													description={item.description}
+												/>
+											)}
+										</form.AppField>
+
+										<form.Subscribe
+											selector={(state) => state.values[item.boolField]}
+										>
+											{(isChecked) =>
+												isChecked ? (
+													<form.AppField name={item.measuresField}>
+														{(field) => (
+															<field.TextareaField
+																label={item.measuresLabel}
+																placeholder="Describe the measures taken to address this incident..."
+																rows={3}
+															/>
+														)}
+													</form.AppField>
+												) : null
 											}
-										},
-									}}
-								>
-									{(field) => (
-										<field.CheckboxField
-											label={item.label}
-											description={item.description}
-										/>
-									)}
-								</form.AppField>
-
-								<form.Subscribe
-									selector={(state) => state.values[item.boolField]}
-								>
-									{(isChecked) =>
-										isChecked ? (
-											<form.AppField name={item.measuresField}>
-												{(field) => (
-													<field.TextareaField
-														label={item.measuresLabel}
-														placeholder="Describe the measures taken to address this incident..."
-														rows={3}
-													/>
-												)}
-											</form.AppField>
-										) : null
-									}
-								</form.Subscribe>
+										</form.Subscribe>
+									</div>
+								))}
 							</div>
-						))}
-					</div>
-				</fieldset>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}

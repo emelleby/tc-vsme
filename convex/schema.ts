@@ -87,6 +87,7 @@ const sustainabilityInitiativesDataValidator = v.object({
       goals: v.string(),
       responsiblePerson: v.string(),
       status: v.string(),
+      publiclyAvailable: v.optional(v.boolean()),
     })
   ),
 })

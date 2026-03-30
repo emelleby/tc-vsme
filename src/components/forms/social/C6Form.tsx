@@ -1,4 +1,5 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -43,53 +44,54 @@ export function C6HumanRightsPoliciesForm() {
 					form.handleSubmit()
 				}}
 			>
-				<fieldset disabled={status === 'submitted'} className="space-y-6">
-					{/* Hidden reporting year */}
-					<form.AppField name="reportingYear">
-						{(field) => (
-							<field.TextField
-								label="Rapporteringsår"
-								placeholder="YYYY"
-								hidden
-							/>
-						)}
-					</form.AppField>
+				<Card>
+					<CardContent>
+						<fieldset disabled={status === 'submitted'} className="space-y-6">
+							{/* Hidden reporting year */}
+							<form.AppField name="reportingYear">
+								{(field) => (
+									<field.TextField
+										label="Rapporteringsår"
+										placeholder="YYYY"
+										hidden
+									/>
+								)}
+							</form.AppField>
 
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<form.AppField name="childLaborPolicy">
-							{(field) => (
-								<field.CheckboxField label="Child Labor Policy" />
-							)}
-						</form.AppField>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<form.AppField name="childLaborPolicy">
+									{(field) => (
+										<field.CheckboxField label="Child Labor Policy" />
+									)}
+								</form.AppField>
 
-						<form.AppField name="forcedLaborPolicy">
-							{(field) => (
-								<field.CheckboxField label="Forced Labor Policy" />
-							)}
-						</form.AppField>
+								<form.AppField name="forcedLaborPolicy">
+									{(field) => (
+										<field.CheckboxField label="Forced Labor Policy" />
+									)}
+								</form.AppField>
 
-						<form.AppField name="humanTraffickingPolicy">
-							{(field) => (
-								<field.CheckboxField label="Human Trafficking Policy" />
-							)}
-						</form.AppField>
+								<form.AppField name="humanTraffickingPolicy">
+									{(field) => (
+										<field.CheckboxField label="Human Trafficking Policy" />
+									)}
+								</form.AppField>
 
-						<form.AppField name="discriminationPolicy">
-							{(field) => (
-								<field.CheckboxField label="Discrimination Policy" />
-							)}
-						</form.AppField>
-					</div>
+								<form.AppField name="discriminationPolicy">
+									{(field) => (
+										<field.CheckboxField label="Discrimination Policy" />
+									)}
+								</form.AppField>
+							</div>
 
-					<form.AppField name="otherPolicies">
-						{(field) => (
-							<field.TextareaField
-								label="Other Policies"
-								rows={2}
-							/>
-						)}
-					</form.AppField>
-				</fieldset>
+							<form.AppField name="otherPolicies">
+								{(field) => (
+									<field.TextareaField label="Other Policies" rows={2} />
+								)}
+							</form.AppField>
+						</fieldset>
+					</CardContent>
+				</Card>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}
