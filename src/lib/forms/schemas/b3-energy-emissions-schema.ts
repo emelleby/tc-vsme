@@ -8,6 +8,18 @@ export const b3EnergyEmissionsSchema = z.object({
 	nonRenewableElectricity: z
 		.number({ message: 'Dette feltet er påkrevd' })
 		.min(0, 'Må være 0 eller mer'),
+	stationaryCombustion: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	mobileCombustion: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	renewableFuels: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	otherEnergySources: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
 	emissionsIntensity: z
 		.number({ message: 'Dette feltet er påkrevd' })
 		.min(0, 'Må være 0 eller mer'),
