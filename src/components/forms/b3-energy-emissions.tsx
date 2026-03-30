@@ -94,6 +94,10 @@ export function B3EnergyEmissionsForm() {
 			reportingYear: reportingYear.toString(),
 			renewableElectricity: mongoDefaults.renewableElectricity || 0,
 			nonRenewableElectricity: mongoDefaults.nonRenewableElectricity || 0,
+			stationaryCombustion: 0,
+			mobileCombustion: 0,
+			renewableFuels: 0,
+			otherEnergySources: 0,
 			emissionsIntensity: mongoDefaults.emissionsIntensity || 0,
 			scope1Emissions: 0,
 			scope2EmissionsLocationBased: 0,
@@ -176,6 +180,46 @@ export function B3EnergyEmissionsForm() {
 												label="Non-Renewable Electricity"
 												unit="kWh"
 												description="Total electricity consumption from non-renewable sources like coal and gas"
+											/>
+										)}
+									</form.AppField>
+
+									<form.AppField name="stationaryCombustion">
+										{(field) => (
+											<field.NumberField
+												label="Stationary Combustion"
+												unit="kWh"
+												description="Energy consumption from stationary sources like boilers and furnaces"
+											/>
+										)}
+									</form.AppField>
+
+									<form.AppField name="mobileCombustion">
+										{(field) => (
+											<field.NumberField
+												label="Mobile Combustion"
+												unit="kWh"
+												description="Energy consumption from mobile sources like vehicles and machinery"
+											/>
+										)}
+									</form.AppField>
+
+									<form.AppField name="renewableFuels">
+										{(field) => (
+											<field.NumberField
+												label="Renewable Fuels"
+												unit="kWh"
+												description="Energy from fuel consumption from renewable sources like biomass, biogas, and biofuels."
+											/>
+										)}
+									</form.AppField>
+
+									<form.AppField name="otherEnergySources">
+										{(field) => (
+											<field.NumberField
+												label="Other Energy Sources"
+												unit="kWh"
+												description="Energy consumption from other sources like district heat and cooling."
 											/>
 										)}
 									</form.AppField>
