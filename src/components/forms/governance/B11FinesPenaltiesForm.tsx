@@ -76,6 +76,20 @@ export function B11FinesPenaltiesForm() {
 													'corruptionFinesDescription',
 													'',
 												)
+												fieldApi.form.setFieldValue(
+													'numberOfConvictions',
+													undefined as any,
+												)
+												fieldApi.form.setFieldValue(
+													'totalFines',
+													undefined as any,
+												)
+												fieldApi.form.setFieldValue(
+													'currency',
+													undefined as any,
+												)
+											} else {
+												fieldApi.form.setFieldValue('currency', 'NOK')
 											}
 										},
 									}}
@@ -96,15 +110,54 @@ export function B11FinesPenaltiesForm() {
 								>
 									{(hasFines) =>
 										hasFines ? (
-											<form.AppField name="corruptionFinesDescription">
-												{(field) => (
-													<field.TextareaField
-														label="Description"
-														placeholder="Provide more information..."
-														rows={4}
-													/>
-												)}
-											</form.AppField>
+											<div className="flex flex-col gap-4 w-full">
+												<form.AppField name="numberOfConvictions">
+													{(field) => (
+														<field.NumberField
+															label="Number of Convictions"
+															placeholder="0"
+														/>
+													)}
+												</form.AppField>
+												<div className="flex gap-4">
+													<div className="flex-1">
+														<form.AppField name="totalFines">
+															{(field) => (
+																<field.NumberField
+																	label="Total Fines"
+																	placeholder="0"
+																/>
+															)}
+														</form.AppField>
+													</div>
+													<div className="flex-1">
+														<form.AppField name="currency">
+															{(field) => (
+																<field.SelectField
+																	label="Currency"
+																	options={[
+																		{ label: 'NOK', value: 'NOK' },
+																		{ label: 'SEK', value: 'SEK' },
+																		{ label: 'DKK', value: 'DKK' },
+																		{ label: 'EUR', value: 'EUR' },
+																		{ label: 'USD', value: 'USD' },
+																		{ label: 'GBP', value: 'GBP' },
+																	]}
+																/>
+															)}
+														</form.AppField>
+													</div>
+												</div>
+												<form.AppField name="corruptionFinesDescription">
+													{(field) => (
+														<field.TextareaField
+															label="Description"
+															placeholder="Provide more information if relevant..."
+															rows={4}
+														/>
+													)}
+												</form.AppField>
+											</div>
 										) : null
 									}
 								</form.Subscribe>

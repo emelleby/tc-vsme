@@ -310,6 +310,18 @@ const finesPenaltiesDataValidator = v.object({
   reportingYear: v.string(),
   hasCorruptionFines: v.boolean(),
   corruptionFinesDescription: v.optional(v.string()),
+  numberOfConvictions: v.optional(v.number()),
+  totalFines: v.optional(v.number()),
+  currency: v.optional(
+    v.union(
+      v.literal('NOK'),
+      v.literal('SEK'),
+      v.literal('DKK'),
+      v.literal('EUR'),
+      v.literal('USD'),
+      v.literal('GBP'),
+    ),
+  ),
 })
 
 const sectorInvolvementDataValidator = v.object({
