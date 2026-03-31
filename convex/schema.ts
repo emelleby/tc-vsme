@@ -253,8 +253,10 @@ const healthSafetyDataValidator = v.object({
 
 const compensationCollectiveDataValidator = v.object({
   reportingYear: v.string(),
-  tariffavtaledekning: v.optional(v.number()),
-  gjennomsnittligOpplaering: v.optional(v.number()),
+  hourlyPayMale: v.number(),
+  hourlyPayFemale: v.number(),
+  collectiveBargainingAgreement: v.number(),
+  collectiveBargainingShare: v.optional(v.number()),
   minstelonnsansvar: v.boolean(),
 })
 

@@ -2,13 +2,17 @@ import { z } from 'zod'
 
 export const b10CompensationSchema = z.object({
 	reportingYear: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
-	tariffavtaledekning: z
-		.number({ message: 'Dette feltet er påkrevd' })
-		.min(0, 'Må være 0 eller mer')
-		.max(100, 'Kan ikke overstige 100 %'),
-	gjennomsnittligOpplaering: z
+	hourlyPayMale: z
 		.number({ message: 'Dette feltet er påkrevd' })
 		.min(0, 'Må være 0 eller mer'),
+	hourlyPayFemale: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	collectiveBargainingAgreement: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.int('Må være et heltall')
+		.min(0, 'Må være 0 eller mer'),
+	collectiveBargainingShare: z.number().optional(),
 	minstelonnsansvar: z.boolean(),
 })
 
