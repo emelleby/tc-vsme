@@ -253,10 +253,13 @@ const healthSafetyDataValidator = v.object({
 
 const compensationCollectiveDataValidator = v.object({
   reportingYear: v.string(),
-  hourlyPayMale: v.number(),
-  hourlyPayFemale: v.number(),
+  hourlyPayMale: v.optional(v.number()),
+  hourlyPayFemale: v.optional(v.number()),
+  trainingHoursMale: v.number(),
+  trainingHoursFemale: v.number(),
   collectiveBargainingAgreement: v.number(),
   collectiveBargainingShare: v.optional(v.number()),
+  genderPayGap: v.optional(v.number()),
   minstelonnsansvar: v.boolean(),
 })
 
@@ -269,8 +272,12 @@ const workLifeBalanceDataValidator = v.object({
 
 const additionalWorkforceDataValidator = v.object({
   reportingYear: v.string(),
-  selfEmployedWorkers: v.number(),
-  contractWorkers: v.number(),
+  maleManagers: v.optional(v.number()),
+  femaleManagers: v.optional(v.number()),
+  /** Computed: maleManagers / femaleManagers. Absent when not applicable. */
+  managementGenderRatio: v.optional(v.number()),
+  selfEmployedWorkers: v.optional(v.number()),
+  contractWorkers: v.optional(v.number()),
 })
 
 const humanRightsPoliciesDataValidator = v.object({

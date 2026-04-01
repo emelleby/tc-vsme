@@ -12,7 +12,14 @@ export const b10CompensationSchema = z.object({
 		.number({ message: 'Dette feltet er påkrevd' })
 		.int('Må være et heltall')
 		.min(0, 'Må være 0 eller mer'),
+	trainingHoursMale: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	trainingHoursFemale: z
+		.number({ message: 'Dette feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
 	collectiveBargainingShare: z.number().optional(),
+	genderPayGap: z.number().optional(),
 	minstelonnsansvar: z.boolean(),
 })
 
