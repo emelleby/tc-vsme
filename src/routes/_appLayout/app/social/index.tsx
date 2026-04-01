@@ -44,6 +44,19 @@ function SocialPage() {
 		},
 	)
 
+	// Fetch general form company info to get total employees (shared by B10 & C5)
+	const generalCompanyInfo = useQuery(
+		api.forms.get.getForm,
+		skipQuery
+			? 'skip'
+			: {
+					table: 'formGeneral',
+					reportingYear,
+					section: 'companyInfo',
+				},
+	)
+	const totalEmployees = generalCompanyInfo?.data?.employees ?? 0
+
 	// Extract section-specific data with contributor already resolved
 	const workforce = formSections?.workforce
 	const healthSafety = formSections?.healthSafety
@@ -115,7 +128,7 @@ function SocialPage() {
 						: undefined
 				}
 			>
-				<B10CompensationForm />
+				<B10CompensationForm totalEmployees={totalEmployees} />
 			</FormCard>
 
 			{/* <FormCard
@@ -152,7 +165,7 @@ function SocialPage() {
 						: undefined
 				}
 			>
-				<C5AdditionalWorkforceForm />
+				<C5AdditionalWorkforceForm totalEmployees={totalEmployees} />
 			</FormCard>
 
 			<FormCard

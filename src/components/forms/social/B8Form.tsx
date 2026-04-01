@@ -1,5 +1,6 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
-import { Plus, Trash2 } from 'lucide-react'
+import { Info, Plus, Trash2 } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
@@ -93,6 +94,14 @@ export function B8WorkforceForm() {
 										/>
 									)}
 								</form.AppField>
+								<Alert variant="info" className="mb-6 border-l-4">
+									<Info />
+									<AlertTitle>Employee count</AlertTitle>
+									<AlertDescription>
+										Fulltime employees and part-time employees are linked to
+										information in B1.
+									</AlertDescription>
+								</Alert>
 							</div>
 
 							{/* Kjønnsfordeling */}
