@@ -55,7 +55,9 @@ function SocialPage() {
 					section: 'companyInfo',
 				},
 	)
-	const totalEmployees = generalCompanyInfo?.data?.employees ?? 0
+	const generalData = generalCompanyInfo?.draftData ?? generalCompanyInfo?.data
+	const totalEmployees = generalData?.employees ?? 0
+	const companyCountry = generalData?.country ?? ''
 
 	// Extract section-specific data with contributor already resolved
 	const workforce = formSections?.workforce
@@ -92,7 +94,11 @@ function SocialPage() {
 						: undefined
 				}
 			>
-				<B8WorkforceForm />
+				<B8WorkforceForm
+					totalEmployees={totalEmployees}
+					companyCountry={companyCountry}
+					generalFormData={generalData}
+				/>
 			</FormCard>
 
 			<FormCard
