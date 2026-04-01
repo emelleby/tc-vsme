@@ -8,7 +8,8 @@ import { useFieldContext } from '@/hooks/form-context'
 import { type Country, CountryDropdown } from './country-dropdown'
 
 interface CountryFieldProps {
-	label: string
+	label?: string
+	hideLabel?: boolean
 	description?: string
 	placeholder?: string
 	disabled?: boolean
@@ -16,6 +17,7 @@ interface CountryFieldProps {
 
 export function CountryField({
 	label,
+	hideLabel,
 	description,
 	placeholder,
 	disabled,
@@ -25,7 +27,9 @@ export function CountryField({
 
 	return (
 		<Field data-invalid={isInvalid}>
-			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+			{!hideLabel && label && (
+				<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+			)}
 			<CountryDropdown
 				placeholder={placeholder}
 				defaultValue={field.state.value}

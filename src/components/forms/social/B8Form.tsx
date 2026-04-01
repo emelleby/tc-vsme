@@ -1,8 +1,21 @@
+import { type AnyFormApi, useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
-import { Info, Plus, Trash2 } from 'lucide-react'
+import { api } from 'convex/_generated/api'
+import { useMutation } from 'convex/react'
+import { AlertTriangle, Info, Plus, Save, Trash2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from '@/components/ui/table'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
@@ -11,8 +24,82 @@ import {
 } from '@/lib/forms/schemas/b8-workforce-schema'
 import { yearStore } from '@/lib/year-store'
 
-export function B8WorkforceForm() {
+interface EmployeeCountAlertProps {
+	form: AnyFormApi
+	totalEmployees: number
+}
+
+function EmployeeCountAlert({ form, totalEmployees }: EmployeeCountAlertProps) {
+	const employeeSum = useStore(form.store, (state) => {
+		const h = state.values.heltidsansatte ?? 0
+		const m = state.values.midlertidigAnsatte ?? 0
+		return h + m
+	})
+	const matches = employeeSum === totalEmployees
+
+	return (
+		<Alert variant={matches ? 'info' : 'warning'} className="mb-6 border-l-4">
+			{matches ? <Info /> : <AlertTriangle />}
+			<AlertTitle>Employee count</AlertTitle>
+			<AlertDescription>
+				{matches
+					? 'Fulltime employees and temporary employees are linked to information in B1.'
+					: `Fulltime + temporary (${employeeSum}) does not match total employees from B1 (${totalEmployees}).`}
+			</AlertDescription>
+		</Alert>
+	)
+}
+
+function GenderCountAlert({ form, totalEmployees }: EmployeeCountAlertProps) {
+	const genderSum = useStore(form.store, (state) => {
+		const menn = state.values.menn ?? 0
+		const kvinner = state.values.kvinner ?? 0
+		const annet = state.values.annet ?? 0
+		return menn + kvinner + annet
+	})
+	const matches = genderSum === totalEmployees
+
+	return (
+		<Alert variant={matches ? 'info' : 'warning'} className="mb-6 border-l-4">
+			{matches ? <Info /> : <AlertTriangle />}
+			<AlertTitle>Gender count</AlertTitle>
+			<AlertDescription>
+				{matches
+					? 'Gender distribution is linked to information in B1.'
+					: `Men + women + other (${genderSum}) does not match total employees from B1 (${totalEmployees}).`}
+			</AlertDescription>
+		</Alert>
+	)
+}
+
+interface B8WorkforceFormProps {
+	totalEmployees: number
+	companyCountry: string
+	generalFormData?: Record<string, unknown>
+}
+
+export function B8WorkforceForm({
+	totalEmployees,
+	companyCountry,
+	generalFormData,
+}: B8WorkforceFormProps) {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
+	const [isUpdatingCompany, setIsUpdatingCompany] = useState(false)
+
+	const updateGeneralForm = useMutation(api.forms.save.saveForm)
+
+	const defaultEmployeesByCountry = useMemo(() => {
+		if (companyCountry && totalEmployees > 0) {
+			return [
+				{
+					id: crypto.randomUUID(),
+					land: companyCountry,
+					antallAnsatte: totalEmployees,
+				},
+			]
+		}
+		return []
+	}, [companyCountry, totalEmployees])
 
 	const { form, status, isSaving, isLoading, saveDraft, submit, reopen } =
 		useFormSubmission<B8WorkforceFormValues>({
@@ -22,16 +109,40 @@ export function B8WorkforceForm() {
 			schema: b8WorkforceSchema,
 			defaultValues: {
 				reportingYear: reportingYear.toString(),
-				heltidsansatte: 0,
+				heltidsansatte: totalEmployees,
 				deltidsansatte: 0,
 				midlertidigAnsatte: 0,
 				menn: 0,
 				kvinner: 0,
 				annet: 0,
-				ansattePerLand: [],
+				ansattePerLand: defaultEmployeesByCountry,
 				eventuellUtfyllendeInfo: '',
 			} as B8WorkforceFormValues,
 		})
+
+	const handleUpdateCompanyEmployees = async (newEmployeeCount: number) => {
+		if (!generalFormData) return
+		try {
+			setIsUpdatingCompany(true)
+			await updateGeneralForm({
+				table: 'formGeneral',
+				reportingYear,
+				section: 'companyInfo',
+				data: {
+					...generalFormData,
+					employees: newEmployeeCount,
+				},
+			})
+			toast.success(
+				`Oppdatert antall ansatte i selskapet til ${newEmployeeCount}`,
+			)
+		} catch (error) {
+			toast.error('Kunne ikke oppdatere antall ansatte i B1')
+			console.error(error)
+		} finally {
+			setIsUpdatingCompany(false)
+		}
+	}
 
 	if (isLoading) {
 		return (
@@ -50,21 +161,188 @@ export function B8WorkforceForm() {
 					form.handleSubmit()
 				}}
 			>
-				<Card>
-					<CardContent>
-						<fieldset disabled={status === 'submitted'} className="space-y-6">
-							{/* Hidden reporting year */}
-							<form.AppField name="reportingYear">
-								{(field) => (
-									<field.TextField
-										label="Rapporteringsår"
-										placeholder="YYYY"
-										hidden
-									/>
-								)}
-							</form.AppField>
+				<fieldset disabled={status === 'submitted'} className="space-y-6">
+					{/* Hidden reporting year */}
+					<form.AppField name="reportingYear">
+						{(field) => (
+							<field.TextField
+								label="Rapporteringsår"
+								placeholder="YYYY"
+								hidden
+							/>
+						)}
+					</form.AppField>
 
-							{/* Ansettelsestype */}
+					{/* Card 1 — Country distribution */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-base">Ansatte per land</CardTitle>
+							<p className="text-sm text-muted-foreground">
+								Totalt {totalEmployees} ansatte fra B1 — fordel per land
+							</p>
+						</CardHeader>
+						<CardContent>
+							<form.AppField name="ansattePerLand">
+								{(field) => {
+									const rows = field.state.value ?? []
+									const totalAllocated = rows.reduce(
+										(sum, r) => sum + (r.antallAnsatte ?? 0),
+										0,
+									)
+									const remaining = totalEmployees - totalAllocated
+
+									return (
+										<div className="space-y-3">
+											<div className="rounded-md border border-border">
+												<Table>
+													<TableHeader>
+														<TableRow>
+															<TableHead className="w-[50%]">Land</TableHead>
+															<TableHead className="w-[35%]">
+																Antall ansatte
+															</TableHead>
+															<TableHead className="w-[15%] text-right">
+																&nbsp;
+															</TableHead>
+														</TableRow>
+													</TableHeader>
+													<TableBody>
+														{rows.length === 0 && (
+															<TableRow>
+																<TableCell
+																	colSpan={3}
+																	className="h-16 text-center text-muted-foreground"
+																>
+																	Ingen land lagt til. Klikk "Legg til land" for
+																	å begynne.
+																</TableCell>
+															</TableRow>
+														)}
+														{rows.map((item, i) => (
+															<TableRow key={item.id}>
+																<TableCell>
+																	<form.AppField
+																		name={`ansattePerLand[${i}].land`}
+																	>
+																		{(f) => (
+																			<f.CountryField
+																				label=""
+																				placeholder="Velg land"
+																			/>
+																		)}
+																	</form.AppField>
+																</TableCell>
+																<TableCell>
+																	<form.AppField
+																		name={`ansattePerLand[${i}].antallAnsatte`}
+																	>
+																		{(f) => (
+																			<f.NumberField label="" placeholder="0" />
+																		)}
+																	</form.AppField>
+																</TableCell>
+																<TableCell className="text-center">
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="icon"
+																		className="h-8 w-8 text-destructive hover:bg-destructive/10"
+																		onClick={() => field.removeValue(i)}
+																		disabled={status === 'submitted'}
+																	>
+																		<Trash2 className="h-4 w-4" />
+																	</Button>
+																</TableCell>
+															</TableRow>
+														))}
+													</TableBody>
+												</Table>
+											</div>
+
+											{/* Summary row */}
+											{rows.length > 0 && (
+												<div className="flex items-center justify-between text-sm px-1">
+													<span className="text-muted-foreground">
+														Fordelt:{' '}
+														<span className="font-medium text-foreground">
+															{totalAllocated}
+														</span>{' '}
+														av{' '}
+														<span className="font-medium text-foreground">
+															{totalEmployees}
+														</span>{' '}
+														ansatte
+													</span>
+													{remaining !== 0 && (
+														<span
+															className={
+																remaining < 0
+																	? 'text-destructive font-medium'
+																	: 'text-amber-600 font-medium'
+															}
+														>
+															{remaining > 0
+																? `${remaining} ansatte ikke fordelt`
+																: `${Math.abs(remaining)} ansatte for mye fordelt`}
+														</span>
+													)}
+													{remaining === 0 && (
+														<span className="text-emerald-600 font-medium">
+															Alle ansatte fordelt
+														</span>
+													)}
+												</div>
+											)}
+											<div className="flex items-center justify-between text-sm px-1">
+												<Button
+													type="button"
+													variant="outline"
+													size="sm"
+													onClick={() =>
+														field.pushValue({
+															id: crypto.randomUUID(),
+															land: '',
+															antallAnsatte: 0,
+														})
+													}
+													disabled={status === 'submitted'}
+												>
+													<Plus className="h-4 w-4 mr-1" />
+													Legg til land
+												</Button>
+												{totalAllocated !== totalEmployees &&
+													generalFormData &&
+													status !== 'submitted' && (
+														<Button
+															type="button"
+															variant="secondary"
+															size="sm"
+															disabled={isUpdatingCompany}
+															onClick={() =>
+																handleUpdateCompanyEmployees(totalAllocated)
+															}
+														>
+															<Save className="h-4 w-4 mr-1" />
+															Oppdater B1
+														</Button>
+													)}
+											</div>
+										</div>
+									)
+								}}
+							</form.AppField>
+						</CardContent>
+					</Card>
+
+					{/* Card 2 — Employees */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-base">Ansatte</CardTitle>
+							<p className="text-sm text-muted-foreground">
+								Fordeling av ansatte etter ansettelsestype
+							</p>
+						</CardHeader>
+						<CardContent className="space-y-6">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<form.AppField name="heltidsansatte">
 									{(field) => (
@@ -94,98 +372,38 @@ export function B8WorkforceForm() {
 										/>
 									)}
 								</form.AppField>
-								<Alert variant="info" className="mb-6 border-l-4">
-									<Info />
-									<AlertTitle>Employee count</AlertTitle>
-									<AlertDescription>
-										Fulltime employees and part-time employees are linked to
-										information in B1.
-									</AlertDescription>
-								</Alert>
+								<EmployeeCountAlert
+									form={form}
+									totalEmployees={totalEmployees}
+								/>
 							</div>
+						</CardContent>
+					</Card>
 
-							{/* Kjønnsfordeling */}
-							<div>
-								<h3 className="text-base font-semibold mb-3">
-									Kjønnsfordeling
-								</h3>
-								<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-									<form.AppField name="menn">
-										{(field) => <field.NumberField label="Menn" />}
-									</form.AppField>
+					{/* Card 3 — Gender */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-base">Kjønnsfordeling</CardTitle>
+							<p className="text-sm text-muted-foreground">
+								Fordeling av ansatte etter kjønn
+							</p>
+						</CardHeader>
+						<CardContent className="space-y-6">
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+								<form.AppField name="menn">
+									{(field) => <field.NumberField label="Menn" />}
+								</form.AppField>
 
-									<form.AppField name="kvinner">
-										{(field) => <field.NumberField label="Kvinner" />}
-									</form.AppField>
+								<form.AppField name="kvinner">
+									{(field) => <field.NumberField label="Kvinner" />}
+								</form.AppField>
 
-									<form.AppField name="annet">
-										{(field) => <field.NumberField label="Annet" />}
-									</form.AppField>
-								</div>
-							</div>
-
-							{/* Ansatte per land */}
-							<div>
-								<h3 className="text-base font-semibold mb-3">
-									Ansatte per land, dersom foretaket driver virksomhet i mer enn
-									ett land
-								</h3>
-								<form.AppField name="ansattePerLand">
-									{(field) => (
-										<div className="space-y-4">
-											{field.state.value?.map((item, i) => (
-												<Card key={item.id} className="border">
-													<CardContent>
-														<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-															<form.AppField name={`ansattePerLand[${i}].land`}>
-																{(f) => <f.CountryField label="Land" />}
-															</form.AppField>
-
-															<form.AppField
-																name={`ansattePerLand[${i}].antallAnsatte`}
-															>
-																{(f) => (
-																	<f.NumberField label="Antall ansatte" />
-																)}
-															</form.AppField>
-														</div>
-														<div className="flex justify-end mt-3">
-															<Button
-																type="button"
-																variant="outline"
-																size="sm"
-																className="text-destructive border-destructive/20 hover:bg-destructive/10"
-																onClick={() => field.removeValue(i)}
-																disabled={status === 'submitted'}
-															>
-																<Trash2 className="h-4 w-4 mr-1" />
-																Fjern
-															</Button>
-														</div>
-													</CardContent>
-												</Card>
-											))}
-
-											<Button
-												type="button"
-												variant="outline"
-												className="w-full"
-												onClick={() =>
-													field.pushValue({
-														id: crypto.randomUUID(),
-														land: '',
-														antallAnsatte: 0,
-													})
-												}
-												disabled={status === 'submitted'}
-											>
-												<Plus className="h-4 w-4 mr-2" />
-												Legg til land
-											</Button>
-										</div>
-									)}
+								<form.AppField name="annet">
+									{(field) => <field.NumberField label="Annet" />}
 								</form.AppField>
 							</div>
+
+							<GenderCountAlert form={form} totalEmployees={totalEmployees} />
 
 							{/* Eventuell utfyllende info */}
 							<form.AppField name="eventuellUtfyllendeInfo">
@@ -197,9 +415,9 @@ export function B8WorkforceForm() {
 									/>
 								)}
 							</form.AppField>
-						</fieldset>
-					</CardContent>
-				</Card>
+						</CardContent>
+					</Card>
+				</fieldset>
 
 				<FormButtons
 					status={status as 'draft' | 'submitted'}
