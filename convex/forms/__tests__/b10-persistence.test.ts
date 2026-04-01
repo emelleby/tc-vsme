@@ -31,6 +31,8 @@ describe('B10 Compensation Form Schema Persistence', () => {
       reportingYear: "2024",
       hourlyPayMale: 250.5,
       hourlyPayFemale: 245.0,
+      trainingHoursMale: 10,
+      trainingHoursFemale: 12,
       collectiveBargainingAgreement: 85,
       collectiveBargainingShare: 92.5,
       minstelonnsansvar: true
@@ -57,6 +59,8 @@ describe('B10 Compensation Form Schema Persistence', () => {
     expect(form?.draftData).toEqual(data)
     expect(form?.draftData.hourlyPayMale).toBe(250.5)
     expect(form?.draftData.hourlyPayFemale).toBe(245.0)
+    expect(form?.draftData.trainingHoursMale).toBe(10)
+    expect(form?.draftData.trainingHoursFemale).toBe(12)
     expect(form?.draftData.collectiveBargainingAgreement).toBe(85)
     expect(form?.draftData.minstelonnsansvar).toBe(true)
   })
@@ -66,6 +70,8 @@ describe('B10 Compensation Form Schema Persistence', () => {
       reportingYear: "2024",
       hourlyPayMale: 200,
       hourlyPayFemale: 200,
+      trainingHoursMale: 5,
+      trainingHoursFemale: 5,
       collectiveBargainingAgreement: 50,
       collectiveBargainingShare: 50,
       minstelonnsansvar: false

@@ -1,6 +1,7 @@
 import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useQuery } from 'convex/react'
+import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -36,6 +37,27 @@ export function B10CompensationForm() {
 			reportingYear,
 			section: 'compensationCollective',
 			schema: b10CompensationSchema,
+			transformBeforeSave: (values) => {
+				const malePay = values.hourlyPayMale
+				const femalePay = values.hourlyPayFemale
+				let genderPayGap = 0
+
+				if (malePay > 0 && femalePay > 0) {
+					genderPayGap = (malePay - femalePay) / malePay
+				}
+
+				const agreement = values.collectiveBargainingAgreement
+				let collectiveBargainingShare = 0
+				if (totalEmployees > 0 && agreement !== undefined) {
+					collectiveBargainingShare = agreement / totalEmployees
+				}
+
+				return {
+					...values,
+					genderPayGap,
+					collectiveBargainingShare,
+				}
+			},
 			defaultValues: {
 				reportingYear: reportingYear.toString(),
 				minstelonnsansvar: false,
@@ -47,6 +69,34 @@ export function B10CompensationForm() {
 		form.store,
 		(state) => state.values.minstelonnsansvar,
 	)
+
+	const collectiveBargainingAgreement = useStore(
+		form.store,
+		(state) => state.values.collectiveBargainingAgreement,
+	)
+
+	// Since we calculate it as a percentage for display but save as 0-1 ratio
+	const displayValue =
+		totalEmployees > 0 && collectiveBargainingAgreement !== undefined
+			? Math.round(
+					(collectiveBargainingAgreement / totalEmployees) * 100 * 10,
+				) / 10
+			: 0
+
+	const collectiveBargainingShare = useStore(
+		form.store,
+		(state) => state.values.collectiveBargainingShare,
+	)
+
+	// Sync the calculated display percentage back to the form state for purely visual
+	// feedback. transformBeforeSave correct it back to a 0-1 ratio when saving.
+	// We monitor the form's state to prevent Convex syncs (which push the 0-1 ratio)
+	// from overriding the UI's 0-100 percentage layout.
+	useEffect(() => {
+		if (collectiveBargainingShare !== displayValue) {
+			form.setFieldValue('collectiveBargainingShare', displayValue)
+		}
+	}, [displayValue, collectiveBargainingShare, form])
 
 	return (
 		<form.AppForm>
@@ -86,13 +136,13 @@ export function B10CompensationForm() {
 								</span>
 							</div>
 
-							{/* Tariffavtaledekning + Gjennomsnittlig opplæring */}
+							{/* Hourly Pay */}
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<form.AppField name="hourlyPayMale">
 									{(field) => (
 										<field.NumberField
 											label="Gjennomsnittlig timeslønn for menn"
-											description=""
+											description="Kan utelates for selskaper under 150 ansatte"
 											step="0.1"
 											min="0"
 											unit="EUR"
@@ -103,33 +153,39 @@ export function B10CompensationForm() {
 									{(field) => (
 										<field.NumberField
 											label="Gjennomsnittlig timeslønn for kvinner"
-											description=""
+											description="Kan utelates for selskaper under 150 ansatte"
 											unit="EUR"
 											step="0.1"
 											min="0"
 										/>
 									)}
 								</form.AppField>
-								{/* Tariffavtaledekning + Gjennomsnittlig opplæring */}
-								<form.AppField
-									name="collectiveBargainingAgreement"
-									listeners={{
-										onChange: ({ value, fieldApi }) => {
-											if (totalEmployees > 0 && value !== undefined) {
-												const share = (value / totalEmployees) * 100
-												fieldApi.form.setFieldValue(
-													'collectiveBargainingShare',
-													Math.round(share * 10) / 10,
-												)
-											} else {
-												fieldApi.form.setFieldValue(
-													'collectiveBargainingShare',
-													0,
-												)
-											}
-										},
-									}}
-								>
+
+								{/* Training Hours */}
+								<form.AppField name="trainingHoursMale">
+									{(field) => (
+										<field.NumberField
+											label="Opplæring for menn"
+											description="Gjennomsnittlig årlig opplæring for menn"
+											step="0.1"
+											min="0"
+											unit="Timer"
+										/>
+									)}
+								</form.AppField>
+								<form.AppField name="trainingHoursFemale">
+									{(field) => (
+										<field.NumberField
+											label="Opplæring for kvinner"
+											description="Gjennomsnittlig årlig opplæring for kvinner"
+											unit="Timer"
+											step="0.1"
+											min="0"
+										/>
+									)}
+								</form.AppField>
+								{/* Tariffavtaledekning */}
+								<form.AppField name="collectiveBargainingAgreement">
 									{(field) => (
 										<field.NumberField
 											label="Kollektive forhandlinger"

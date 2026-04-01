@@ -1,4 +1,6 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { Info } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -19,9 +21,30 @@ export function C5AdditionalWorkforceForm() {
 			schema: c5AdditionalWorkforceSchema,
 			defaultValues: {
 				reportingYear: reportingYear.toString(),
-				selfEmployedWorkers: 0,
-				contractWorkers: 0,
 			} as C5AdditionalWorkforceValues,
+			transformBeforeSave: (values) => {
+				const result: Record<string, unknown> = { ...values }
+				// Compute ratio only when both values are provided
+				if (
+					values.maleManagers != null &&
+					values.femaleManagers != null &&
+					values.femaleManagers > 0
+				) {
+					result.managementGenderRatio =
+						values.maleManagers / values.femaleManagers
+				} else {
+					delete result.maleManagers
+					delete result.femaleManagers
+					delete result.managementGenderRatio
+				}
+				// Strip undefined optional fields to avoid sending 0 for blank fields
+				for (const key of ['selfEmployedWorkers', 'contractWorkers'] as const) {
+					if (result[key] === undefined || result[key] === null) {
+						delete result[key]
+					}
+				}
+				return result as C5AdditionalWorkforceValues
+			},
 		})
 
 	if (isLoading) {
@@ -43,6 +66,17 @@ export function C5AdditionalWorkforceForm() {
 			>
 				<Card>
 					<CardContent>
+						<Alert variant="info" className="mb-6 border-l-4">
+							<Info />
+							<AlertTitle>
+								About Additional (general) workforce characteristics
+							</AlertTitle>
+							<AlertDescription>
+								If the undertaking employs 50 or more employees, it may disclose
+								the female-to-male ratio at management level and the number of
+								self-employed workers and contract workers.{' '}
+							</AlertDescription>
+						</Alert>
 						<fieldset disabled={status === 'submitted'} className="space-y-6">
 							{/* Hidden reporting year */}
 							<form.AppField name="reportingYear">
@@ -56,6 +90,23 @@ export function C5AdditionalWorkforceForm() {
 							</form.AppField>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="maleManagers">
+									{(field) => (
+										<field.NumberField
+											label="Male Managers"
+											description="Number of male employees at management level"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="femaleManagers">
+									{(field) => (
+										<field.NumberField
+											label="Female Managers"
+											description="Number of female employees at management level"
+										/>
+									)}
+								</form.AppField>
 								<form.AppField name="selfEmployedWorkers">
 									{(field) => (
 										<field.NumberField

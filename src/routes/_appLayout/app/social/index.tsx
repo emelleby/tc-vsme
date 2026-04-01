@@ -5,7 +5,7 @@ import { useQuery } from 'convex/react'
 import { B8WorkforceForm } from '@/components/forms/social/B8Form'
 import { B9HealthSafetyForm } from '@/components/forms/social/B9Form'
 import { B10CompensationForm } from '@/components/forms/social/B10Form'
-import { B11WorkLifeBalanceForm } from '@/components/forms/social/B11Form'
+// import { B11WorkLifeBalanceForm } from '@/components/forms/social/B11Form'
 import { C5AdditionalWorkforceForm } from '@/components/forms/social/C5Form'
 import { C6HumanRightsPoliciesForm } from '@/components/forms/social/C6Form'
 import { C7SeriousHumanRightsForm } from '@/components/forms/social/C7Form'
@@ -118,7 +118,7 @@ function SocialPage() {
 				<B10CompensationForm />
 			</FormCard>
 
-			<FormCard
+			{/* <FormCard
 				title="Arbeid-privatliv-balanse"
 				updatedDate={formatDate(workLifeBalance?.lastModifiedAt)}
 				toolTip="Rapporter foreldrepermisjon og relaterte ordninger."
@@ -134,7 +134,7 @@ function SocialPage() {
 				}
 			>
 				<B11WorkLifeBalanceForm />
-			</FormCard>
+			</FormCard> */}
 
 			<FormCard
 				title="Tilleggsarbeidsstyrke"
