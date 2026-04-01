@@ -39,7 +39,7 @@ export function CheckboxField({
 				disabled={disabled}
 			/>
 			<div className="flex flex-col gap-1">
-				<FieldLabel htmlFor={field.name} className="font-normal cursor-pointer">
+				<FieldLabel htmlFor={field.name} className="font-bold cursor-pointer">
 					{label}
 				</FieldLabel>
 				{description && <FieldDescription>{description}</FieldDescription>}

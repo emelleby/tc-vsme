@@ -1,17 +1,36 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
+import { useQuery } from 'convex/react'
 import { Info } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
+import { useOrgGuard } from '@/hooks/use-org-guard'
 import {
 	type C5AdditionalWorkforceValues,
 	c5AdditionalWorkforceSchema,
 } from '@/lib/forms/schemas/c5-additional-workforce-schema'
 import { yearStore } from '@/lib/year-store'
+import { api } from '../../../../convex/_generated/api'
 
 export function C5AdditionalWorkforceForm() {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
+	const { skipQuery } = useOrgGuard()
+
+	// Fetch general form to get total employees (same pattern as B10)
+	const generalForm = useQuery(
+		api.forms.get.getForm,
+		skipQuery
+			? 'skip'
+			: {
+					table: 'formGeneral',
+					reportingYear,
+					section: 'companyInfo',
+				},
+	)
+
+	const totalEmployees = generalForm?.data?.employees ?? 0
+	const isLargeUndertaking = totalEmployees >= 50
 
 	const { form, status, isSaving, isLoading, saveDraft, submit, reopen } =
 		useFormSubmission<C5AdditionalWorkforceValues>({
@@ -37,12 +56,12 @@ export function C5AdditionalWorkforceForm() {
 					delete result.femaleManagers
 					delete result.managementGenderRatio
 				}
-				// Strip undefined optional fields to avoid sending 0 for blank fields
-				for (const key of ['selfEmployedWorkers', 'contractWorkers'] as const) {
-					if (result[key] === undefined || result[key] === null) {
-						delete result[key]
-					}
-				}
+				// Strip undefined/null optional fields to avoid sending 0 for blank fields
+				// for (const key of ['selfEmployedWorkers', 'contractWorkers'] as const) {
+				// 	if (result[key] === undefined || result[key] === null) {
+				// 		delete result[key]
+				// 	}
+				// }
 				return result as C5AdditionalWorkforceValues
 			},
 		})
@@ -66,17 +85,19 @@ export function C5AdditionalWorkforceForm() {
 			>
 				<Card>
 					<CardContent>
-						<Alert variant="info" className="mb-6 border-l-4">
-							<Info />
-							<AlertTitle>
-								About Additional (general) workforce characteristics
-							</AlertTitle>
-							<AlertDescription>
-								If the undertaking employs 50 or more employees, it may disclose
-								the female-to-male ratio at management level and the number of
-								self-employed workers and contract workers.{' '}
-							</AlertDescription>
-						</Alert>
+						{!isLargeUndertaking && (
+							<Alert variant="info" className="mb-6 border-l-4">
+								<Info />
+								<AlertTitle>
+									About Additional (general) workforce characteristics
+								</AlertTitle>
+								<AlertDescription>
+									If the undertaking employs 50 or more employees, it may
+									disclose the female-to-male ratio at management level and the
+									number of self-employed workers and contract workers.
+								</AlertDescription>
+							</Alert>
+						)}
 						<fieldset disabled={status === 'submitted'} className="space-y-6">
 							{/* Hidden reporting year */}
 							<form.AppField name="reportingYear">

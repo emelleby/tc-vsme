@@ -1,3 +1,4 @@
+import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
@@ -12,16 +13,16 @@ const INCIDENT_ITEMS = [
 	{
 		boolField: 'childLabor' as const,
 		measuresField: 'childLaborMeasures' as const,
-		label: 'Child Labor',
-		description: 'Confirmed incidents of child labor in own workforce',
-		measuresLabel: 'Measures taken – Child Labor',
+		label: 'Child Labour',
+		description: 'Confirmed incidents of child labour in own workforce',
+		measuresLabel: 'Measures taken – Child Labour',
 	},
 	{
 		boolField: 'forcedLabor' as const,
 		measuresField: 'forcedLaborMeasures' as const,
-		label: 'Forced Labor',
-		description: 'Confirmed incidents of forced labor in own workforce',
-		measuresLabel: 'Measures taken – Forced Labor',
+		label: 'Forced Labour',
+		description: 'Confirmed incidents of forced labour in own workforce',
+		measuresLabel: 'Measures taken – Forced Labour',
 	},
 	{
 		boolField: 'humanTrafficking' as const,
@@ -73,8 +74,16 @@ export function C7SeriousHumanRightsForm() {
 				discriminationMeasures: '',
 				other: false,
 				otherMeasures: '',
+				hasValueChainIncidents: false,
+				valueChainIncidentsDescription: '',
 			} as C7SeriousHumanRightsValues,
 		})
+
+	// Subscribe to value chain gate for reactive display
+	const hasValueChainIncidents = useStore(
+		form.store,
+		(state) => state.values.hasValueChainIncidents,
+	)
 
 	if (isLoading) {
 		return (
@@ -106,6 +115,17 @@ export function C7SeriousHumanRightsForm() {
 									/>
 								)}
 							</form.AppField>
+
+							{/* (a) Confirmed incidents in own workforce */}
+							<div className="flex flex-col items-start gap-3">
+								<h3 className="text-base font-semibold">
+									Confirmed Incidents – Own Workforce
+								</h3>
+								<p className="text-sm text-muted-foreground">
+									Does the undertaking have confirmed incidents in its own
+									workforce related to:
+								</p>
+							</div>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 								{INCIDENT_ITEMS.map((item) => (
@@ -147,6 +167,55 @@ export function C7SeriousHumanRightsForm() {
 										</form.Subscribe>
 									</div>
 								))}
+							</div>
+
+							{/* (c) Value chain / affected communities / consumers incidents */}
+							<div className="flex flex-col items-start gap-3 pt-4 border-t">
+								<h3 className="text-base font-semibold">
+									Incidents in Value Chain
+								</h3>
+
+								<form.AppField
+									name="hasValueChainIncidents"
+									listeners={{
+										onChange: ({ value, fieldApi }) => {
+											if (!value) {
+												fieldApi.form.setFieldValue(
+													'valueChainIncidentsDescription',
+													'',
+												)
+											}
+										},
+									}}
+								>
+									{(field) => (
+										<field.SwitchField
+											label=""
+											description="Is the undertaking aware of any confirmed incidents involving workers in the value chain, affected communities, consumers and end-users?"
+										/>
+									)}
+								</form.AppField>
+								<span className="text-sm">
+									{hasValueChainIncidents ? 'Yes' : 'No'}
+								</span>
+
+								<form.Subscribe
+									selector={(state) => state.values.hasValueChainIncidents}
+								>
+									{(hasIncidents) =>
+										hasIncidents ? (
+											<form.AppField name="valueChainIncidentsDescription">
+												{(field) => (
+													<field.TextareaField
+														label="Specify incidents"
+														placeholder="Describe the confirmed incidents involving workers in the value chain, affected communities, consumers and end-users..."
+														rows={4}
+													/>
+												)}
+											</form.AppField>
+										) : null
+									}
+								</form.Subscribe>
 							</div>
 						</fieldset>
 					</CardContent>
