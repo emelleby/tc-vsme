@@ -282,25 +282,52 @@ const additionalWorkforceDataValidator = v.object({
 
 const humanRightsPoliciesDataValidator = v.object({
   reportingYear: v.string(),
+  /** (a) Does the undertaking have a code of conduct or human rights policy? */
+  hasCodeOfConduct: v.boolean(),
+  /** (b.i) Covers child labour? */
   childLaborPolicy: v.boolean(),
+  /** (b.ii) Covers forced labour? */
   forcedLaborPolicy: v.boolean(),
+  /** (b.iii) Covers human trafficking? */
   humanTraffickingPolicy: v.boolean(),
+  /** (b.iv) Covers discrimination? */
   discriminationPolicy: v.boolean(),
+  /** (b.v) Covers accident prevention? */
+  accidentPreventionPolicy: v.boolean(),
+  /** (b.vi) Covers other? */
+  hasOtherPolicies: v.boolean(),
+  /** (b.vi) Specify other policies */
   otherPolicies: v.optional(v.string()),
+  /** (c) Does the undertaking have a complaints-handling mechanism? */
+  hasComplaintsHandlingMechanism: v.boolean(),
 })
 
 const seriousHumanRightsIncidentsDataValidator = v.object({
   reportingYear: v.string(),
+  /** (a.i) Confirmed incidents of child labour */
   childLabor: v.boolean(),
+  /** (b) Measures taken to address child labour */
   childLaborMeasures: v.optional(v.string()),
+  /** (a.ii) Confirmed incidents of forced labour */
   forcedLabor: v.boolean(),
+  /** (b) Measures taken to address forced labour */
   forcedLaborMeasures: v.optional(v.string()),
+  /** (a.iii) Confirmed incidents of human trafficking */
   humanTrafficking: v.boolean(),
+  /** (b) Measures taken to address human trafficking */
   humanTraffickingMeasures: v.optional(v.string()),
+  /** (a.iv) Confirmed incidents of discrimination */
   discrimination: v.boolean(),
+  /** (b) Measures taken to address discrimination */
   discriminationMeasures: v.optional(v.string()),
+  /** (a.v) Other confirmed incidents */
   other: v.boolean(),
+  /** (b) Measures taken to address other incidents */
   otherMeasures: v.optional(v.string()),
+  /** (c) Aware of incidents in value chain / affected communities / consumers? */
+  hasValueChainIncidents: v.boolean(),
+  /** (c) Description of value chain incidents */
+  valueChainIncidentsDescription: v.optional(v.string()),
 })
 
 // Union validator for all social form sections
