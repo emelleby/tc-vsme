@@ -1,35 +1,24 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
-import { useQuery } from 'convex/react'
 import { Info } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
-import { useOrgGuard } from '@/hooks/use-org-guard'
 import {
 	type C5AdditionalWorkforceValues,
 	c5AdditionalWorkforceSchema,
 } from '@/lib/forms/schemas/c5-additional-workforce-schema'
 import { yearStore } from '@/lib/year-store'
-import { api } from '../../../../convex/_generated/api'
 
-export function C5AdditionalWorkforceForm() {
+interface C5AdditionalWorkforceFormProps {
+	totalEmployees: number
+}
+
+export function C5AdditionalWorkforceForm({
+	totalEmployees,
+}: C5AdditionalWorkforceFormProps) {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
-	const { skipQuery } = useOrgGuard()
 
-	// Fetch general form to get total employees (same pattern as B10)
-	const generalForm = useQuery(
-		api.forms.get.getForm,
-		skipQuery
-			? 'skip'
-			: {
-					table: 'formGeneral',
-					reportingYear,
-					section: 'companyInfo',
-				},
-	)
-
-	const totalEmployees = generalForm?.data?.employees ?? 0
 	const isLargeUndertaking = totalEmployees >= 50
 
 	const { form, status, isSaving, isLoading, saveDraft, submit, reopen } =

@@ -1,35 +1,23 @@
 import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
-import { useQuery } from 'convex/react'
 import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
-import { useOrgGuard } from '@/hooks/use-org-guard'
 import {
 	type B10CompensationFormValues,
 	b10CompensationSchema,
 } from '@/lib/forms/schemas/b10-compensation-schema'
 import { yearStore } from '@/lib/year-store'
-import { api } from '../../../../convex/_generated/api'
 
-export function B10CompensationForm() {
+interface B10CompensationFormProps {
+	totalEmployees: number
+}
+
+export function B10CompensationForm({
+	totalEmployees,
+}: B10CompensationFormProps) {
 	const reportingYear = useYearStore(yearStore, (state) => state.selectedYear)
-	const { organization, skipQuery } = useOrgGuard()
-
-	// Fetch general form to get total employees
-	const generalForm = useQuery(
-		api.forms.get.getForm,
-		skipQuery
-			? 'skip'
-			: {
-					table: 'formGeneral',
-					reportingYear,
-					section: 'companyInfo',
-				},
-	)
-
-	const totalEmployees = generalForm?.data?.employees ?? 0
 
 	const { form, status, isSaving, isLoading, saveDraft, submit, reopen } =
 		useFormSubmission<B10CompensationFormValues>({
