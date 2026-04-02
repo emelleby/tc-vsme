@@ -51,7 +51,6 @@ export const b8WorkforceSchema = z.object({
 		.int('Må være et heltall')
 		.min(0, 'Må være 0 eller mer')
 		.optional(),
-	turnoverRate: z.number().optional(),
 	eventuellUtfyllendeInfo: z.string().optional(),
 })
 
