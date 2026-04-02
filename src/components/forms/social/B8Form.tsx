@@ -404,19 +404,18 @@ export function B8WorkforceForm({
 							</div>
 
 							<GenderCountAlert form={form} totalEmployees={totalEmployees} />
-
-							{/* Eventuell utfyllende info */}
-							<form.AppField name="eventuellUtfyllendeInfo">
-								{(field) => (
-									<field.TextareaField
-										label="Eventuell utfyllende info"
-										placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
-										description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
-									/>
-								)}
-							</form.AppField>
 						</CardContent>
 					</Card>
+					{/* Eventuell utfyllende info */}
+					<form.AppField name="eventuellUtfyllendeInfo">
+						{(field) => (
+							<field.TextareaField
+								label="Eventuell utfyllende info"
+								placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
+								description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
+							/>
+						)}
+					</form.AppField>
 				</fieldset>
 
 				<FormButtons
