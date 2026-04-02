@@ -239,6 +239,10 @@ const workforceDataValidator = v.object({
       antallAnsatte: v.number(),
     })
   ),
+  employeesLeft: v.optional(v.number()),
+  employeesAtStart: v.optional(v.number()),
+  employeesAtEnd: v.optional(v.number()),
+  employeeTurnoverRate: v.optional(v.number()),
   eventuellUtfyllendeInfo: v.optional(v.string()),
 })
 

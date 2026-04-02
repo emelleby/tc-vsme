@@ -44,7 +44,6 @@ export function NumberField({
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
 
 	const handleChange = (rawValue: string) => {
-		// Convert empty string to undefined, otherwise to number
 		const value = rawValue === '' ? undefined : Number(rawValue)
 		field.handleChange(value)
 	}
@@ -74,10 +73,7 @@ export function NumberField({
 						aria-invalid={isInvalid}
 						placeholder={placeholder}
 						disabled={disabled}
-						className={cn(
-							// 'disabled:opacity-50 disabled:cursor-not-allowed',
-							className,
-						)}
+						className={cn(className)}
 					/>
 					<InputGroupAddon
 						align="inline-end"
@@ -101,11 +97,7 @@ export function NumberField({
 					aria-invalid={isInvalid}
 					placeholder={placeholder}
 					disabled={disabled}
-					className={cn(
-						// 'disabled:cursor-not-allowed',
-						// disabled && 'bg-secondary/10',
-						className,
-					)}
+					className={cn(className)}
 				/>
 			)}
 			{description && <FieldDescription>{description}</FieldDescription>}

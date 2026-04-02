@@ -3,8 +3,9 @@ import { useStore as useYearStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useMutation } from 'convex/react'
 import { AlertTriangle, Info, Plus, Save, Trash2 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { NumberFieldReadOnly } from '@/components/form-fields/NumberFieldReadOnly'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -118,6 +119,16 @@ export function B8WorkforceForm({
 				ansattePerLand: defaultEmployeesByCountry,
 				eventuellUtfyllendeInfo: '',
 			} as B8WorkforceFormValues,
+			transformBeforeSave: (values) => {
+				const left = values.employeesLeft ?? 0
+				const start = values.employeesAtStart ?? 0
+				const end = values.employeesAtEnd ?? 0
+				const employeeTurnoverRate =
+					start > 0 && end > 0
+						? Number((left / ((start + end) / 2)).toFixed(4))
+						: undefined
+				return { ...values, employeeTurnoverRate }
+			},
 		})
 
 	const employeesLeft = useStore(
@@ -133,22 +144,19 @@ export function B8WorkforceForm({
 		(state) => state.values.employeesAtEnd ?? 0,
 	)
 
-	const turnoverRate =
+	const turnoverRateAbsolute =
 		employeesAtStart > 0 && employeesAtEnd > 0
 			? Number(
-					(
-						(employeesLeft / ((employeesAtStart + employeesAtEnd) / 2)) *
-						100
-					).toFixed(1),
+					(employeesLeft / ((employeesAtStart + employeesAtEnd) / 2)).toFixed(
+						4,
+					),
 				)
 			: undefined
 
-	useEffect(() => {
-		const current = form.getFieldValue('turnoverRate')
-		if (current !== turnoverRate) {
-			form.setFieldValue('turnoverRate', turnoverRate)
-		}
-	}, [turnoverRate, form])
+	const turnoverRatePercent =
+		turnoverRateAbsolute != null
+			? Number((turnoverRateAbsolute * 100).toFixed(2))
+			: undefined
 
 	const handleUpdateCompanyEmployees = async (newEmployeeCount: number) => {
 		if (!generalFormData) return
@@ -483,16 +491,13 @@ export function B8WorkforceForm({
 									)}
 								</form.AppField>
 
-								<form.AppField name="turnoverRate">
-									{(field) => (
-										<field.NumberField
-											label="Turnover Rate"
-											unit="%"
-											description="Employee turnover rate in the reporting period (calculated automatically)"
-											disabled
-										/>
-									)}
-								</form.AppField>
+								<NumberFieldReadOnly
+									label="Employee Turnover Rate"
+									unit="%"
+									value={turnoverRatePercent ?? ''}
+									description="Employee turnover rate in the reporting period (calculated automatically)"
+									placeholder="—"
+								/>
 							</div>
 						</CardContent>
 					</Card>

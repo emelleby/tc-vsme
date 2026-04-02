@@ -11,9 +11,6 @@ export const b6WaterSchema = z.object({
 	waterDischarge: z
 		.number({ message: 'Feltet er påkrevd' })
 		.min(0, 'Må være 0 eller mer'),
-	waterConsumption: z
-		.number({ message: 'Feltet er påkrevd' })
-		.min(0, 'Må være 0 eller mer'),
 })
 
 export type B6WaterFormValues = z.infer<typeof b6WaterSchema>
