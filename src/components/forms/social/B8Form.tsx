@@ -131,21 +131,67 @@ export function B8WorkforceForm({
 			},
 		})
 
+	const employeeSum = useStore(form.store, (state) => {
+		const h = state.values.heltidsansatte ?? 0
+		const m = state.values.midlertidigAnsatte ?? 0
+		return h + m
+	})
+	const genderSum = useStore(form.store, (state) => {
+		const menn = state.values.menn ?? 0
+		const kvinner = state.values.kvinner ?? 0
+		const annet = state.values.annet ?? 0
+		return menn + kvinner + annet
+	})
+
 	const employeesLeft = useStore(
 		form.store,
-		(state) => state.values.employeesLeft ?? 0,
+		(state) => state.values.employeesLeft,
 	)
 	const employeesAtStart = useStore(
 		form.store,
-		(state) => state.values.employeesAtStart ?? 0,
+		(state) => state.values.employeesAtStart,
 	)
 	const employeesAtEnd = useStore(
 		form.store,
-		(state) => state.values.employeesAtEnd ?? 0,
+		(state) => state.values.employeesAtEnd,
 	)
 
+	const employeeMatches = employeeSum === totalEmployees
+	const genderMatches = genderSum === totalEmployees
+	const requiresTurnover = totalEmployees >= 50
+	const turnoverComplete =
+		employeesLeft != null &&
+		employeesAtStart != null &&
+		employeesAtEnd != null &&
+		employeesLeft >= 0 &&
+		employeesAtStart > 0 &&
+		employeesAtEnd > 0
+	const canSubmit =
+		employeeMatches && genderMatches && (!requiresTurnover || turnoverComplete)
+
+	const submitDisabledReasons: string[] = []
+	if (!employeeMatches) {
+		submitDisabledReasons.push(
+			`Employee types (${employeeSum}) must match total from B1 (${totalEmployees})`,
+		)
+	}
+	if (!genderMatches) {
+		submitDisabledReasons.push(
+			`Gender distribution (${genderSum}) must match total from B1 (${totalEmployees})`,
+		)
+	}
+	if (requiresTurnover && !turnoverComplete) {
+		submitDisabledReasons.push(
+			'Turnover rate is required for companies with 50+ employees. Fill in Employees Left, Employees at Start, and Employees at End.',
+		)
+	}
+
 	const turnoverRateAbsolute =
-		employeesAtStart > 0 && employeesAtEnd > 0
+		employeesAtStart != null &&
+		employeesAtEnd != null &&
+		employeesAtStart > 0 &&
+		employeesAtEnd > 0 &&
+		employeesLeft != null
 			? Number(
 					(employeesLeft / ((employeesAtStart + employeesAtEnd) / 2)).toFixed(
 						4,
@@ -520,6 +566,8 @@ export function B8WorkforceForm({
 					onSaveDraft={saveDraft}
 					onSubmit={submit}
 					onReopen={reopen}
+					disableSubmit={!canSubmit && status !== 'submitted'}
+					submitDisabledReasons={submitDisabledReasons}
 				/>
 			</form>
 		</form.AppForm>
