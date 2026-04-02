@@ -64,10 +64,11 @@ function GovernancePage() {
 				status={finesPenalties?.status ?? 'draft'}
 				contributor={finesPenalties?.contributor || { name: 'Unknown' }}
 				code="B11"
-				module="Grunnmodul"
+				module="Basic Module"
 				version={
 					finesPenalties?.versions?.length
-						? finesPenalties.versions[finesPenalties.versions.length - 1]?.version
+						? finesPenalties.versions[finesPenalties.versions.length - 1]
+								?.version
 						: undefined
 				}
 			>
@@ -81,10 +82,11 @@ function GovernancePage() {
 				status={sectorInvolvement?.status ?? 'draft'}
 				contributor={sectorInvolvement?.contributor || { name: 'Unknown' }}
 				code="C8"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					sectorInvolvement?.versions?.length
-						? sectorInvolvement.versions[sectorInvolvement.versions.length - 1]?.version
+						? sectorInvolvement.versions[sectorInvolvement.versions.length - 1]
+								?.version
 						: undefined
 				}
 			>
@@ -98,10 +100,11 @@ function GovernancePage() {
 				status={boardComposition?.status ?? 'draft'}
 				contributor={boardComposition?.contributor || { name: 'Unknown' }}
 				code="C9"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					boardComposition?.versions?.length
-						? boardComposition.versions[boardComposition.versions.length - 1]?.version
+						? boardComposition.versions[boardComposition.versions.length - 1]
+								?.version
 						: undefined
 				}
 			>
