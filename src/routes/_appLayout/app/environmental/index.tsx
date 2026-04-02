@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useQuery } from 'convex/react'
+import { useState } from 'react'
 import { B3EnergyEmissionsForm } from '@/components/forms/b3-energy-emissions'
 import { B4PollutionForm } from '@/components/forms/b4-pollution-form'
 import { B5BiodiversityForm } from '@/components/forms/b5-biodiversity-form'
@@ -9,17 +10,16 @@ import { B6WaterManagementForm } from '@/components/forms/b6-water-form'
 import { B7ResourceUseCircularEconomyForm } from '@/components/forms/b7-resource-use-circular-economy-form'
 import { C2Scope3EmissionsForm } from '@/components/forms/c2-scope3-emissions-form'
 import { C4ClimateRiskForm } from '@/components/forms/c4-climate-risk-form'
-import { useState } from 'react'
 import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
+import { BiodiversityHelp } from './-biodiversity-help'
 import { C3TargetsForm } from './-c3-targets-card'
 import { CircularHelp } from './-circular-help'
-import { WaterHelp } from './-water-help'
-import { BiodiversityHelp } from './-biodiversity-help'
 import { EnergyHelp } from './-energy-help'
 import { PollutionHelp } from './-pollution-help'
+import { WaterHelp } from './-water-help'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -124,7 +124,7 @@ function EnvironmentalPage() {
 				status={biodiversity?.status ?? 'draft'}
 				contributor={biodiversity?.contributor || { name: 'Unknown' }}
 				code="B5"
-				module="Grunnmodul"
+				module="Basic Module"
 				buttonText="Hjelp"
 				onClick={() => setBiodiversityHelpOpen(true)}
 				version={
@@ -143,7 +143,7 @@ function EnvironmentalPage() {
 				status={waterManagement?.status ?? 'draft'}
 				contributor={waterManagement?.contributor || { name: 'Unknown' }}
 				code="B6"
-				module="Grunnmodul"
+				module="Basic Module"
 				buttonText="Hjelp"
 				onClick={() => setWaterHelpOpen(true)}
 				version={
@@ -165,7 +165,7 @@ function EnvironmentalPage() {
 					resourceUseCircularEconomy?.contributor || { name: 'Unknown' }
 				}
 				code="B7"
-				module="Grunnmodul"
+				module="Basic Module"
 				buttonText="Hjelp"
 				onClick={() => setCircularHelpOpen(true)}
 				version={
@@ -231,7 +231,7 @@ function EnvironmentalPage() {
 				status={scope3Emissions?.status ?? 'draft'}
 				contributor={scope3Emissions?.contributor || { name: 'Unknown' }}
 				code="C2"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					scope3Emissions?.versions?.length
 						? scope3Emissions.versions[scope3Emissions.versions.length - 1]
@@ -249,7 +249,7 @@ function EnvironmentalPage() {
 				status={targetsData ? 'submitted' : 'not set'}
 				contributor={targetsData?.contributor || { name: 'Unknown' }}
 				code="C3"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 			>
 				<C3TargetsForm
 					targets={targetsData}
@@ -264,7 +264,7 @@ function EnvironmentalPage() {
 				status={climateRiskAnalysis?.status ?? 'draft'}
 				contributor={climateRiskAnalysis?.contributor || { name: 'Unknown' }}
 				code="C4"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					climateRiskAnalysis?.versions?.length
 						? climateRiskAnalysis.versions[

@@ -26,7 +26,7 @@ interface FormCardProps {
 	toolTip: string
 	buttonText?: string
 	children?: ReactNode
-	module?: 'Grunnmodul' | 'Utvidet modul'
+	module?: 'Basic Module' | 'Comprehensive Module'
 	code: string
 	version?: number
 }
@@ -52,7 +52,7 @@ export function FormCard({
 		<Card
 			className={cn(
 				'mx-auto w-full max-w-6xl transition-all duration-300 hover:shadow-lg gap-2',
-				module === 'Utvidet modul' && 'bg-accent/20',
+				module === 'Comprehensive Module' && 'bg-accent/20',
 			)}
 		>
 			<CardHeader
@@ -72,7 +72,7 @@ export function FormCard({
 						<div
 							className={cn(
 								'inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm',
-								module === 'Utvidet modul'
+								module === 'Comprehensive Module'
 									? 'bg-secondary text-secondary-foreground'
 									: 'bg-primary text-primary-foreground',
 							)}
@@ -143,7 +143,7 @@ export function FormCard({
 									variant="secondary"
 									className={cn(
 										'bg-secondary text-secondary-foreground',
-										module === 'Grunnmodul' &&
+										module === 'Basic Module' &&
 											'bg-primary text-primary-foreground',
 									)}
 								>

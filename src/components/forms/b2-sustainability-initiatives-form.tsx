@@ -42,10 +42,10 @@ export function B2SustainabilityInitiativesForm() {
 				<Info />
 				<AlertTitle>Om bærekraftsinitiativer</AlertTitle>
 				<AlertDescription>
-					Grunnmodulen krever kun et ja/nei svar på om man har tiltak,
+					Basic Module krever kun et ja/nei svar på om man har tiltak,
 					retningslinjer eller fremtidige initiativer for overgang til en mer
-					bærekraftig økonomi. Utvidet modul krever at man oppgir detaljer og en
-					mer utfyllende beskrivelse av disse.{' '}
+					bærekraftig økonomi. Comprehensive Module krever at man oppgir
+					detaljer og en mer utfyllende beskrivelse av disse.{' '}
 					<a
 						className="underline"
 						rel="noopener noreferrer"
