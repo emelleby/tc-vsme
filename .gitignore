@@ -12,5 +12,6 @@ count.txt
 .vinxi
 todos.json
 src/routeTree.gen.ts
+*.tsbuildinfo
 convex/_generated
 .content-collections/generated/index.js
