@@ -12,7 +12,8 @@ interface UseFormSubmissionProps<TData> {
 	reportingYear: number
 	section: FormSection // NEW
 	defaultValues: TData
-	schema: import('zod').ZodType<TData>
+	schema: import('zod').ZodType<TData, any, any>
+	transformBeforeSave?: (values: TData) => TData
 }
 
 export function useFormSubmission<TData>({
@@ -21,6 +22,7 @@ export function useFormSubmission<TData>({
 	section, // NEW
 	defaultValues,
 	schema,
+	transformBeforeSave,
 }: UseFormSubmissionProps<TData>) {
 	// Guard against race conditions during org switching
 	const { skipQuery } = useOrgGuard()
@@ -52,6 +54,7 @@ export function useFormSubmission<TData>({
 		},
 		onSubmitInvalid: ({ formApi }) => {
 			focusFirstError(formApi)
+			toast.error('Skjemaet inneholder feil. Vennligst rett dem og prøv igjen.')
 		},
 		onSubmit: async ({ value }) => {
 			await handleFinalSubmit(value)
@@ -61,11 +64,16 @@ export function useFormSubmission<TData>({
 	const handleSaveDraft = async (data?: TData) => {
 		try {
 			setIsSaving(true)
+			const valuesToSave = data || form.state.values
+			const finalData = transformBeforeSave
+				? transformBeforeSave(valuesToSave)
+				: valuesToSave
+
 			await saveForm({
 				table,
 				reportingYear,
 				section, // NEW
-				data: data || form.state.values,
+				data: finalData,
 			})
 			toast.success('Draft saved successfully')
 		} catch (error) {
@@ -79,12 +87,15 @@ export function useFormSubmission<TData>({
 	const handleFinalSubmit = async (values: TData) => {
 		try {
 			setIsSaving(true)
+			const finalData = transformBeforeSave
+				? transformBeforeSave(values)
+				: values
 			// Save first
 			await saveForm({
 				table,
 				reportingYear,
 				section, // NEW
-				data: values,
+				data: finalData,
 			})
 			// Then submit
 			await submitFormMutation({

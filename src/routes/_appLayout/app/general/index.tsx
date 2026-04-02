@@ -80,7 +80,7 @@ function GeneralPage() {
 			<FormCard
 				title="Sustainability initiatives"
 				updatedDate={formatDate(sustainability?.lastModifiedAt)}
-				toolTip="Click to expand"
+				toolTip="Do you have existing sustainability practices/ policies/ future initiatives that address sustainability issues?"
 				status={sustainability?.status ?? 'draft'}
 				contributor={sustainability?.contributor || { name: 'Unknown' }}
 				code="B2"
@@ -99,8 +99,8 @@ function GeneralPage() {
 			<HelpSheet
 				open={isInitiativesHelpOpen}
 				onOpenChange={setInitiativesHelpOpen}
-				title="Sustainability initiatives"
-				description="Guidance and examples for selecting sustainability initiatives."
+				title="Overgang til en mer bærekraftig økonomi."
+				description="Retningslinjer og fremtidige initiativer inkluderer hva foretaket gjør for å redusere sine negative påvirkninger og for å forbedre sine positive påvirkninger på mennesker og miljø, for å bidra til en mer bærekraftig økonomi. "
 			>
 				<GeneralHelp />
 			</HelpSheet>

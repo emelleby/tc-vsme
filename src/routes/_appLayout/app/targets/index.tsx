@@ -1,4 +1,3 @@
-import { useStore } from '@tanstack/react-form'
 import { createFileRoute } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
@@ -67,20 +66,14 @@ function TargetsPage() {
 		useAppForm,
 	)
 
-	// Watch form values for table generation
-	const formValues = useStore(form.store, (state: any) => state.values)
-
 	// Compute derived values
 	const {
 		baseScope1Value,
 		baseScope2Value,
 		baseScope3Value,
-		tableData,
 		hasSpecificTargetsActive,
 	} = useTargetsComputedValues(
 		existingTargets,
-		baseYearEmissionsData,
-		formValues,
 	)
 
 	// Show loading state
@@ -126,8 +119,6 @@ function TargetsPage() {
 									yearOptions={yearOptions}
 									baseYearEmissionsData={baseYearEmissionsData}
 									existingTargets={existingTargets}
-									tableData={tableData}
-									companyName={companyName}
 								/>
 							</motion.div>
 						</AnimatePresence>

@@ -1,0 +1,121 @@
+const energyFactors: {
+	id: string
+	fuel: string
+	scope: number
+	unit: string
+	kwh_per_unit: number
+	source_reference: string
+}[] = [
+	{
+		id: 'a4cf555d-3e1b-4c2a-95df-7334fca6819c',
+		fuel: 'biodiesel',
+		scope: 1,
+		unit: 'litre',
+		kwh_per_unit: 9.2,
+		source_reference: 'DEFRA',
+	},
+	{
+		id: '5e6d034b-7106-495c-824c-ce8b5316d675',
+		fuel: 'bioethanol',
+		scope: 1,
+		unit: 'litre',
+		kwh_per_unit: 5.9,
+		source_reference: 'DEFRA',
+	},
+	{
+		id: 'b0e5535f-b9f0-459a-8c46-dfa95048e1f3',
+		fuel: 'biogas_sm3',
+		scope: 1,
+		unit: 'Sm3',
+		kwh_per_unit: 9.8,
+		source_reference: 'IEA typical composition',
+	},
+	{
+		id: 'beec9581-6fcf-4429-8f3c-0154bdd74a57',
+		fuel: 'butane',
+		scope: 1,
+		unit: 'kg',
+		kwh_per_unit: 13.6,
+		source_reference: 'DEFRA / IPCC net calorific value',
+	},
+	{
+		id: 'a1b911e2-f031-4b7d-8021-2ab8b8879f5e',
+		fuel: 'diesel',
+		scope: 1,
+		unit: 'litre',
+		kwh_per_unit: 9.9,
+		source_reference: 'DEFRA / IPCC net calorific value',
+	},
+	{
+		id: '756ce93d-4e26-4063-b05d-8f37521a492d',
+		fuel: 'heating_oil',
+		scope: 1,
+		unit: 'litre',
+		kwh_per_unit: 10,
+		source_reference: 'DEFRA / IPCC net calorific value',
+	},
+	{
+		id: 'e0423625-3c36-4178-a688-9ac8a90b7b3b',
+		fuel: 'hvo',
+		scope: 1,
+		unit: 'litre',
+		kwh_per_unit: 9.4,
+		source_reference: 'DEFRA renewable diesel',
+	},
+	{
+		id: '0f5693f7-f89b-4eb4-96bc-4a51467f51b2',
+		fuel: 'jet_fuel',
+		scope: 1,
+		unit: 'litre',
+		kwh_per_unit: 9.6,
+		source_reference: 'DEFRA / IPCC net calorific value',
+	},
+	{
+		id: 'd556ce97-fb93-4ca2-bfa9-863124223f91',
+		fuel: 'lpg_propan',
+		scope: 1,
+		unit: 'kg',
+		kwh_per_unit: 12.8,
+		source_reference: 'DEFRA / IPCC net calorific value',
+	},
+	{
+		id: 'e45647a6-fa3c-45bc-8280-a5240f7982a7',
+		fuel: 'natural_gas_sm3',
+		scope: 1,
+		unit: 'Sm3',
+		kwh_per_unit: 10.5,
+		source_reference: 'EU energy statistics',
+	},
+	{
+		id: 'b826b90c-3807-4519-9b45-3ebe48c92756',
+		fuel: 'petrol',
+		scope: 1,
+		unit: 'litre',
+		kwh_per_unit: 8.8,
+		source_reference: 'DEFRA / IPCC net calorific value',
+	},
+	{
+		id: 'e422a497-f9a1-4cac-b28a-358410562694',
+		fuel: 'wood_chips',
+		scope: 1,
+		unit: 'kg',
+		kwh_per_unit: 3.2,
+		source_reference: 'IEA biomass',
+	},
+	{
+		id: '761b8d0d-66a4-43d1-9b07-66f5a6d5b42b',
+		fuel: 'wood_logs',
+		scope: 1,
+		unit: 'kg',
+		kwh_per_unit: 4.1,
+		source_reference: 'IPCC biomass NCV',
+	},
+	{
+		id: '802e5b06-99e4-4aa8-b3b3-65f11020328f',
+		fuel: 'wood_pellets',
+		scope: 1,
+		unit: 'kg',
+		kwh_per_unit: 4.8,
+		source_reference: 'ENplus standard',
+	},
+]

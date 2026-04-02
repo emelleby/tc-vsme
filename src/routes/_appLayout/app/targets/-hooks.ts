@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from 'convex/react'
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import { toast } from 'sonner'
-import { useAppForm } from '@/hooks/tanstack-form'
+import type { useAppForm } from '@/hooks/tanstack-form'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { api } from '../../../../../convex/_generated/api'
 import type { Doc } from '../../../../../convex/_generated/dataModel'
@@ -20,6 +20,7 @@ import {
 	targetsFormSchema,
 } from './-schemas'
 import {
+	calculateTotalEmissions,
 	calculateOverallReductions,
 	generateEmissionRows,
 	getScope3CategoryProportions,
@@ -76,13 +77,10 @@ export function useTargetsData(
 
 	// Convert years to select options
 	const yearOptions = useMemo(() => {
-		return [
-			{ label: '- Select year -', value: '' },
-			...(environmentalYears ?? []).map((year) => ({
-				label: year.toString(),
-				value: year.toString(),
-			})),
-		]
+		return (environmentalYears ?? []).map((year) => ({
+			label: year.toString(),
+			value: year.toString(),
+		}))
 	}, [environmentalYears])
 
 	const companyName = orgData?.name || 'Your Company'
@@ -117,12 +115,6 @@ export function useTargetsForm(
 	// Compute default values from existing targets
 	const defaultValues = useMemo(() => {
 		if (existingTargets) {
-			// If we have existing targets, we should also set the selected base year
-			// so that we can fetch the emissions data for it
-			if (selectedBaseYear === null && existingTargets.baseYear) {
-				setSelectedBaseYear(existingTargets.baseYear)
-			}
-
 			return {
 				baseYear: existingTargets.baseYear,
 				baseYearEmissions: existingTargets.baseYearEmissions,
@@ -140,6 +132,12 @@ export function useTargetsForm(
 			longTermTargetYear: undefined as number | undefined,
 			longTermTargetReduction: undefined as number | undefined,
 		}
+	}, [existingTargets])
+
+	useEffect(() => {
+		if (existingTargets && selectedBaseYear === null && existingTargets.baseYear) {
+			setSelectedBaseYear(existingTargets.baseYear)
+		}
 	}, [existingTargets, selectedBaseYear, setSelectedBaseYear])
 
 	// Initialize TanStack Form with default values
@@ -154,7 +152,16 @@ export function useTargetsForm(
 				const currentBaseEmissions = baseYearEmissionsDataRef.current
 				let projections: EmissionRow[] = []
 
-				if (currentBaseEmissions) {
+				const manualTotal = value.baseYearEmissions !== undefined
+					? value.baseYearEmissions
+					: (currentBaseEmissions ? calculateTotalEmissions(currentBaseEmissions) : undefined)
+
+				if (
+					value.baseYear !== undefined &&
+					value.targetYear !== undefined &&
+					value.targetReduction !== undefined &&
+					manualTotal !== undefined
+				) {
 					projections = generateEmissionRows(
 						value.baseYear,
 						value.targetYear,
@@ -162,6 +169,7 @@ export function useTargetsForm(
 						value.longTermTargetYear,
 						value.longTermTargetReduction,
 						currentBaseEmissions,
+						manualTotal
 					)
 				}
 
@@ -592,8 +600,6 @@ export function useScope3Form(
  */
 export function useTargetsComputedValues(
 	existingTargets: Doc<'targets'> | null | undefined,
-	baseYearEmissionsData: BaseYearEmissionsData | null | undefined,
-	formValues: TargetsFormValues,
 ) {
 	// Get base scope values from projections
 	const baseScope1Proj = existingTargets?.projections?.find(
@@ -611,34 +617,6 @@ export function useTargetsComputedValues(
 	)
 	const baseScope3Value = baseScope3Proj?.scope3 ?? 0
 
-	// Generate table data efficiently
-	const tableData = useMemo(() => {
-		if (
-			!baseYearEmissionsData ||
-			!formValues.baseYear ||
-			!formValues.targetYear ||
-			!formValues.targetReduction
-		) {
-			return []
-		}
-
-		return generateEmissionRows(
-			formValues.baseYear,
-			formValues.targetYear,
-			formValues.targetReduction,
-			formValues.longTermTargetYear,
-			formValues.longTermTargetReduction,
-			baseYearEmissionsData,
-		)
-	}, [
-		baseYearEmissionsData,
-		formValues.baseYear,
-		formValues.targetYear,
-		formValues.targetReduction,
-		formValues.longTermTargetYear,
-		formValues.longTermTargetReduction,
-	])
-
 	// Check if scope-specific targets are active
 	const hasSpecificTargetsActive = useMemo(() => {
 		if (!existingTargets?.hasScopeSpecificTargets) return false
@@ -650,7 +628,6 @@ export function useTargetsComputedValues(
 		baseScope1Value,
 		baseScope2Value,
 		baseScope3Value,
-		tableData,
 		hasSpecificTargetsActive,
 	}
 }

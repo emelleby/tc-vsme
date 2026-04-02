@@ -41,7 +41,10 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 			naceCode?: string
 			industry?: string
 			numberEmployees?: number
-			businessModel?: string
+			productsAndServices?: string
+			markets?: string
+			businessRelationships?: string
+			sustainabilityStrategy?: string
 		}) => data,
 	)
 	.handler(async ({ data }): Promise<SetupOrganizationResult> => {
@@ -119,7 +122,10 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				naceCode: data.naceCode,
 				industry: data.industry,
 				numberEmployees: data.numberEmployees,
-				businessModel: data.businessModel,
+				productsAndServices: data.productsAndServices,
+				markets: data.markets,
+				businessRelationships: data.businessRelationships,
+				sustainabilityStrategy: data.sustainabilityStrategy,
 				hasVsme: true,
 			})
 

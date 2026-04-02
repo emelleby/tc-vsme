@@ -66,6 +66,14 @@ const data = {
 					url: '/app/environmental',
 				},
 				{
+					title: 'Social',
+					url: '/app/social',
+				},
+				{
+					title: 'Governance',
+					url: '/app/governance',
+				},
+				{
 					title: 'Demo',
 					url: '/demo',
 				},
