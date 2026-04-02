@@ -3,7 +3,7 @@ import { useStore as useYearStore } from '@tanstack/react-store'
 import { api } from 'convex/_generated/api'
 import { useMutation } from 'convex/react'
 import { AlertTriangle, Info, Plus, Save, Trash2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -119,6 +119,36 @@ export function B8WorkforceForm({
 				eventuellUtfyllendeInfo: '',
 			} as B8WorkforceFormValues,
 		})
+
+	const employeesLeft = useStore(
+		form.store,
+		(state) => state.values.employeesLeft ?? 0,
+	)
+	const employeesAtStart = useStore(
+		form.store,
+		(state) => state.values.employeesAtStart ?? 0,
+	)
+	const employeesAtEnd = useStore(
+		form.store,
+		(state) => state.values.employeesAtEnd ?? 0,
+	)
+
+	const turnoverRate =
+		employeesAtStart > 0 && employeesAtEnd > 0
+			? Number(
+					(
+						(employeesLeft / ((employeesAtStart + employeesAtEnd) / 2)) *
+						100
+					).toFixed(1),
+				)
+			: undefined
+
+	useEffect(() => {
+		const current = form.getFieldValue('turnoverRate')
+		if (current !== turnoverRate) {
+			form.setFieldValue('turnoverRate', turnoverRate)
+		}
+	}, [turnoverRate, form])
 
 	const handleUpdateCompanyEmployees = async (newEmployeeCount: number) => {
 		if (!generalFormData) return
@@ -404,19 +434,79 @@ export function B8WorkforceForm({
 							</div>
 
 							<GenderCountAlert form={form} totalEmployees={totalEmployees} />
-
-							{/* Eventuell utfyllende info */}
-							<form.AppField name="eventuellUtfyllendeInfo">
-								{(field) => (
-									<field.TextareaField
-										label="Eventuell utfyllende info"
-										placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
-										description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
-									/>
-								)}
-							</form.AppField>
 						</CardContent>
 					</Card>
+					{/* Card 4 — Turnover Rate */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-base">Turnover Rate</CardTitle>
+							<p className="text-sm text-muted-foreground">
+								Employee turnover during the reporting period
+							</p>
+						</CardHeader>
+						<CardContent>
+							{totalEmployees < 50 && (
+								<Alert variant="info" className="mb-6 border-l-4">
+									<Info />
+									<AlertTitle>About Turnover Rate</AlertTitle>
+									<AlertDescription>
+										Reporting turnover rate is only mandatory for undertakings
+										with 50 or more employees.
+									</AlertDescription>
+								</Alert>
+							)}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="employeesLeft">
+									{(field) => (
+										<field.NumberField
+											label="Employees Left"
+											description="Number of employees who left during the reporting period"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="employeesAtStart">
+									{(field) => (
+										<field.NumberField
+											label="Employees at Start"
+											description="Number of employees at the beginning of the reporting period"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="employeesAtEnd">
+									{(field) => (
+										<field.NumberField
+											label="Employees at End"
+											description="Number of employees at the end of the reporting period"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="turnoverRate">
+									{(field) => (
+										<field.NumberField
+											label="Turnover Rate"
+											unit="%"
+											description="Employee turnover rate in the reporting period (calculated automatically)"
+											disabled
+										/>
+									)}
+								</form.AppField>
+							</div>
+						</CardContent>
+					</Card>
+
+					{/* Eventuell utfyllende info */}
+					<form.AppField name="eventuellUtfyllendeInfo">
+						{(field) => (
+							<field.TextareaField
+								label="Eventuell utfyllende info"
+								placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
+								description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
+							/>
+						)}
+					</form.AppField>
 				</fieldset>
 
 				<FormButtons
