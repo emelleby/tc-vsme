@@ -40,19 +40,19 @@ export function B2SustainabilityInitiativesForm() {
 		<>
 			<Alert variant="info" className="mb-6">
 				<Info />
-				<AlertTitle>Om bærekraftsinitiativer</AlertTitle>
+				<AlertTitle>About sustainability initiatives</AlertTitle>
 				<AlertDescription>
-					Basic Module krever kun et ja/nei svar på om man har tiltak,
-					retningslinjer eller fremtidige initiativer for overgang til en mer
-					bærekraftig økonomi. Comprehensive Module krever at man oppgir
-					detaljer og en mer utfyllende beskrivelse av disse.{' '}
+					The Basic Module only requires a yes/no answer on whether you have measures,
+					guidelines, or future initiatives for transitioning to a more
+					sustainable economy. The Comprehensive Module requires that you provide
+					details and a more comprehensive description of these.{' '}
 					<a
 						className="underline"
 						rel="noopener noreferrer"
 						target="_blank"
 						href="https://www.efrag.org/en/vsme-supporting-guide-on-disclosure-c2-comprehensive-module-practices-policies-and-future"
 					>
-						Les mer om bærekraftsinitiativer her.
+						Read more about sustainability initiatives here.
 					</a>
 				</AlertDescription>
 			</Alert>
