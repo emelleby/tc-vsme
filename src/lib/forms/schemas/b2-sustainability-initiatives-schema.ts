@@ -23,8 +23,9 @@ export const initiativeSchema = z.object({
 	title: z.string().min(1, 'Title is required'),
 	description: z.string().min(1, 'Description is required'),
 	goals: z.string().min(1, 'Goals are required'),
-	responsiblePerson: z.string().min(1, 'Responsible person is required'),
+	responsiblePerson: z.string().min(1, 'Responsible role is required'),
 	status: initiativeStatusSchema,
+	publiclyAvailable: z.boolean().default(false).optional(),
 })
 
 export const sustainabilityInitiativesSchema = z.object({
@@ -38,4 +39,3 @@ export type Initiative = z.infer<typeof initiativeSchema>
 export type SustainabilityInitiativesFormValues = z.infer<
 	typeof sustainabilityInitiativesSchema
 >
-

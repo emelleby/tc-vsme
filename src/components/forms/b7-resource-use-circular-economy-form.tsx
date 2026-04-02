@@ -5,9 +5,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import {
-	RECYCLED_MATERIAL_UNITS,
 	type B7ResourceUseCircularEconomyFormValues,
 	b7ResourceUseCircularEconomySchema,
+	RECYCLED_MATERIAL_UNITS,
 } from '@/lib/forms/schemas/b7-resource-use-circular-economy-schema'
 import { yearStore } from '@/lib/year-store'
 
@@ -22,13 +22,17 @@ export function B7ResourceUseCircularEconomyForm() {
 			schema: b7ResourceUseCircularEconomySchema,
 			defaultValues: {
 				reportingYear: reportingYear.toString(),
+				applyCircularEconomyPrinciples: false,
+				circularEconomyDescription: '',
+				significantMaterialFlows: false,
+				annualMassFlows: [],
 				totalWaste: 0,
 				recyclingRate: 0,
 				energyRecovery: 0,
 				landfill: 0,
 				hazardousWaste: 0,
 				recycledMaterials: [],
-			} as B7ResourceUseCircularEconomyFormValues,
+			} as unknown as B7ResourceUseCircularEconomyFormValues,
 		})
 
 	if (isLoading) {
@@ -60,7 +64,131 @@ export function B7ResourceUseCircularEconomyForm() {
 					</form.AppField>
 
 					<Card>
-						<CardContent className="pt-6 space-y-6">
+						<CardContent className="space-y-6">
+							<form.AppField name="applyCircularEconomyPrinciples">
+								{(field) => (
+									<field.SwitchField label="Anvender virksomheten prinsippene for sirkulær økonomi?" />
+								)}
+							</form.AppField>
+
+							<form.Subscribe
+								selector={(state) =>
+									state.values.applyCircularEconomyPrinciples
+								}
+							>
+								{(apply) =>
+									apply && (
+										<form.AppField name="circularEconomyDescription">
+											{(field) => (
+												<field.TextareaField label="Beskriv hvordan virksomheten anvender prinsippene for sirkulær økonomi" />
+											)}
+										</form.AppField>
+									)
+								}
+							</form.Subscribe>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardContent className="space-y-6">
+							<form.AppField name="significantMaterialFlows">
+								{(field) => (
+									<field.SwitchField label="Opererer virksomheten i en sektor som anvender betydelige materialstrømmer (f.eks. produksjon, bygg og anlegg, emballasje o.l.)?" />
+								)}
+							</form.AppField>
+
+							<form.Subscribe
+								selector={(state) => state.values.significantMaterialFlows}
+							>
+								{(significant) =>
+									significant && (
+										<form.AppField name="annualMassFlows">
+											{(field) => (
+												<div className="space-y-4">
+													<div className="flex items-center justify-between">
+														<h3 className="text-base font-medium">
+															Årlig massestrøm av betydelige materialer
+														</h3>
+														<Button
+															type="button"
+															variant="outline"
+															size="sm"
+															onClick={() =>
+																field.pushValue({
+																	id: crypto.randomUUID(),
+																	materialType: '',
+																	volume: 0,
+																	unit: 'tonn',
+																})
+															}
+															disabled={status === 'submitted'}
+														>
+															<Plus className="h-4 w-4 mr-2" />
+															Legg til materialtype
+														</Button>
+													</div>
+
+													{field.state.value?.map((item, i) => (
+														<Card key={item.id} className="relative">
+															<CardContent className="space-y-4">
+																<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+																	<form.AppField
+																		name={`annualMassFlows[${i}].materialType`}
+																	>
+																		{(f) => (
+																			<f.TextField
+																				label="Materialtype"
+																				placeholder="f.eks. stål, betong, tre..."
+																			/>
+																		)}
+																	</form.AppField>
+																	<form.AppField
+																		name={`annualMassFlows[${i}].volume`}
+																	>
+																		{(f) => <f.NumberField label="Volum" />}
+																	</form.AppField>
+																	<form.AppField
+																		name={`annualMassFlows[${i}].unit`}
+																	>
+																		{(f) => (
+																			<f.SelectField
+																				label="Enhet"
+																				options={RECYCLED_MATERIAL_UNITS.map(
+																					(unit) => ({
+																						label: unit,
+																						value: unit,
+																					}),
+																				)}
+																			/>
+																		)}
+																	</form.AppField>
+																</div>
+																<div className="flex justify-end">
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="sm"
+																		className="text-destructive"
+																		onClick={() => field.removeValue(i)}
+																		disabled={status === 'submitted'}
+																	>
+																		<Trash2 className="h-4 w-4" />
+																	</Button>
+																</div>
+															</CardContent>
+														</Card>
+													))}
+												</div>
+											)}
+										</form.AppField>
+									)
+								}
+							</form.Subscribe>
+						</CardContent>
+					</Card>
+
+					<Card>
+						<CardContent className="space-y-6">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<form.AppField name="totalWaste">
 									{(field) => (
@@ -120,11 +248,13 @@ export function B7ResourceUseCircularEconomyForm() {
 							<form.AppField name="recycledMaterials">
 								{(field) => (
 									<div className="space-y-4">
-										<h3 className="text-base font-medium">Recycled Materials</h3>
+										<h3 className="text-base font-medium">
+											Recycled Materials
+										</h3>
 
 										{field.state.value?.length === 0 && (
 											<Card className="bg-muted/30">
-												<CardContent className="pt-6 text-center">
+												<CardContent className="text-center">
 													<div className="text-4xl mb-2">♻️</div>
 													<h4 className="font-medium mb-2">
 														No recycled materials added yet
@@ -138,22 +268,18 @@ export function B7ResourceUseCircularEconomyForm() {
 
 										{field.state.value?.map((item, i) => (
 											<Card key={item.id} className="relative">
-												<CardContent className="pt-6 space-y-6">
+												<CardContent className="space-y-6">
 													<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 														<form.AppField
 															name={`recycledMaterials[${i}].materialType`}
 														>
-															{(f) => (
-																<f.TextField label="Material Type" />
-															)}
+															{(f) => <f.TextField label="Material Type" />}
 														</form.AppField>
 
 														<form.AppField
 															name={`recycledMaterials[${i}].amount`}
 														>
-															{(f) => (
-																<f.NumberField label="Amount" />
-															)}
+															{(f) => <f.NumberField label="Amount" />}
 														</form.AppField>
 
 														<form.AppField
@@ -164,9 +290,9 @@ export function B7ResourceUseCircularEconomyForm() {
 																	label="Unit"
 																	options={RECYCLED_MATERIAL_UNITS.map(
 																		(unit) => ({
-																				label: unit,
-																				value: unit,
-																			}),
+																			label: unit,
+																			value: unit,
+																		}),
 																	)}
 																/>
 															)}

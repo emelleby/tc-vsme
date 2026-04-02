@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 
 export type FormTable = "formGeneral" | "formEnvironmental" | "formSocial" | "formGovernance"
-export type FormSection = "companyInfo" | "sustainabilityInitiatives" | "businessModel" | "energyEmissions" | "pollution" | "biodiversity" | "waterManagement" | "resourceUseCircularEconomy" | "scope3Emissions" | "climateRiskAnalysis"
+export type FormSection = "companyInfo" | "sustainabilityInitiatives" | "businessModel" | "energyEmissions" | "pollution" | "biodiversity" | "waterManagement" | "resourceUseCircularEconomy" | "scope3Emissions" | "climateRiskAnalysis" | "workforce" | "healthSafety" | "compensationCollective" | "workLifeBalance" | "additionalWorkforce" | "humanRightsPolicies" | "seriousHumanRightsIncidents" | "finesPenalties" | "sectorInvolvement" | "boardComposition"
 
 export const formTableValidator = v.union(
   v.literal("formGeneral"),
@@ -21,6 +21,16 @@ export const formSectionValidator = v.union(
   v.literal("resourceUseCircularEconomy"),
   v.literal("scope3Emissions"),
   v.literal("climateRiskAnalysis"),
+  v.literal("workforce"),
+  v.literal("healthSafety"),
+  v.literal("compensationCollective"),
+  v.literal("workLifeBalance"),
+  v.literal("additionalWorkforce"),
+  v.literal("humanRightsPolicies"),
+  v.literal("seriousHumanRightsIncidents"),
+  v.literal("finesPenalties"),
+  v.literal("sectorInvolvement"),
+  v.literal("boardComposition"),
 )
 
 export interface FieldChange {

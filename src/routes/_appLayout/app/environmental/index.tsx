@@ -9,10 +9,17 @@ import { B6WaterManagementForm } from '@/components/forms/b6-water-form'
 import { B7ResourceUseCircularEconomyForm } from '@/components/forms/b7-resource-use-circular-economy-form'
 import { C2Scope3EmissionsForm } from '@/components/forms/c2-scope3-emissions-form'
 import { C4ClimateRiskForm } from '@/components/forms/c4-climate-risk-form'
+import { useState } from 'react'
+import { HelpSheet } from '@/components/sheet'
 import { FormCard } from '@/components/ui/expandable-card-simple'
 import { useOrgGuard } from '@/hooks/use-org-guard'
 import { yearStore } from '@/lib/year-store'
 import { C3TargetsForm } from './-c3-targets-card'
+import { CircularHelp } from './-circular-help'
+import { WaterHelp } from './-water-help'
+import { BiodiversityHelp } from './-biodiversity-help'
+import { EnergyHelp } from './-energy-help'
+import { PollutionHelp } from './-pollution-help'
 
 export const Route = createFileRoute('/_appLayout/app/environmental/')({
 	component: EnvironmentalPage,
@@ -32,6 +39,11 @@ function formatDate(timestamp: number | undefined): string {
 
 function EnvironmentalPage() {
 	const reportingYear = useStore(yearStore, (state) => state.selectedYear)
+	const [isCircularHelpOpen, setCircularHelpOpen] = useState(false)
+	const [isWaterHelpOpen, setWaterHelpOpen] = useState(false)
+	const [isBiodiversityHelpOpen, setBiodiversityHelpOpen] = useState(false)
+	const [isEnergyHelpOpen, setEnergyHelpOpen] = useState(false)
+	const [isPollutionHelpOpen, setPollutionHelpOpen] = useState(false)
 
 	// Guard against race conditions during org switching
 	const { skipQuery, isLoading: isOrgLoading } = useOrgGuard()
@@ -75,6 +87,8 @@ function EnvironmentalPage() {
 				status={energyEmissions?.status ?? 'draft'}
 				contributor={energyEmissions?.contributor || { name: 'Unknown' }}
 				code="B3"
+				buttonText="Hjelp"
+				onClick={() => setEnergyHelpOpen(true)}
 				version={
 					energyEmissions?.versions?.length
 						? energyEmissions.versions[energyEmissions.versions.length - 1]
@@ -92,6 +106,8 @@ function EnvironmentalPage() {
 				status={pollution?.status ?? 'draft'}
 				contributor={pollution?.contributor || { name: 'Unknown' }}
 				code="B4"
+				buttonText="Hjelp"
+				onClick={() => setPollutionHelpOpen(true)}
 				version={
 					pollution?.versions?.length
 						? pollution.versions[pollution.versions.length - 1]?.version
@@ -109,6 +125,8 @@ function EnvironmentalPage() {
 				contributor={biodiversity?.contributor || { name: 'Unknown' }}
 				code="B5"
 				module="Grunnmodul"
+				buttonText="Hjelp"
+				onClick={() => setBiodiversityHelpOpen(true)}
 				version={
 					biodiversity?.versions?.length
 						? biodiversity.versions[biodiversity.versions.length - 1]?.version
@@ -126,6 +144,8 @@ function EnvironmentalPage() {
 				contributor={waterManagement?.contributor || { name: 'Unknown' }}
 				code="B6"
 				module="Grunnmodul"
+				buttonText="Hjelp"
+				onClick={() => setWaterHelpOpen(true)}
 				version={
 					waterManagement?.versions?.length
 						? waterManagement.versions[waterManagement.versions.length - 1]
@@ -146,6 +166,8 @@ function EnvironmentalPage() {
 				}
 				code="B7"
 				module="Grunnmodul"
+				buttonText="Hjelp"
+				onClick={() => setCircularHelpOpen(true)}
 				version={
 					resourceUseCircularEconomy?.versions?.length
 						? resourceUseCircularEconomy.versions[
@@ -156,6 +178,51 @@ function EnvironmentalPage() {
 			>
 				<B7ResourceUseCircularEconomyForm />
 			</FormCard>
+
+			<HelpSheet
+				open={isCircularHelpOpen}
+				onOpenChange={setCircularHelpOpen}
+				title="Veiledning for sirkulærøkonomi"
+				description="Informasjon om sirkulærøkonomiske prinsipper og praktisk veiledning for avfallshåndtering."
+			>
+				<CircularHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isEnergyHelpOpen}
+				onOpenChange={setEnergyHelpOpen}
+				title="Veiledning for energiforbruk og utslipp"
+				description="Informasjon om energiforbruk, utslippsberegninger og energikilder."
+			>
+				<EnergyHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isPollutionHelpOpen}
+				onOpenChange={setPollutionHelpOpen}
+				title="Veiledning for forurensningsrapportering"
+				description="Informasjon om rapporteringsplikt for forurensende stoffer."
+			>
+				<PollutionHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isWaterHelpOpen}
+				onOpenChange={setWaterHelpOpen}
+				title="Veiledning for vannforvaltning"
+				description="Informasjon om vannforvaltning og praktisk veiledning for vannuttak og utslipp."
+			>
+				<WaterHelp />
+			</HelpSheet>
+
+			<HelpSheet
+				open={isBiodiversityHelpOpen}
+				onOpenChange={setBiodiversityHelpOpen}
+				title="Veiledning for arealbeslag og biologisk mangfold"
+				description="Informasjon om arealbeslag, forseglet areal og naturmangfold."
+			>
+				<BiodiversityHelp />
+			</HelpSheet>
 
 			<FormCard
 				title="Scope 3 Emissions"

@@ -11,10 +11,12 @@ import {
 	InputGroupInput,
 } from '@/components/ui/input-group'
 import { useFieldContext } from '@/hooks/form-context'
+import { cn } from '@/lib/utils'
 
 interface NumberFieldProps {
 	hidden?: boolean
-	label: string
+	hideLabel?: boolean
+	label?: string
 	unit?: string
 	description?: string
 	placeholder?: string
@@ -22,10 +24,12 @@ interface NumberFieldProps {
 	step?: string | number
 	min?: string | number
 	max?: string | number
+	className?: string
 }
 
 export function NumberField({
 	hidden,
+	hideLabel,
 	label,
 	unit,
 	description,
@@ -34,6 +38,7 @@ export function NumberField({
 	step,
 	min,
 	max,
+	className,
 }: NumberFieldProps) {
 	const field = useFieldContext<number | undefined>()
 	const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -44,9 +49,15 @@ export function NumberField({
 		field.handleChange(value)
 	}
 
+	const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+		e.currentTarget.select()
+	}
+
 	return (
 		<Field data-invalid={isInvalid} hidden={hidden}>
-			<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+			{!hideLabel && label && (
+				<FieldLabel htmlFor={field.name}>{label}</FieldLabel>
+			)}
 			{unit ? (
 				<InputGroup>
 					<InputGroupInput
@@ -58,14 +69,19 @@ export function NumberField({
 						max={max}
 						value={field.state.value ?? ''}
 						onBlur={field.handleBlur}
+						onFocus={handleFocus}
 						onChange={(e) => handleChange(e.target.value)}
 						aria-invalid={isInvalid}
 						placeholder={placeholder}
 						disabled={disabled}
+						className={cn(
+							// 'disabled:opacity-50 disabled:cursor-not-allowed',
+							className,
+						)}
 					/>
 					<InputGroupAddon
 						align="inline-end"
-						className="bg-secondary/10 pl-2 pr-2 py-2 rounded-r-md"
+						className={cn('bg-secondary/10 pl-2 pr-2 py-2 rounded-r-md')}
 					>
 						{unit}
 					</InputGroupAddon>
@@ -80,10 +96,16 @@ export function NumberField({
 					max={max}
 					value={field.state.value ?? ''}
 					onBlur={field.handleBlur}
+					onFocus={handleFocus}
 					onChange={(e) => handleChange(e.target.value)}
 					aria-invalid={isInvalid}
 					placeholder={placeholder}
 					disabled={disabled}
+					className={cn(
+						// 'disabled:cursor-not-allowed',
+						// disabled && 'bg-secondary/10',
+						className,
+					)}
 				/>
 			)}
 			{description && <FieldDescription>{description}</FieldDescription>}

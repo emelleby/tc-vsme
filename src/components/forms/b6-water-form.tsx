@@ -1,4 +1,6 @@
+import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
+import * as React from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -19,10 +21,27 @@ export function B6WaterManagementForm() {
 			schema: b6WaterSchema,
 			defaultValues: {
 				reportingYear: reportingYear.toString(),
-				waterConsumption: undefined,
-				waterStress: undefined,
+				waterWithdrawal: 0,
+				waterWithdrawalStress: 0,
+				waterDischarge: 0,
+				waterConsumption: 0,
 			} as B6WaterFormValues,
 		})
+
+	const withdrawal = useStore(
+		form.store,
+		(state) => (state.values as B6WaterFormValues).waterWithdrawal,
+	)
+	const discharge = useStore(
+		form.store,
+		(state) => (state.values as B6WaterFormValues).waterDischarge,
+	)
+
+	// Sync calculated consumption
+	React.useEffect(() => {
+		const expected = (withdrawal ?? 0) - (discharge ?? 0)
+		form.setFieldValue('waterConsumption', expected)
+	}, [withdrawal, discharge, form])
 
 	if (isLoading) {
 		return (
@@ -53,27 +72,62 @@ export function B6WaterManagementForm() {
 					</form.AppField>
 
 					<Card>
-						<CardContent className="pt-6">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								<form.AppField name="waterConsumption">
+						<CardContent className="">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+								<form.AppField name="waterWithdrawal">
 									{(field) => (
 										<field.NumberField
-											label="Water Consumption"
+											label="Vannuttak"
 											unit="m³"
-											description="Total water consumption in cubic meters"
+											description="Totalt vannuttak i kubikkmeter (alt vann hentet inn fra alle kilder)"
 										/>
 									)}
 								</form.AppField>
 
-								<form.AppField name="waterStress">
+								<form.AppField name="waterWithdrawalStress">
 									{(field) => (
 										<field.NumberField
-											label="Water Stress"
-											unit="%"
-											description="Percentage of operations in water-stressed areas"
+											label="Vannuttak i vannstressområder"
+											unit="m³"
+											description="Vannuttak fra lokasjoner i områder med høy vannstress (m³)"
 										/>
 									)}
 								</form.AppField>
+							</div>
+
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="waterDischarge">
+									{(field) => (
+										<field.NumberField
+											label="Vannutslipp"
+											unit="m³"
+											description="Totalt vann returnert til miljøet (m³)"
+										/>
+									)}
+								</form.AppField>
+
+								<div className="space-y-3">
+									<div className="text-sm font-bold">Vannforbruk</div>
+									<div className="h-9 px-3 py-2 rounded-md border border-input bg-secondary/10 flex items-center justify-between">
+										<span className="text-sm font-semibold">
+											{(withdrawal ?? 0) - (discharge ?? 0)}
+										</span>
+										<span className="text-muted-foreground text-sm">m³</span>
+									</div>
+									<p className="text-sm text-muted-foreground">
+										Beregnet: vannuttak minus vannutslipp
+									</p>
+									{/* Hidden field to satisfy validation and form submission */}
+									<form.AppField name="waterConsumption">
+										{(field) => (
+											<input
+												type="hidden"
+												name={field.name}
+												value={field.state.value}
+											/>
+										)}
+									</form.AppField>
+								</div>
 							</div>
 						</CardContent>
 					</Card>

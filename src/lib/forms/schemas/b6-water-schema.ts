@@ -1,30 +1,19 @@
 import { z } from 'zod'
 
-export const b6WaterSchema = z
-	.object({
-		reportingYear: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
-		waterConsumption: z.number().min(0, 'Må være 0 eller mer').optional(),
-		waterStress: z
-			.number()
-			.min(0, 'Må være 0 eller mer')
-			.max(100, 'Må være mellom 0 og 100')
-			.optional(),
-	})
-	.superRefine((values, ctx) => {
-		if (values.waterConsumption === undefined) {
-			ctx.addIssue({
-				code: 'custom',
-				path: ['waterConsumption'],
-				message: 'Feltet er påkrevd',
-			})
-		}
-		if (values.waterStress === undefined) {
-			ctx.addIssue({
-				code: 'custom',
-				path: ['waterStress'],
-				message: 'Feltet er påkrevd',
-			})
-		}
-	})
+export const b6WaterSchema = z.object({
+	reportingYear: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
+	waterWithdrawal: z
+		.number({ message: 'Feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	waterWithdrawalStress: z
+		.number({ message: 'Feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	waterDischarge: z
+		.number({ message: 'Feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+	waterConsumption: z
+		.number({ message: 'Feltet er påkrevd' })
+		.min(0, 'Må være 0 eller mer'),
+})
 
 export type B6WaterFormValues = z.infer<typeof b6WaterSchema>

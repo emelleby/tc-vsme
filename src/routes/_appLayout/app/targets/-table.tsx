@@ -52,7 +52,7 @@ export function EmissionsTable({ data }: EmissionsTableProps) {
 	})
 
 	return (
-		<div className="rounded-md border">
+		<div className="rounded-md border border-border">
 			<table className="w-full text-sm">
 				<thead className="bg-muted/50">
 					{table.getHeaderGroups().map((headerGroup) => (
@@ -73,7 +73,7 @@ export function EmissionsTable({ data }: EmissionsTableProps) {
 						</tr>
 					))}
 				</thead>
-				<tbody className="divide-y">
+				<tbody className="divide-y divide-border">
 					{table.getRowModel().rows.map((row) => (
 						<tr key={row.id} className="hover:bg-muted/50">
 							{row.getVisibleCells().map((cell) => (

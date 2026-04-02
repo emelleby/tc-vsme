@@ -13,6 +13,16 @@ const formSectionValidator = v.union(
   v.literal("resourceUseCircularEconomy"),
   v.literal("scope3Emissions"),
   v.literal("climateRiskAnalysis"),
+  v.literal("workforce"),
+  v.literal("healthSafety"),
+  v.literal("compensationCollective"),
+  v.literal("workLifeBalance"),
+  v.literal("additionalWorkforce"),
+  v.literal("humanRightsPolicies"),
+  v.literal("seriousHumanRightsIncidents"),
+  v.literal("finesPenalties"),
+  v.literal("sectorInvolvement"),
+  v.literal("boardComposition"),
 )
 
 // Form data validators for each section
@@ -37,6 +47,34 @@ const companyInfoDataValidator = v.object({
   ),
   contactPersonName: v.string(),
   contactPersonEmail: v.string(),
+  /** Owned/operated properties with geocoordinates */
+  properties: v.optional(
+    v.array(
+      v.object({
+        id: v.string(),
+        formattedAddress: v.string(),
+        streetAddress: v.string(),
+        city: v.string(),
+        postalCode: v.string(),
+        country: v.string(),
+        countryCode: v.string(),
+        placeId: v.string(),
+		lat: v.number(),
+		lng: v.number(),
+	  }),
+	),
+  ),
+  certifications: v.optional(
+	v.array(
+	  v.object({
+		id: v.string(),
+		name: v.string(),
+		issuer: v.string(),
+		date: v.optional(v.string()),
+		assessment: v.optional(v.string()),
+	  }),
+	),
+  ),
 })
 
 const sustainabilityInitiativesDataValidator = v.object({
@@ -49,13 +87,17 @@ const sustainabilityInitiativesDataValidator = v.object({
       goals: v.string(),
       responsiblePerson: v.string(),
       status: v.string(),
+      publiclyAvailable: v.optional(v.boolean()),
     })
   ),
 })
 
 const businessModelDataValidator = v.object({
   reportingYear: v.string(),
-  businessModel: v.optional(v.string()),
+  productsAndServices: v.optional(v.string()),
+  markets: v.optional(v.string()),
+  businessRelationships: v.optional(v.string()),
+  sustainabilityStrategy: v.optional(v.string()),
 })
 
 // Union validator for all general form sections
@@ -70,6 +112,10 @@ const energyEmissionsDataValidator = v.object({
   reportingYear: v.string(),
   renewableElectricity: v.number(),
   nonRenewableElectricity: v.number(),
+  stationaryCombustion: v.number(),
+  mobileCombustion: v.number(),
+  renewableFuels: v.number(),
+  otherEnergySources: v.number(),
   emissionsIntensity: v.number(),
   scope1Emissions: v.number(),
   scope2EmissionsLocationBased: v.number(),
@@ -103,12 +149,28 @@ const biodiversityDataValidator = v.object({
 
 const waterManagementDataValidator = v.object({
   reportingYear: v.string(),
-  waterConsumption: v.optional(v.number()),
-  waterStress: v.optional(v.number()),
+  waterWithdrawal: v.optional(v.number()),
+  waterWithdrawalStress: v.optional(v.number()),
+  waterDischarge: v.optional(v.number()),
+  waterConsumption: v.number(),
+  waterStress: v.optional(v.number()), // Legacy field
 })
 
 const resourceUseCircularEconomyDataValidator = v.object({
   reportingYear: v.string(),
+  applyCircularEconomyPrinciples: v.optional(v.boolean()),
+  circularEconomyDescription: v.optional(v.string()),
+  significantMaterialFlows: v.optional(v.boolean()),
+  annualMassFlows: v.optional(
+    v.array(
+      v.object({
+        id: v.string(),
+        materialType: v.string(),
+        volume: v.number(),
+        unit: v.union(v.literal('tonn'), v.literal('kg'), v.literal('m³')),
+      })
+    )
+  ),
   totalWaste: v.number(),
   recyclingRate: v.number(),
   energyRecovery: v.number(),
@@ -119,7 +181,7 @@ const resourceUseCircularEconomyDataValidator = v.object({
       id: v.string(),
       materialType: v.string(),
       amount: v.number(),
-      unit: v.union(v.literal('tonn'), v.literal('kg')),
+      unit: v.union(v.literal('tonn'), v.literal('kg'), v.literal('m³')),
     })
   ),
 })
@@ -161,10 +223,169 @@ const formEnvironmentalDataValidator = v.union(
   // Add more environmental sections here as they are created
 )
 
-// Placeholder validators for social and governance forms
-// These will be expanded as new forms are added
-const formSocialDataValidator = v.any()
-const formGovernanceDataValidator = v.any()
+// Social form data validators
+const workforceDataValidator = v.object({
+  reportingYear: v.string(),
+  heltidsansatte: v.number(),
+  deltidsansatte: v.number(),
+  midlertidigAnsatte: v.number(),
+  menn: v.number(),
+  kvinner: v.number(),
+  annet: v.number(),
+  ansattePerLand: v.array(
+    v.object({
+      id: v.string(),
+      land: v.string(),
+      antallAnsatte: v.number(),
+    })
+  ),
+  eventuellUtfyllendeInfo: v.optional(v.string()),
+})
+
+const healthSafetyDataValidator = v.object({
+  reportingYear: v.string(),
+  arbeidsulykker: v.number(),
+  sykefravarProsent: v.number(),
+  hmsOpplaering: v.number(),
+  omkomne: v.number(),
+  eventuellUtfyllendeInfo: v.optional(v.string()),
+})
+
+const compensationCollectiveDataValidator = v.object({
+  reportingYear: v.string(),
+  hourlyPayMale: v.optional(v.number()),
+  hourlyPayFemale: v.optional(v.number()),
+  trainingHoursMale: v.number(),
+  trainingHoursFemale: v.number(),
+  collectiveBargainingAgreement: v.number(),
+  collectiveBargainingShare: v.optional(v.number()),
+  genderPayGap: v.optional(v.number()),
+  minstelonnsansvar: v.boolean(),
+})
+
+const workLifeBalanceDataValidator = v.object({
+  reportingYear: v.string(),
+  femaleParentalLeave: v.number(),
+  maleParentalLeave: v.number(),
+  parentalLeavePolicyDescription: v.string(),
+})
+
+const additionalWorkforceDataValidator = v.object({
+  reportingYear: v.string(),
+  maleManagers: v.optional(v.number()),
+  femaleManagers: v.optional(v.number()),
+  /** Computed: maleManagers / femaleManagers. Absent when not applicable. */
+  managementGenderRatio: v.optional(v.number()),
+  selfEmployedWorkers: v.optional(v.number()),
+  contractWorkers: v.optional(v.number()),
+})
+
+const humanRightsPoliciesDataValidator = v.object({
+  reportingYear: v.string(),
+  /** (a) Does the undertaking have a code of conduct or human rights policy? */
+  hasCodeOfConduct: v.boolean(),
+  /** (b.i) Covers child labour? */
+  childLaborPolicy: v.boolean(),
+  /** (b.ii) Covers forced labour? */
+  forcedLaborPolicy: v.boolean(),
+  /** (b.iii) Covers human trafficking? */
+  humanTraffickingPolicy: v.boolean(),
+  /** (b.iv) Covers discrimination? */
+  discriminationPolicy: v.boolean(),
+  /** (b.v) Covers accident prevention? */
+  accidentPreventionPolicy: v.boolean(),
+  /** (b.vi) Covers other? */
+  hasOtherPolicies: v.boolean(),
+  /** (b.vi) Specify other policies */
+  otherPolicies: v.optional(v.string()),
+  /** (c) Does the undertaking have a complaints-handling mechanism? */
+  hasComplaintsHandlingMechanism: v.boolean(),
+})
+
+const seriousHumanRightsIncidentsDataValidator = v.object({
+  reportingYear: v.string(),
+  /** (a.i) Confirmed incidents of child labour */
+  childLabor: v.boolean(),
+  /** (b) Measures taken to address child labour */
+  childLaborMeasures: v.optional(v.string()),
+  /** (a.ii) Confirmed incidents of forced labour */
+  forcedLabor: v.boolean(),
+  /** (b) Measures taken to address forced labour */
+  forcedLaborMeasures: v.optional(v.string()),
+  /** (a.iii) Confirmed incidents of human trafficking */
+  humanTrafficking: v.boolean(),
+  /** (b) Measures taken to address human trafficking */
+  humanTraffickingMeasures: v.optional(v.string()),
+  /** (a.iv) Confirmed incidents of discrimination */
+  discrimination: v.boolean(),
+  /** (b) Measures taken to address discrimination */
+  discriminationMeasures: v.optional(v.string()),
+  /** (a.v) Other confirmed incidents */
+  other: v.boolean(),
+  /** (b) Measures taken to address other incidents */
+  otherMeasures: v.optional(v.string()),
+  /** (c) Aware of incidents in value chain / affected communities / consumers? */
+  hasValueChainIncidents: v.boolean(),
+  /** (c) Description of value chain incidents */
+  valueChainIncidentsDescription: v.optional(v.string()),
+})
+
+// Union validator for all social form sections
+const formSocialDataValidator = v.union(
+  workforceDataValidator,
+  healthSafetyDataValidator,
+  compensationCollectiveDataValidator,
+  workLifeBalanceDataValidator,
+  additionalWorkforceDataValidator,
+  humanRightsPoliciesDataValidator,
+  seriousHumanRightsIncidentsDataValidator,
+  // Add more social sections here as they are created
+)
+
+const finesPenaltiesDataValidator = v.object({
+  reportingYear: v.string(),
+  hasCorruptionFines: v.boolean(),
+  corruptionFinesDescription: v.optional(v.string()),
+  numberOfConvictions: v.optional(v.number()),
+  totalFines: v.optional(v.number()),
+  currency: v.optional(
+    v.union(
+      v.literal('NOK'),
+      v.literal('SEK'),
+      v.literal('DKK'),
+      v.literal('EUR'),
+      v.literal('USD'),
+      v.literal('GBP'),
+    ),
+  ),
+})
+
+const sectorInvolvementDataValidator = v.object({
+  reportingYear: v.string(),
+  controversialWeapons: v.boolean(),
+  controversialWeaponsRevenue: v.optional(v.number()),
+  fossilFuels: v.boolean(),
+  fossilFuelRevenue: v.optional(v.number()),
+  fossilFuelsBreakdown: v.optional(v.string()),
+  agriculturalChemicals: v.boolean(),
+  agriculturalChemicalsRevenue: v.optional(v.number()),
+  euBenchmarksExclusion: v.boolean(),
+})
+
+const boardCompositionDataValidator = v.object({
+  reportingYear: v.string(),
+  totalMembers: v.number(),
+  femaleMembers: v.number(),
+  maleMembers: v.number(),
+  otherMembers: v.number(),
+})
+
+// Union validator for all governance form sections
+const formGovernanceDataValidator = v.union(
+  finesPenaltiesDataValidator,
+  sectorInvolvementDataValidator,
+  boardCompositionDataValidator,
+)
 
 export default defineSchema({
   products: defineTable({
@@ -197,7 +418,10 @@ export default defineSchema({
     naceCode: v.optional(v.string()),
     industry: v.optional(v.string()),
     numberEmployees: v.optional(v.number()),
-    businessModel: v.optional(v.string()),
+    productsAndServices: v.optional(v.string()),
+    markets: v.optional(v.string()),
+    businessRelationships: v.optional(v.string()),
+    sustainabilityStrategy: v.optional(v.string()),
     hasVsme: v.optional(v.boolean()),
   })
     .index('by_clerkOrgId', ['clerkOrgId'])

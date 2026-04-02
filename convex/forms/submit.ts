@@ -49,10 +49,31 @@ export const submitForm = mutation({
       'category13',
       'category14',
       'category15',
+      'femaleParentalLeave',
+      'maleParentalLeave',
+      'selfEmployedWorkers',
+      'contractWorkers',
+      'maleManagers',
+      'femaleManagers',
+      'managementGenderRatio',
+      'controversialWeaponsRevenue',
+      'fossilFuelRevenue',
+      'agriculturalChemicalsRevenue',
+      'totalMembers',
+      'femaleMembers',
+      'maleMembers',
+      'otherMembers',
     ]
     for (const key of numericFields) {
       if (typeof dataToSubmit[key] === 'string' && dataToSubmit[key] !== '') {
         dataToSubmit[key] = Number(dataToSubmit[key])
+      }
+    }
+
+    // Strip undefined/null values so Convex v.optional() validators pass
+    for (const key of Object.keys(dataToSubmit)) {
+      if (dataToSubmit[key] === undefined || dataToSubmit[key] === null) {
+        delete dataToSubmit[key]
       }
     }
 

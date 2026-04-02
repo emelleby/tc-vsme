@@ -1,6 +1,5 @@
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useQuery } from 'convex/react'
-import React from 'react'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
 import { useOrgGuard } from '@/hooks/use-org-guard'
@@ -26,7 +25,6 @@ export function C1BusinessModelForm() {
 		status,
 		isSaving,
 		isLoading,
-		existingData,
 		saveDraft,
 		submit,
 		reopen,
@@ -37,17 +35,12 @@ export function C1BusinessModelForm() {
 		schema: c1BusinessModelSchema,
 		defaultValues: {
 			reportingYear: reportingYear.toString(),
-			businessModel: orgData?.businessModel || '',
+			productsAndServices: orgData?.productsAndServices || '',
+			markets: orgData?.markets || '',
+			businessRelationships: orgData?.businessRelationships || '',
+			sustainabilityStrategy: orgData?.sustainabilityStrategy || '',
 		} as C1BusinessModelFormValues,
 	})
-
-	// Update form when orgData loads and there's no existing form data
-	React.useEffect(() => {
-		if (orgData && !existingData?.draftData && !existingData?.data) {
-			form.setFieldValue('businessModel', orgData.businessModel || '')
-		}
-	}, [orgData, existingData, form])
-
 	if (isLoading || !orgData) {
 		return (
 			<div className="flex items-center justify-center p-8 text-muted-foreground">
@@ -77,14 +70,50 @@ export function C1BusinessModelForm() {
 						)}
 					</form.AppField>
 
-					{/* Business Model Textarea */}
-					<form.AppField name="businessModel">
+					{/* Products and Services */}
+					<form.AppField name="productsAndServices">
 						{(field) => (
 							<field.TextareaField
-								label="Business Model"
-								placeholder="Describe your organization's business model..."
-								rows={8}
-								description="Provide a description of your organization's business model, including key activities, value propositions, and revenue streams."
+								label="Produkter og tjenester"
+								placeholder="Beskriv produkter og tjenester..."
+								rows={4}
+								description="Beskriv vesentlige grupper av produkter og/eller tjenester som tilbys"
+							/>
+						)}
+					</form.AppField>
+
+					{/* Markets */}
+					<form.AppField name="markets">
+						{(field) => (
+							<field.TextareaField
+								label="Markeder"
+								placeholder="Beskriv markeder..."
+								rows={4}
+								description="Beskriv vesentlige markeder virksomheten opererer i (f.eks. B2B, engros, detaljhandel, land)"
+							/>
+						)}
+					</form.AppField>
+
+					{/* Business Relationships */}
+					<form.AppField name="businessRelationships">
+						{(field) => (
+							<field.TextareaField
+								label="Viktige forretningsforhold"
+								placeholder="Beskriv forretningsforhold..."
+								rows={4}
+								description="Beskriv viktige forretningsforhold (f.eks. nøkkelleverandører, kunder, distribusjonskanaler og forbrukere)"
+							/>
+						)}
+					</form.AppField>
+
+					{/* Sustainability Strategy */}
+					<form.AppField name="sustainabilityStrategy">
+						{(field) => (
+							<field.TextareaField
+								label="Bærekraftsstrategi"
+								placeholder="Beskriv bærekraftsstrategi..."
+								rows={4}
+								description="Beskriv nøkkelelementer i strategien som relaterer seg til eller påvirker bærekraftsspørsmål"
 							/>
 						)}
 					</form.AppField>
