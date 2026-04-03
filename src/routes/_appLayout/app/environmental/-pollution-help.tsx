@@ -18,8 +18,12 @@ export function PollutionHelp() {
 							forurensende stoffer, eller hvis det frivillig rapporterer om dem
 							i henhold til et miljøstyringssystem, skal det oppgi de
 							forurensende stoffene det slipper ut til luft, vann og jord i sin
-							egen virksomhet, med den respektive mengden for hvert
-							forurensende stoff.
+							egen virksomhet, med den respektive mengden for hvert forurensende
+							stoff.
+						</p>
+						<p className="text-muted-foreground leading-relaxed text-sm mt-2">
+							Alternativt kan man oppgi en link til hvor man kan finne
+							informasjonen hvis den er offentlig tilgjengelig.
 						</p>
 					</CardContent>
 				</Card>
