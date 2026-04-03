@@ -5,6 +5,7 @@ import { useMutation } from 'convex/react'
 import { AlertTriangle, Info, Plus, Save, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { NumberFieldReadOnly } from '@/components/form-fields/NumberFieldReadOnly'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -118,7 +119,90 @@ export function B8WorkforceForm({
 				ansattePerLand: defaultEmployeesByCountry,
 				eventuellUtfyllendeInfo: '',
 			} as B8WorkforceFormValues,
+			transformBeforeSave: (values) => {
+				const left = values.employeesLeft ?? 0
+				const start = values.employeesAtStart ?? 0
+				const end = values.employeesAtEnd ?? 0
+				const employeeTurnoverRate =
+					start > 0 && end > 0
+						? Number((left / ((start + end) / 2)).toFixed(4))
+						: undefined
+				return { ...values, employeeTurnoverRate }
+			},
 		})
+
+	const employeeSum = useStore(form.store, (state) => {
+		const h = state.values.heltidsansatte ?? 0
+		const m = state.values.midlertidigAnsatte ?? 0
+		return h + m
+	})
+	const genderSum = useStore(form.store, (state) => {
+		const menn = state.values.menn ?? 0
+		const kvinner = state.values.kvinner ?? 0
+		const annet = state.values.annet ?? 0
+		return menn + kvinner + annet
+	})
+
+	const employeesLeft = useStore(
+		form.store,
+		(state) => state.values.employeesLeft,
+	)
+	const employeesAtStart = useStore(
+		form.store,
+		(state) => state.values.employeesAtStart,
+	)
+	const employeesAtEnd = useStore(
+		form.store,
+		(state) => state.values.employeesAtEnd,
+	)
+
+	const employeeMatches = employeeSum === totalEmployees
+	const genderMatches = genderSum === totalEmployees
+	const requiresTurnover = totalEmployees >= 50
+	const turnoverComplete =
+		employeesLeft != null &&
+		employeesAtStart != null &&
+		employeesAtEnd != null &&
+		employeesLeft >= 0 &&
+		employeesAtStart > 0 &&
+		employeesAtEnd > 0
+	const canSubmit =
+		employeeMatches && genderMatches && (!requiresTurnover || turnoverComplete)
+
+	const submitDisabledReasons: string[] = []
+	if (!employeeMatches) {
+		submitDisabledReasons.push(
+			`Employee types (${employeeSum}) must match total from B1 (${totalEmployees})`,
+		)
+	}
+	if (!genderMatches) {
+		submitDisabledReasons.push(
+			`Gender distribution (${genderSum}) must match total from B1 (${totalEmployees})`,
+		)
+	}
+	if (requiresTurnover && !turnoverComplete) {
+		submitDisabledReasons.push(
+			'Turnover rate is required for companies with 50+ employees. Fill in Employees Left, Employees at Start, and Employees at End.',
+		)
+	}
+
+	const turnoverRateAbsolute =
+		employeesAtStart != null &&
+		employeesAtEnd != null &&
+		employeesAtStart > 0 &&
+		employeesAtEnd > 0 &&
+		employeesLeft != null
+			? Number(
+					(employeesLeft / ((employeesAtStart + employeesAtEnd) / 2)).toFixed(
+						4,
+					),
+				)
+			: undefined
+
+	const turnoverRatePercent =
+		turnoverRateAbsolute != null
+			? Number((turnoverRateAbsolute * 100).toFixed(2))
+			: undefined
 
 	const handleUpdateCompanyEmployees = async (newEmployeeCount: number) => {
 		if (!generalFormData) return
@@ -404,19 +488,76 @@ export function B8WorkforceForm({
 							</div>
 
 							<GenderCountAlert form={form} totalEmployees={totalEmployees} />
-
-							{/* Eventuell utfyllende info */}
-							<form.AppField name="eventuellUtfyllendeInfo">
-								{(field) => (
-									<field.TextareaField
-										label="Eventuell utfyllende info"
-										placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
-										description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
-									/>
-								)}
-							</form.AppField>
 						</CardContent>
 					</Card>
+					{/* Card 4 — Turnover Rate */}
+					<Card>
+						<CardHeader>
+							<CardTitle className="text-base">Turnover Rate</CardTitle>
+							<p className="text-sm text-muted-foreground">
+								Employee turnover during the reporting period
+							</p>
+						</CardHeader>
+						<CardContent>
+							{totalEmployees < 50 && (
+								<Alert variant="info" className="mb-6 border-l-4">
+									<Info />
+									<AlertTitle>About Turnover Rate</AlertTitle>
+									<AlertDescription>
+										Reporting turnover rate is only mandatory for undertakings
+										with 50 or more employees.
+									</AlertDescription>
+								</Alert>
+							)}
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+								<form.AppField name="employeesLeft">
+									{(field) => (
+										<field.NumberField
+											label="Employees Left"
+											description="Number of employees who left during the reporting period"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="employeesAtStart">
+									{(field) => (
+										<field.NumberField
+											label="Employees at Start"
+											description="Number of employees at the beginning of the reporting period"
+										/>
+									)}
+								</form.AppField>
+
+								<form.AppField name="employeesAtEnd">
+									{(field) => (
+										<field.NumberField
+											label="Employees at End"
+											description="Number of employees at the end of the reporting period"
+										/>
+									)}
+								</form.AppField>
+
+								<NumberFieldReadOnly
+									label="Employee Turnover Rate"
+									unit="%"
+									value={turnoverRatePercent ?? ''}
+									description="Employee turnover rate in the reporting period (calculated automatically)"
+									placeholder="—"
+								/>
+							</div>
+						</CardContent>
+					</Card>
+
+					{/* Eventuell utfyllende info */}
+					<form.AppField name="eventuellUtfyllendeInfo">
+						{(field) => (
+							<field.TextareaField
+								label="Eventuell utfyllende info"
+								placeholder="Beskriv eventuelle ekstraordinære forhold, endringer i organisering, eller annen relevant kontekst..."
+								description="Oppgi eventuell tilleggsinformasjon eller forklaringer til arbeidsstyrkedata"
+							/>
+						)}
+					</form.AppField>
 				</fieldset>
 
 				<FormButtons
@@ -425,6 +566,8 @@ export function B8WorkforceForm({
 					onSaveDraft={saveDraft}
 					onSubmit={submit}
 					onReopen={reopen}
+					disableSubmit={!canSubmit && status !== 'submitted'}
+					submitDisabledReasons={submitDisabledReasons}
 				/>
 			</form>
 		</form.AppForm>

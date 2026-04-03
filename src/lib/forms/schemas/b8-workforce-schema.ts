@@ -36,9 +36,23 @@ export const b8WorkforceSchema = z.object({
 		.int('Må være et heltall')
 		.min(0, 'Må være 0 eller mer'),
 	ansattePerLand: z.array(employeePerCountrySchema),
+	employeesLeft: z
+		.number()
+		.int('Må være et heltall')
+		.min(0, 'Må være 0 eller mer')
+		.optional(),
+	employeesAtStart: z
+		.number()
+		.int('Må være et heltall')
+		.min(0, 'Må være 0 eller mer')
+		.optional(),
+	employeesAtEnd: z
+		.number()
+		.int('Må være et heltall')
+		.min(0, 'Må være 0 eller mer')
+		.optional(),
 	eventuellUtfyllendeInfo: z.string().optional(),
 })
 
 export type EmployeePerCountry = z.infer<typeof employeePerCountrySchema>
 export type B8WorkforceFormValues = z.infer<typeof b8WorkforceSchema>
-

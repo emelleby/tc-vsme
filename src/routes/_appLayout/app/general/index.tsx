@@ -68,7 +68,7 @@ function GeneralPage() {
 				toolTip="Click to learn more"
 				contributor={companyInfo?.contributor || { name: 'Unknown' }}
 				code="B1"
-				module="Grunnmodul"
+				module="Basic Module"
 				version={
 					companyInfo?.versions?.length
 						? companyInfo.versions[companyInfo.versions.length - 1].version
@@ -86,7 +86,7 @@ function GeneralPage() {
 				code="B2"
 				buttonText="Hjelp"
 				onClick={() => setInitiativesHelpOpen(true)}
-				module="Grunnmodul"
+				module="Basic Module"
 				version={
 					sustainability?.versions?.length
 						? sustainability.versions[sustainability.versions.length - 1]
@@ -113,7 +113,7 @@ function GeneralPage() {
 				status={businessModel?.status ?? 'draft'}
 				contributor={businessModel?.contributor || { name: 'Unknown' }}
 				code="C1"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					businessModel?.versions?.length
 						? businessModel.versions[businessModel.versions.length - 1].version

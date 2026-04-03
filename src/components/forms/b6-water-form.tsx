@@ -1,6 +1,6 @@
 import { useStore } from '@tanstack/react-form'
 import { useStore as useYearStore } from '@tanstack/react-store'
-import * as React from 'react'
+import { NumberFieldReadOnly } from '@/components/form-fields/NumberFieldReadOnly'
 import { Card, CardContent } from '@/components/ui/card'
 import { FormButtons } from '@/hooks/tanstack-form'
 import { useFormSubmission } from '@/hooks/use-form-submission'
@@ -24,8 +24,12 @@ export function B6WaterManagementForm() {
 				waterWithdrawal: 0,
 				waterWithdrawalStress: 0,
 				waterDischarge: 0,
-				waterConsumption: 0,
 			} as B6WaterFormValues,
+			transformBeforeSave: (values) => ({
+				...values,
+				waterConsumption:
+					(values.waterWithdrawal ?? 0) - (values.waterDischarge ?? 0),
+			}),
 		})
 
 	const withdrawal = useStore(
@@ -37,11 +41,7 @@ export function B6WaterManagementForm() {
 		(state) => (state.values as B6WaterFormValues).waterDischarge,
 	)
 
-	// Sync calculated consumption
-	React.useEffect(() => {
-		const expected = (withdrawal ?? 0) - (discharge ?? 0)
-		form.setFieldValue('waterConsumption', expected)
-	}, [withdrawal, discharge, form])
+	const waterConsumption = (withdrawal ?? 0) - (discharge ?? 0)
 
 	if (isLoading) {
 		return (
@@ -106,28 +106,13 @@ export function B6WaterManagementForm() {
 									)}
 								</form.AppField>
 
-								<div className="space-y-3">
-									<div className="text-sm font-bold">Vannforbruk</div>
-									<div className="h-9 px-3 py-2 rounded-md border border-input bg-secondary/10 flex items-center justify-between">
-										<span className="text-sm font-semibold">
-											{(withdrawal ?? 0) - (discharge ?? 0)}
-										</span>
-										<span className="text-muted-foreground text-sm">m³</span>
-									</div>
-									<p className="text-sm text-muted-foreground">
-										Beregnet: vannuttak minus vannutslipp
-									</p>
-									{/* Hidden field to satisfy validation and form submission */}
-									<form.AppField name="waterConsumption">
-										{(field) => (
-											<input
-												type="hidden"
-												name={field.name}
-												value={field.state.value}
-											/>
-										)}
-									</form.AppField>
-								</div>
+								<NumberFieldReadOnly
+									label="Vannforbruk"
+									unit="m³"
+									value={waterConsumption}
+									disabled
+									description="Beregnet: vannuttak minus vannutslipp"
+								/>
 							</div>
 						</CardContent>
 					</Card>
