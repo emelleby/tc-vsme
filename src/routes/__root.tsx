@@ -19,6 +19,7 @@ import ConvexProviderWithClerk from '../integrations/convex/provider'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import AiDevtools from '../lib/ai-devtools'
 import StoreDevtools from '../lib/demo-store-devtools'
+import FormDevtools from '../lib/form-devtools'
 import appCss from '../styles.css?url'
 
 interface MyRouterContext {
@@ -100,6 +101,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 							name: 'Tanstack Router',
 							render: <TanStackRouterDevtoolsPanel />,
 						},
+						FormDevtools,
 						AiDevtools,
 						StoreDevtools,
 						TanStackQueryDevtools,

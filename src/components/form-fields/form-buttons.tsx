@@ -1,6 +1,7 @@
 import type { VariantProps } from 'class-variance-authority'
-import { Loader2 } from 'lucide-react'
-import * as React from 'react'
+import { AlertTriangle, Loader2 } from 'lucide-react'
+import type * as React from 'react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, type buttonVariants } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { useFormContext } from '@/hooks/form-context'
@@ -61,6 +62,8 @@ interface FormButtonsProps {
 	onSaveDraft: () => void
 	onSubmit: () => void
 	onReopen: () => void
+	disableSubmit?: boolean
+	submitDisabledReasons?: string[]
 }
 
 export function FormButtons({
@@ -69,6 +72,8 @@ export function FormButtons({
 	onSaveDraft,
 	onSubmit,
 	onReopen,
+	disableSubmit = false,
+	submitDisabledReasons = [],
 }: FormButtonsProps) {
 	if (status === 'submitted') {
 		return (
@@ -87,20 +92,39 @@ export function FormButtons({
 	}
 
 	return (
-		<div className="flex justify-end gap-4 pt-6">
-			<Button
-				type="button"
-				variant="outline"
-				onClick={onSaveDraft}
-				disabled={isSaving}
-			>
-				{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-				Save Draft
-			</Button>
-			<Button type="button" onClick={onSubmit} disabled={isSaving}>
-				{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-				Submit
-			</Button>
+		<div className="flex flex-col items-end gap-2 pt-6">
+			{disableSubmit && submitDisabledReasons.length > 0 && (
+				<Alert variant="destructive" className="w-full border-l-4">
+					<AlertTriangle />
+					<AlertTitle>Cannot submit</AlertTitle>
+					<AlertDescription>
+						<ul className="list-disc pl-4 space-y-1">
+							{submitDisabledReasons.map((reason) => (
+								<li key={reason}>{reason}</li>
+							))}
+						</ul>
+					</AlertDescription>
+				</Alert>
+			)}
+			<div className="flex justify-end gap-4">
+				<Button
+					type="button"
+					variant="outline"
+					onClick={onSaveDraft}
+					disabled={isSaving}
+				>
+					{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+					Save Draft
+				</Button>
+				<Button
+					type="button"
+					onClick={onSubmit}
+					disabled={isSaving || disableSubmit}
+				>
+					{isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+					Submit
+				</Button>
+			</div>
 		</div>
 	)
 }

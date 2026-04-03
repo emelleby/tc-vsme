@@ -87,7 +87,7 @@ function SocialPage() {
 				status={workforce?.status ?? 'draft'}
 				contributor={workforce?.contributor || { name: 'Unknown' }}
 				code="B8"
-				module="Grunnmodul"
+				module="Basic Module"
 				version={
 					workforce?.versions?.length
 						? workforce.versions[workforce.versions.length - 1]?.version
@@ -108,7 +108,7 @@ function SocialPage() {
 				status={healthSafety?.status ?? 'draft'}
 				contributor={healthSafety?.contributor || { name: 'Unknown' }}
 				code="B9"
-				module="Grunnmodul"
+				module="Basic Module"
 				version={
 					healthSafety?.versions?.length
 						? healthSafety.versions[healthSafety.versions.length - 1]?.version
@@ -125,7 +125,7 @@ function SocialPage() {
 				status={compensationCollective?.status ?? 'draft'}
 				contributor={compensationCollective?.contributor || { name: 'Unknown' }}
 				code="B10"
-				module="Grunnmodul"
+				module="Basic Module"
 				version={
 					compensationCollective?.versions?.length
 						? compensationCollective.versions[
@@ -144,7 +144,7 @@ function SocialPage() {
 				status={workLifeBalance?.status ?? 'draft'}
 				contributor={workLifeBalance?.contributor || { name: 'Unknown' }}
 				code="B11"
-				module="Grunnmodul"
+				module="Basic Module"
 				version={
 					workLifeBalance?.versions?.length
 						? workLifeBalance.versions[workLifeBalance.versions.length - 1]
@@ -156,13 +156,13 @@ function SocialPage() {
 			</FormCard> */}
 
 			<FormCard
-				title="Tilleggsarbeidsstyrke"
+				title="Additional (general) workforce characteristics"
 				updatedDate={formatDate(additionalWorkforce?.lastModifiedAt)}
-				toolTip="Rapporter antall selvstendig næringsdrivende og innleide arbeidere."
+				toolTip="Companies with more than 50 employees may report on workforce characteristics."
 				status={additionalWorkforce?.status ?? 'draft'}
 				contributor={additionalWorkforce?.contributor || { name: 'Unknown' }}
 				code="C5"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					additionalWorkforce?.versions?.length
 						? additionalWorkforce.versions[
@@ -175,13 +175,13 @@ function SocialPage() {
 			</FormCard>
 
 			<FormCard
-				title="Menneskerettigheter"
+				title="Human rights policies and processes"
 				updatedDate={formatDate(humanRightsPolicies?.lastModifiedAt)}
-				toolTip="Rapporter policyer knyttet til menneskerettigheter, barnearbeid og tvangsarbeid."
+				toolTip="Code of conduct or human rights policy and complaints-handling mechanism on workforce?"
 				status={humanRightsPolicies?.status ?? 'draft'}
 				contributor={humanRightsPolicies?.contributor || { name: 'Unknown' }}
 				code="C6"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					humanRightsPolicies?.versions?.length
 						? humanRightsPolicies.versions[
@@ -194,15 +194,15 @@ function SocialPage() {
 			</FormCard>
 
 			<FormCard
-				title="Alvorlige brudd på menneskerettigheter"
+				title="Severe negative human rights incidents"
 				updatedDate={formatDate(seriousHumanRightsIncidents?.lastModifiedAt)}
-				toolTip="Rapporter bekreftede hendelser med alvorlige brudd på menneskerettigheter i egen arbeidsstyrke og tiltak som er iverksatt."
+				toolTip="Disclosure of human rights incidents."
 				status={seriousHumanRightsIncidents?.status ?? 'draft'}
 				contributor={
 					seriousHumanRightsIncidents?.contributor || { name: 'Unknown' }
 				}
 				code="C7"
-				module="Utvidet modul"
+				module="Comprehensive Module"
 				version={
 					seriousHumanRightsIncidents?.versions?.length
 						? seriousHumanRightsIncidents.versions[

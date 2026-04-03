@@ -34,6 +34,8 @@ const companyInfoDataValidator = v.object({
   revenue: v.number(),
   balanceSheetTotal: v.number(),
   employees: v.number(),
+  EmployeeCountingMethodology: v.string(),
+  TypeOfNumberOfEmployees: v.string(),
   country: v.string(),
   reportType: v.boolean(),
   subsidiaries: v.optional(
@@ -126,6 +128,9 @@ const energyEmissionsDataValidator = v.object({
 
 const pollutionDataValidator = v.object({
   reportingYear: v.string(),
+  reportingPollution: v.optional(v.boolean()),
+  publiclyAvailableDisclosure: v.optional(v.boolean()),
+  urlOrLinkToPubliclyAvailableDisclosure: v.optional(v.string()),
   pollutants: v.array(
     v.object({
       id: v.string(),
@@ -239,6 +244,10 @@ const workforceDataValidator = v.object({
       antallAnsatte: v.number(),
     })
   ),
+  employeesLeft: v.optional(v.number()),
+  employeesAtStart: v.optional(v.number()),
+  employeesAtEnd: v.optional(v.number()),
+  employeeTurnoverRate: v.optional(v.number()),
   eventuellUtfyllendeInfo: v.optional(v.string()),
 })
 

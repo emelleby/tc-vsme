@@ -63,6 +63,16 @@ export const submitForm = mutation({
       'femaleMembers',
       'maleMembers',
       'otherMembers',
+      'heltidsansatte',
+      'deltidsansatte',
+      'midlertidigAnsatte',
+      'menn',
+      'kvinner',
+      'annet',
+      'employeesLeft',
+      'employeesAtStart',
+      'employeesAtEnd',
+      'employeeTurnoverRate',
     ]
     for (const key of numericFields) {
       if (typeof dataToSubmit[key] === 'string' && dataToSubmit[key] !== '') {

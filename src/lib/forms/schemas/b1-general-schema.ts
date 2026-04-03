@@ -34,6 +34,16 @@ export const certificationSchema = z.object({
 
 export type Certification = z.infer<typeof certificationSchema>
 
+export const EMPLOYEE_COUNTING_METHODOLOGIES = [
+	'vsme:AtTheEndOfTheReportingPeriodMember',
+	'vsme:AverageDuringTheReportingPeriodMember',
+] as const
+
+export const TYPE_OF_NUMBER_OF_EMPLOYEES = [
+	'vsme:HeadcountMember',
+	'vsme:Full-TimeEquivalentFTEMember',
+] as const
+
 export const b1GeneralSchema = z.object({
 	reportingYear: z.string().regex(/^\d{4}$/, 'Year must be 4 digits'),
 	organizationName: z.string().min(1, 'Organization name is required'),
@@ -49,6 +59,8 @@ export const b1GeneralSchema = z.object({
 		.number({ message: 'Dette feltet er påkrevd' })
 		.int('Må være et heltall')
 		.min(0, 'Må være 0 eller mer'),
+	EmployeeCountingMethodology: z.enum(EMPLOYEE_COUNTING_METHODOLOGIES),
+	TypeOfNumberOfEmployees: z.enum(TYPE_OF_NUMBER_OF_EMPLOYEES),
 	country: z.string().min(1, 'Country is required'),
 	reportType: z.boolean(),
 	subsidiaries: z
