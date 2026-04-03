@@ -2,7 +2,14 @@ import { useStore } from '@tanstack/react-form'
 import { useQuery } from '@tanstack/react-query'
 import { useStore as useYearStore } from '@tanstack/react-store'
 import { useAction, useQuery as useConvexQuery } from 'convex/react'
-import { Award, Building2, History, Plus, RefreshCw, Trash2 } from 'lucide-react'
+import {
+	Award,
+	Building2,
+	History,
+	Plus,
+	RefreshCw,
+	Trash2,
+} from 'lucide-react'
 import { useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { FormButtons } from '@/hooks/tanstack-form'
@@ -11,6 +18,8 @@ import { useOrgGuard } from '@/hooks/use-org-guard'
 import {
 	type B1GeneralFormValues,
 	b1GeneralSchema,
+	EMPLOYEE_COUNTING_METHODOLOGIES,
+	TYPE_OF_NUMBER_OF_EMPLOYEES,
 } from '@/lib/forms/schemas/b1-general-schema'
 import { yearStore } from '@/lib/year-store'
 import { api } from '../../../convex/_generated/api'
@@ -86,6 +95,8 @@ export function B1GeneralForm() {
 			revenue: 0,
 			balanceSheetTotal: 0,
 			employees: 0,
+			EmployeeCountingMethodology: 'vsme:AtTheEndOfTheReportingPeriodMember',
+			TypeOfNumberOfEmployees: 'vsme:HeadcountMember',
 			country: 'NOR',
 			reportType: false,
 			subsidiaries: [],
@@ -239,6 +250,36 @@ export function B1GeneralForm() {
 							<form.AppField name="country">
 								{(field) => <field.CountryField label="Land" />}
 							</form.AppField>
+							<form.AppField name="EmployeeCountingMethodology">
+								{(field) => (
+									<field.SelectField
+										label="Employee counting methodology"
+										placeholder="At the end of the reporting period"
+										options={EMPLOYEE_COUNTING_METHODOLOGIES.map((m) => ({
+											label:
+												m === 'vsme:AtTheEndOfTheReportingPeriodMember'
+													? 'At the end of the reporting period'
+													: 'As an average across the reporting period',
+											value: m,
+										}))}
+									/>
+								)}
+							</form.AppField>
+							<form.AppField name="TypeOfNumberOfEmployees">
+								{(field) => (
+									<field.SelectField
+										label="Headcount or FTE"
+										placeholder="Headcount"
+										options={TYPE_OF_NUMBER_OF_EMPLOYEES.map((t) => ({
+											label:
+												t === 'vsme:HeadcountMember'
+													? 'Headcount'
+													: 'Full-time equivalents (FTE)',
+											value: t,
+										}))}
+									/>
+								)}
+							</form.AppField>
 						</div>
 
 						{/* Row 5: Contact Person */}
@@ -281,6 +322,7 @@ export function B1GeneralForm() {
 								)}
 							</form.AppField>
 							{/* Empty column to match image layout if needed, or just full width */}
+
 							<div></div>
 						</div>
 
