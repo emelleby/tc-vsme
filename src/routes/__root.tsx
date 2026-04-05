@@ -17,7 +17,6 @@ import '@/lib/highcharts-theme'
 import ClerkProvider from '../integrations/clerk/provider'
 import ConvexProviderWithClerk from '../integrations/convex/provider'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-import AiDevtools from '../lib/ai-devtools'
 import StoreDevtools from '../lib/demo-store-devtools'
 import FormDevtools from '../lib/form-devtools'
 import appCss from '../styles.css?url'
@@ -102,7 +101,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 							render: <TanStackRouterDevtoolsPanel />,
 						},
 						FormDevtools,
-						AiDevtools,
 						StoreDevtools,
 						TanStackQueryDevtools,
 					]}
