@@ -25,7 +25,7 @@ export const Route = createFileRoute('/create-organization')({
 	component: CreateOrganizationPage,
 	beforeLoad: async () => {
 		// Fetch full authentication context
-		const authContext = await getAuthContext()
+		const authContext = await getAuthContext({})
 
 		// Check 1: User must be authenticated
 		if (!authContext) {
@@ -136,7 +136,7 @@ function CreateOrganizationPage() {
 
 			if (result.success) {
 				// Invalidate auth context cache to ensure fresh data on next navigation
-				await invalidateAuthContext()
+				await invalidateAuthContext({})
 
 				// Success! Redirect to dashboard
 				navigate({ to: '/app' })
