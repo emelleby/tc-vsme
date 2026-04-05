@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { ChefHat, Clock, Users, Gauge } from 'lucide-react'
-import { Streamdown } from 'streamdown'
+import { MarkdownText } from '@/components/MarkdownText'
 
 import type { Recipe } from './api.ai.structured'
 
@@ -287,7 +287,7 @@ function StructuredPage() {
                 <RecipeCard recipe={result.recipe} />
               ) : result.markdown ? (
                 <div className="prose prose-invert max-w-none">
-                  <Streamdown>{result.markdown}</Streamdown>
+                  <MarkdownText>{result.markdown}</MarkdownText>
                 </div>
               ) : null}
             </div>

@@ -1,9 +1,9 @@
 import { Store } from '@tanstack/store'
 import { ChefHat, Croissant, Send, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Streamdown } from 'streamdown'
 import type { ConferenceChatMessages } from '@/lib/conference-ai-hook'
 import { useConferenceChat } from '@/lib/conference-ai-hook'
+import { MarkdownText } from '@/components/MarkdownText'
 
 function Messages({ messages }: { messages: ConferenceChatMessages }) {
 	const messagesContainerRef = useRef<HTMLDivElement>(null)
@@ -58,7 +58,7 @@ function Messages({ messages }: { messages: ConferenceChatMessages }) {
 										</div>
 									)}
 									<div className="flex-1 min-w-0 text-cream prose dark:prose-invert max-w-none prose-sm prose-p:text-cream prose-headings:text-cream prose-strong:text-gold">
-										<Streamdown>{part.content}</Streamdown>
+										<MarkdownText>{part.content}</MarkdownText>
 									</div>
 								</div>
 							)
