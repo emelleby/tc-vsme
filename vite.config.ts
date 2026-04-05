@@ -31,7 +31,7 @@ const config = defineConfig({
 			projects: ['./tsconfig.json'],
 		}),
 		tailwindcss(),
-		tanstackStart({ preset: 'node-ws' }),
+		tanstackStart({ preset: 'cloudflare-workers' }),
 		// tanstackStart({ preset: 'cloudflare-pages' }),
 		viteReact({
 			babel: {
