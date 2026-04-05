@@ -1,9 +1,9 @@
 import { Store } from '@tanstack/store'
 import { ChefHat, Croissant, Send, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { MarkdownText } from '@/components/MarkdownText'
 import type { ConferenceChatMessages } from '@/lib/conference-ai-hook'
 import { useConferenceChat } from '@/lib/conference-ai-hook'
-import { MarkdownText } from '@/components/MarkdownText'
 
 function Messages({ messages }: { messages: ConferenceChatMessages }) {
 	const messagesContainerRef = useRef<HTMLDivElement>(null)
