@@ -7,7 +7,10 @@
     "build": "bun run --bun vite build",
     "preview": "bun run --bun vite preview",
     "test": "bun run --bun vitest run",
-    "start": "bun --preload ./.output/server/instrument.server.mjs .output/server/index.mjs",
+    
+
+    "deploy": "bun run --bun build && wrangler deploy",
+    "cf-typegen": "wrangler types",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "format": "biome format",
@@ -95,6 +98,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
+    "@cloudflare/vite-plugin": "^1.31.0",
     "@content-collections/core": "^0.13.1",
     "@content-collections/vite": "^0.2.8",
     "@edge-runtime/vm": "^5.0.0",
@@ -113,6 +117,7 @@
     "typescript": "^5.7.2",
     "vite": "^7.1.7",
     "vitest": "^3.0.5",
-    "web-vitals": "^5.1.0"
+    "web-vitals": "^5.1.0",
+    "wrangler": "^4.80.0"
   }
 }
