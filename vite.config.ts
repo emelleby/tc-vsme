@@ -28,7 +28,9 @@ const config = defineConfig(({ command }) => ({
 		}),
 		contentCollections(),
 		nitro(),
-		command === 'build' ? cloudflare({ viteEnvironment: { name: 'ssr' } }) : undefined,
+		command === 'build'
+			? cloudflare({ viteEnvironment: { name: 'ssr' } })
+			: undefined,
 		// this is the plugin that enables path aliases
 		viteTsConfigPaths({
 			projects: ['./tsconfig.json'],
