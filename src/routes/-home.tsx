@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { motion } from 'framer-motion'
 import {
 	ArrowRight,
 	BarChart3,
@@ -18,7 +19,6 @@ import {
 	Users,
 	Zap,
 } from 'lucide-react'
-import { motion } from 'motion/react'
 import {
 	Accordion,
 	AccordionContent,
