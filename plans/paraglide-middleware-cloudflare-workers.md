@@ -64,5 +64,5 @@ After changing `main` and deploying, check:
 
 ## Status
 
-- [ ] Change `wrangler.jsonc` `main` to `./src/server.ts`
+- [x] Change `wrangler.jsonc` `main` to `./src/server.ts`
 - [ ] Deploy and verify language rendering in production
