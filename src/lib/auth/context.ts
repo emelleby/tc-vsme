@@ -119,7 +119,7 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 
 		// Set auth token to act as the user
 		try {
-			// @ts-ignore - auth() returns different types in different environments, but getToken exists
+			// @ts-expect-error - auth() returns different types in different environments, but getToken exists
 			const token = await authResult.getToken({ template: 'convex' })
 			if (token) {
 				convex.setAuth(token)
@@ -129,7 +129,19 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 		}
 
 		// Fetch user permission flags from Convex
-		const userFlags = await convex.query(api.users.getPermissionFlags, {})
+		console.log('[getAuthContext] Querying Convex user flags:', CONVEX_URL)
+		let userFlags: Awaited<
+			ReturnType<typeof convex.query<typeof api.users.getPermissionFlags>>
+		>
+		try {
+			userFlags = await convex.query(api.users.getPermissionFlags, {})
+			console.log('[getAuthContext] User flags OK:', JSON.stringify(userFlags))
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
+			const stack = err instanceof Error ? (err.stack ?? message) : message
+			console.error('[getAuthContext] Convex user query failed:', stack)
+			throw err
+		}
 		const hasVsme = userFlags.hasVsme
 
 		// Initialize org flags
@@ -138,14 +150,24 @@ export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 
 		// Fetch org permission flags from Convex if organization is selected
 		if (orgId) {
-			const orgFlags = await convex.query(
-				api.organizations.getPermissionFlags,
-				{
-					clerkOrgId: orgId,
-				},
+			console.log(
+				'[getAuthContext] Querying Convex org flags for orgId:',
+				orgId,
 			)
-			orgHasVsme = orgFlags.hasVsme
-			vsmeDb = orgFlags.exists
+			try {
+				const orgFlags = await convex.query(
+					api.organizations.getPermissionFlags,
+					{ clerkOrgId: orgId },
+				)
+				console.log('[getAuthContext] Org flags OK:', JSON.stringify(orgFlags))
+				orgHasVsme = orgFlags.hasVsme
+				vsmeDb = orgFlags.exists
+			} catch (err) {
+				const message = err instanceof Error ? err.message : String(err)
+				const stack = err instanceof Error ? (err.stack ?? message) : message
+				console.error('[getAuthContext] Convex org query failed:', stack)
+				throw err
+			}
 		}
 
 		// Compute derived properties
