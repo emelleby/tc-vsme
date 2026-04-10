@@ -2,6 +2,7 @@ import { cloudflare } from '@cloudflare/vite-plugin'
 import contentCollections from '@content-collections/vite'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import tailwindcss from '@tailwindcss/vite'
+import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { visualizer } from 'rollup-plugin-visualizer'
@@ -42,6 +43,7 @@ const config = defineConfig({
 		},
 	},
 	plugins: [
+		devtools(),
 		// For production builds, we want to exclude the demo routes to reduce bundle size.
 		// excludeDemoRoutes(),
 		paraglideVitePlugin({

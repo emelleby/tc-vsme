@@ -1,6 +1,18 @@
 import { marked } from 'marked'
 import { useMemo } from 'react'
 
+// Escape characters that are special inside HTML attribute values.
+function escapeAttr(value: string): string {
+	return value
+		.replace(/&/g, '&amp;')
+		.replace(/"/g, '&quot;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+}
+
+// Allowlist of safe URL schemes; everything else is stripped.
+const SAFE_URL = /^(?:https?|mailto):/i
+
 // Strip raw HTML blocks and unsafe link protocols to prevent XSS.
 // marked has no built-in sanitizer since v2; we override the renderer instead.
 marked.use({
@@ -12,12 +24,14 @@ marked.use({
 			return ''
 		},
 		link({ href, title, text }) {
-			if (/^javascript:/i.test(href ?? '')) {
-				// Strip javascript: links — render the link text only.
+			const url = href ?? ''
+			if (!SAFE_URL.test(url)) {
+				// Unsafe protocol (e.g. javascript:, data:, vbscript:) — render text only.
 				return text
 			}
-			const titleAttr = title ? ` title="${title}"` : ''
-			return `<a href="${href}"${titleAttr} rel="noopener noreferrer" target="_blank">${text}</a>`
+			const safeHref = escapeAttr(url)
+			const titleAttr = title ? ` title="${escapeAttr(title)}"` : ''
+			return `<a href="${safeHref}"${titleAttr} rel="noopener noreferrer" target="_blank">${text}</a>`
 		},
 	},
 })
