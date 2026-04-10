@@ -34,13 +34,10 @@ export default {
 			)
 
 			// Safe, non-leaking response to the client
-			return new Response(
-				JSON.stringify({ error: 'Internal Server Error', message }),
-				{
-					status: 500,
-					headers: { 'Content-Type': 'application/json' },
-				},
-			)
+			return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+				status: 500,
+				headers: { 'Content-Type': 'application/json' },
+			})
 		}
 	},
 }
