@@ -1,7 +1,7 @@
 import { Store } from '@tanstack/store'
 import { ChefHat, Croissant, Send, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { MarkdownText } from '@/components/MarkdownText'
+import { MarkdownRenderer } from '@/components/MarkdownRenderer'
 import type { ConferenceChatMessages } from '@/lib/conference-ai-hook'
 import { useConferenceChat } from '@/lib/conference-ai-hook'
 
@@ -58,7 +58,7 @@ function Messages({ messages }: { messages: ConferenceChatMessages }) {
 										</div>
 									)}
 									<div className="flex-1 min-w-0 text-cream prose dark:prose-invert max-w-none prose-sm prose-p:text-cream prose-headings:text-cream prose-strong:text-gold">
-										<MarkdownText>{part.content}</MarkdownText>
+										<MarkdownRenderer>{part.content}</MarkdownRenderer>
 									</div>
 								</div>
 							)

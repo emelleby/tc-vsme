@@ -10,7 +10,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import GuitarRecommendation from '@/components/demo-GuitarRecommendation'
-import { MarkdownText } from '@/components/MarkdownText'
+import { MarkdownRenderer } from '@/components/MarkdownRenderer'
 import { useAudioRecorder } from '@/hooks/demo-useAudioRecorder'
 import { useTTS } from '@/hooks/demo-useTTS'
 import type { ChatMessages } from '@/lib/demo-ai-hook'
@@ -116,7 +116,7 @@ function Messages({
 													className="flex-1 min-w-0 prose dark:prose-invert max-w-none prose-sm"
 													key={index}
 												>
-													<MarkdownText>{part.content}</MarkdownText>
+													<MarkdownRenderer>{part.content}</MarkdownRenderer>
 												</div>
 											)
 										}
