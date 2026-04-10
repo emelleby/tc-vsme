@@ -19,9 +19,6 @@ import { api } from '../../../convex/_generated/api'
 import type { AuthContext } from './types'
 
 const CONVEX_URL = import.meta.env.VITE_CONVEX_URL
-if (!CONVEX_URL) {
-	throw new Error('VITE_CONVEX_URL is not set')
-}
 
 /**
  * In-memory cache for auth context
@@ -50,13 +47,17 @@ function getCacheKey(userId: string, orgId: string | null | undefined): string {
 export const invalidateAuthContext = createServerFn({
 	method: 'POST',
 }).handler(async (): Promise<void> => {
-	const authResult = await auth()
-	const userId = authResult.userId
-	const orgId = authResult.orgId
+	try {
+		const authResult = await auth()
+		const userId = authResult.userId
+		const orgId = authResult.orgId
 
-	if (userId) {
-		const cacheKey = getCacheKey(userId, orgId)
-		authContextCache.delete(cacheKey)
+		if (userId) {
+			const cacheKey = getCacheKey(userId, orgId)
+			authContextCache.delete(cacheKey)
+		}
+	} catch (error) {
+		console.warn('Failed to invalidate auth context:', error)
 	}
 })
 
@@ -96,101 +97,92 @@ export const invalidateAuthContext = createServerFn({
  */
 export const getAuthContext = createServerFn({ method: 'GET' }).handler(
 	async (): Promise<AuthContext | null> => {
-		// Get basic session info from Clerk (local JWT parsing - no API call)
-		const authResult = await auth()
-		const userId = authResult.userId
-		const orgId = authResult.orgId
-
-		// Return null if not authenticated
-		if (!userId) {
-			return null
-		}
-
-		// Check cache first
-		const cacheKey = getCacheKey(userId, orgId)
-		const cached = authContextCache.get(cacheKey)
-		if (cached !== undefined) {
-			// Cache hit - return immediately without Convex queries
-			return cached
-		}
-
-		// Initialize Convex client (server-side)
-		const convex = new ConvexHttpClient(CONVEX_URL)
-
-		// Set auth token to act as the user
 		try {
-			// @ts-expect-error - auth() returns different types in different environments, but getToken exists
-			const token = await authResult.getToken({ template: 'convex' })
-			if (token) {
-				convex.setAuth(token)
+			if (!CONVEX_URL) {
+				console.warn('VITE_CONVEX_URL is not set')
+				return null
 			}
-		} catch (err) {
-			console.warn('Failed to set auth token for Convex:', err)
-		}
 
-		// Fetch user permission flags from Convex
-		console.log('[getAuthContext] Querying Convex user flags:', CONVEX_URL)
-		let userFlags: Awaited<
-			ReturnType<typeof convex.query<typeof api.users.getPermissionFlags>>
-		>
-		try {
-			userFlags = await convex.query(api.users.getPermissionFlags, {})
-			console.log('[getAuthContext] User flags OK:', JSON.stringify(userFlags))
-		} catch (err) {
-			const message = err instanceof Error ? err.message : String(err)
-			const stack = err instanceof Error ? (err.stack ?? message) : message
-			console.error('[getAuthContext] Convex user query failed:', stack)
-			throw err
-		}
-		const hasVsme = userFlags.hasVsme
+			// Get basic session info from Clerk (local JWT parsing - no API call)
+			const authResult = await auth()
+			const userId = authResult.userId
+			const orgId = authResult.orgId
 
-		// Initialize org flags
-		let orgHasVsme = false
-		let vsmeDb = false
+			// Return null if not authenticated
+			if (!userId) {
+				return null
+			}
 
-		// Fetch org permission flags from Convex if organization is selected
-		if (orgId) {
-			console.log(
-				'[getAuthContext] Querying Convex org flags for orgId:',
-				orgId,
-			)
+			// Check cache first
+			const cacheKey = getCacheKey(userId, orgId)
+			const cached = authContextCache.get(cacheKey)
+			if (cached !== undefined) {
+				// Cache hit - return immediately without Convex queries
+				return cached
+			}
+
+			// Initialize Convex client (server-side)
+			const convex = new ConvexHttpClient(CONVEX_URL)
+
+			// Set auth token to act as the user
 			try {
+				const token = await (
+					authResult as {
+						getToken?: (options: { template: string }) => Promise<string | null>
+					}
+				).getToken?.({ template: 'convex' })
+				if (token) {
+					convex.setAuth(token)
+				}
+			} catch (err) {
+				console.warn('Failed to set auth token for Convex:', err)
+			}
+
+			// Fetch user permission flags from Convex
+			const userFlags = await convex.query(api.users.getPermissionFlags, {})
+			const hasVsme = userFlags.hasVsme
+
+			// Initialize org flags
+			let orgHasVsme = false
+			let vsmeDb = false
+
+			// Fetch org permission flags from Convex if organization is selected
+			if (orgId) {
 				const orgFlags = await convex.query(
 					api.organizations.getPermissionFlags,
-					{ clerkOrgId: orgId },
+					{
+						clerkOrgId: orgId,
+					},
 				)
-				console.log('[getAuthContext] Org flags OK:', JSON.stringify(orgFlags))
 				orgHasVsme = orgFlags.hasVsme
 				vsmeDb = orgFlags.exists
-			} catch (err) {
-				const message = err instanceof Error ? err.message : String(err)
-				const stack = err instanceof Error ? (err.stack ?? message) : message
-				console.error('[getAuthContext] Convex org query failed:', stack)
-				throw err
 			}
+
+			// Compute derived properties
+			const canAccessDashboard = orgHasVsme && vsmeDb
+			// User needs org setup if:
+			// 1. They have hasVsme but no org selected, OR
+			// 2. They have an org with orgHasVsme but no vsmeDb
+			const needsOrgSetup = hasVsme && (!orgId || (orgHasVsme && !vsmeDb))
+
+			const result: AuthContext = {
+				isAuthenticated: true,
+				userId,
+				orgId: orgId || null,
+				hasVsme,
+				orgHasVsme,
+				vsmeDb,
+				canAccessDashboard,
+				needsOrgSetup,
+			}
+
+			// Store in cache for future navigations
+			authContextCache.set(cacheKey, result)
+
+			return result
+		} catch (error) {
+			console.error('Failed to resolve auth context:', error)
+			return null
 		}
-
-		// Compute derived properties
-		const canAccessDashboard = orgHasVsme && vsmeDb
-		// User needs org setup if:
-		// 1. They have hasVsme but no org selected, OR
-		// 2. They have an org with orgHasVsme but no vsmeDb
-		const needsOrgSetup = hasVsme && (!orgId || (orgHasVsme && !vsmeDb))
-
-		const result: AuthContext = {
-			isAuthenticated: true,
-			userId,
-			orgId: orgId || null,
-			hasVsme,
-			orgHasVsme,
-			vsmeDb,
-			canAccessDashboard,
-			needsOrgSetup,
-		}
-
-		// Store in cache for future navigations
-		authContextCache.set(cacheKey, result)
-
-		return result
 	},
 )

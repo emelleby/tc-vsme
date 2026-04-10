@@ -4,9 +4,6 @@ import { ConvexHttpClient } from 'convex/browser'
 import { api } from '../../../convex/_generated/api'
 
 const CONVEX_URL = import.meta.env.VITE_CONVEX_URL
-if (!CONVEX_URL) {
-	throw new Error('VITE_CONVEX_URL is not set')
-}
 
 interface SetupOrganizationResult {
 	success: boolean
@@ -49,6 +46,10 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 	)
 	.handler(async ({ data }): Promise<SetupOrganizationResult> => {
 		try {
+			if (!CONVEX_URL) {
+				return { success: false, error: 'VITE_CONVEX_URL is not set' }
+			}
+
 			// Get authenticated user
 			const { userId, orgId } = await auth()
 
@@ -100,9 +101,10 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 
 			// Set auth token if available to act as the user
 			try {
-				// @ts-ignore - auth() returns different types in different environments, but getToken exists
-				const { getToken } = await auth()
-				const token = await getToken({ template: 'convex' })
+				const { getToken } = (await auth()) as {
+					getToken?: (options: { template: string }) => Promise<string | null>
+				}
+				const token = await getToken?.({ template: 'convex' })
 				if (token) {
 					convex.setAuth(token)
 				}

@@ -38,7 +38,7 @@ export const Route = createFileRoute('/_appLayout')({
 	component: RouteComponent,
 	beforeLoad: async () => {
 		// Fetch full authentication context with metadata
-		const authContext = await getAuthContext()
+		const authContext = await getAuthContext({})
 
 		const hasVsme = authContext?.hasVsme
 		const orgHasVsme = authContext?.orgHasVsme
