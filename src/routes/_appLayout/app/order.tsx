@@ -10,7 +10,7 @@ export const Route = createFileRoute('/_appLayout/app/order')({
 	component: OrderForm,
 })
 
-export function OrderForm() {
+function OrderForm() {
 	const orderForm = useAppForm({
 		defaultValues: {
 			product: 'basic',

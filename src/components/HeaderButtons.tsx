@@ -91,7 +91,6 @@ function SignedInButtons() {
 
 	return (
 		<div className="flex items-center gap-4">
-			<p>{hasVsme}</p>
 			{/* No VSME access: Show "Get Access" link */}
 			{!hasVsme && !orgHasVsme && (
 				<Link

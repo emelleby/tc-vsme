@@ -19,7 +19,7 @@ const config = defineConfig({
 			// conditions), which omits client-only exports like `use` and `setStyleProperty`.
 			// Since solid-js is only used by client-side devtools (never executed in SSR),
 			// we bypass the conditional exports and always use the full browser bundle.
-			'solid-js/web': 'solid-js/web/dist/web.js',
+			// 'solid-js/web': 'solid-js/web/dist/web.js',
 		},
 	},
 	plugins: [
@@ -30,7 +30,7 @@ const config = defineConfig({
 			strategy: ['url'],
 		}),
 		contentCollections(),
-		cloudflare({ viteEnvironment: { name: 'ssr' } }),
+		// cloudflare({ viteEnvironment: { name: 'ssr' } }),
 		// this is the plugin that enables path aliases
 		viteTsConfigPaths({
 			projects: ['./tsconfig.json'],

@@ -14,7 +14,7 @@ function Messages({ messages }: { messages: ChatMessages }) {
 	const messagesContainerRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
-		if (messagesContainerRef.current) {
+		if (messages && messagesContainerRef.current) {
 			messagesContainerRef.current.scrollTop =
 				messagesContainerRef.current.scrollHeight
 		}
@@ -40,22 +40,24 @@ function Messages({ messages }: { messages: ChatMessages }) {
 					}`}
 				>
 					{parts.map((part, index) => {
+						const partKey = `${id}-${index}`
 						if (part.type === 'text' && part.content) {
 							return (
-								<div key={index} className="flex items-start gap-2 px-4">
+								<div key={partKey} className="flex items-start gap-2 px-4">
 									{role === 'assistant' ? (
-										<div className="w-6 h-6 rounded-lg bg-linear-to-r from-orange-500 to-red-600 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
+										<div className="w-6 h-6 rounded-lg bg-linear-to-r from-orange-500 to-red-600 flex items-center justify-center text-xs font-medium text-white shrink-0">
 											AI
 										</div>
 									) : (
-										<div className="w-6 h-6 rounded-lg bg-gray-700 flex items-center justify-center text-xs font-medium text-white flex-shrink-0">
+										<div className="w-6 h-6 rounded-lg bg-gray-700 flex items-center justify-center text-xs font-medium text-white shrink-0">
 											Y
 										</div>
 									)}
 									<div
 										className="flex-1 min-w-0 text-white prose dark:prose-invert max-w-none prose-sm"
+										// biome-ignore lint/security/noDangerouslySetInnerHtml: We trust marked output here
 										dangerouslySetInnerHTML={{
-											__html: marked(part.content) as string,
+											__html: marked.parse(part.content) as string,
 										}}
 									/>
 								</div>
@@ -67,11 +69,12 @@ function Messages({ messages }: { messages: ChatMessages }) {
 							part.output
 						) {
 							return (
-								<div key={part.id} className="max-w-[80%] mx-auto">
+								<div key={partKey} className="max-w-[80%] mx-auto">
 									<GuitarRecommendation id={String(part.output?.id)} />
 								</div>
 							)
 						}
+						return null
 					})}
 				</div>
 			))}
@@ -80,13 +83,14 @@ function Messages({ messages }: { messages: ChatMessages }) {
 }
 
 export default function AIAssistant() {
-	const isOpen = useStore(showAIAssistant)
+	const isOpen = useStore(showAIAssistant, (state) => state)
 	const { messages, sendMessage } = useGuitarRecommendationChat()
 	const [input, setInput] = useState('')
 
 	return (
 		<div className="relative z-50">
 			<button
+				type="button"
 				onClick={() => showAIAssistant.setState((state) => !state)}
 				className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg bg-linear-to-r from-green-700 to-green-900 text-white hover:opacity-90 transition-opacity"
 			>
@@ -102,6 +106,7 @@ export default function AIAssistant() {
 					<div className="flex items-center justify-between p-3 border-b border-orange-500/20">
 						<h3 className="font-semibold text-white">AI Assistant</h3>
 						<button
+							type="button"
 							onClick={() => showAIAssistant.setState((state) => !state)}
 							className="text-gray-400 hover:text-white transition-colors"
 						>

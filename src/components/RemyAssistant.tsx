@@ -1,3 +1,4 @@
+import { useStore } from '@tanstack/react-store'
 import { Store } from '@tanstack/store'
 import { ChefHat, Croissant, Send, X } from 'lucide-react'
 import { marked } from 'marked'
@@ -9,7 +10,7 @@ function Messages({ messages }: { messages: ConferenceChatMessages }) {
 	const messagesContainerRef = useRef<HTMLDivElement>(null)
 
 	useEffect(() => {
-		if (messagesContainerRef.current) {
+		if (messages && messagesContainerRef.current) {
 			messagesContainerRef.current.scrollTop =
 				messagesContainerRef.current.scrollHeight
 		}
@@ -40,27 +41,29 @@ function Messages({ messages }: { messages: ConferenceChatMessages }) {
 					key={id}
 					className={`py-3 ${
 						role === 'assistant'
-							? 'bg-gradient-to-r from-copper/5 via-gold/5 to-copper/5'
+							? 'bg-linear-to-r from-copper/5 via-gold/5 to-copper/5'
 							: 'bg-transparent'
 					}`}
 				>
 					{parts.map((part, index) => {
+						const partKey = `${id}-${index}`
 						if (part.type === 'text' && part.content) {
 							return (
-								<div key={index} className="flex items-start gap-3 px-4">
+								<div key={partKey} className="flex items-start gap-3 px-4">
 									{role === 'assistant' ? (
-										<div className="w-7 h-7 rounded-full bg-gradient-to-br from-copper via-copper-dark to-gold flex items-center justify-center text-xs font-bold text-charcoal flex-shrink-0 shadow-lg shadow-copper/20">
+										<div className="w-7 h-7 rounded-full bg-linear-to-br from-copper via-copper-dark to-gold flex items-center justify-center text-xs font-bold text-charcoal shrink-0 shadow-lg shadow-copper/20">
 											👨‍🍳
 										</div>
 									) : (
-										<div className="w-7 h-7 rounded-full bg-charcoal-light flex items-center justify-center text-xs font-medium text-cream flex-shrink-0 border border-border/50">
+										<div className="w-7 h-7 rounded-full bg-charcoal-light flex items-center justify-center text-xs font-medium text-cream shrink-0 border border-border/50">
 											You
 										</div>
 									)}
 									<div
 										className="flex-1 min-w-0 text-cream prose dark:prose-invert max-w-none prose-sm prose-p:text-cream prose-headings:text-cream prose-strong:text-gold"
+										// biome-ignore lint/security/noDangerouslySetInnerHtml: Trusted markdown content
 										dangerouslySetInnerHTML={{
-											__html: marked(part.content) as string,
+											__html: marked.parse(part.content) as string,
 										}}
 									/>
 								</div>
@@ -90,24 +93,15 @@ export default function RemyAssistant({
 	contextTitle,
 	position = 'fixed',
 }: RemyAssistantProps) {
-	const [isOpen, setIsOpen] = useState(false)
+	const isOpen = useStore(showRemyAssistant, (state) => state)
 	const { messages, sendMessage, isLoading } = useConferenceChat(
 		speakerSlug,
 		talkSlug,
 	)
 	const [input, setInput] = useState('')
 
-	// Sync with store for header control
-	useEffect(() => {
-		return showRemyAssistant.subscribe(() => {
-			setIsOpen(showRemyAssistant.state)
-		})
-	}, [])
-
 	const handleToggle = () => {
-		const newState = !isOpen
-		setIsOpen(newState)
-		showRemyAssistant.setState(() => newState)
+		showRemyAssistant.setState((state) => !state)
 	}
 
 	const handleSend = () => {
@@ -124,12 +118,12 @@ export default function RemyAssistant({
 			className={`${position} top-36 right-4 z-100 w-100 h-130 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-copper/20 backdrop-blur-xl bg-linear-to-b from-charcoal/98 via-charcoal/95 to-charcoal-light/98`}
 		>
 			{/* Decorative top gradient */}
-			<div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-copper/10 via-gold/5 to-transparent pointer-events-none" />
+			<div className="absolute top-0 left-0 right-0 h-32 bg-linear-to-b from-copper/10 via-gold/5 to-transparent pointer-events-none" />
 
 			{/* Header */}
 			<div className="relative flex items-center justify-between p-4 border-b border-copper/10">
 				<div className="flex items-center gap-3">
-					<div className="w-10 h-10 rounded-xl bg-gradient-to-br from-copper via-copper-dark to-gold flex items-center justify-center shadow-lg shadow-copper/30 rotate-3 hover:rotate-0 transition-transform">
+					<div className="w-10 h-10 rounded-xl bg-linear-to-br from-copper via-copper-dark to-gold flex items-center justify-center shadow-lg shadow-copper/30 rotate-3 hover:rotate-0 transition-transform">
 						<span className="text-lg">👨‍🍳</span>
 					</div>
 					<div>
@@ -144,6 +138,7 @@ export default function RemyAssistant({
 					</div>
 				</div>
 				<button
+					type="button"
 					onClick={handleToggle}
 					className="text-cream/50 hover:text-cream transition-colors p-2 hover:bg-white/5 rounded-xl"
 				>
@@ -205,7 +200,7 @@ export default function RemyAssistant({
 						<button
 							type="submit"
 							disabled={!input.trim() || isLoading}
-							className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-gradient-to-r from-copper to-copper-dark text-charcoal disabled:opacity-30 disabled:bg-gray-600 disabled:from-gray-600 disabled:to-gray-600 transition-all hover:shadow-lg hover:shadow-copper/20"
+							className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg bg-linear-to-r from-copper to-copper-dark text-charcoal disabled:opacity-30 disabled:bg-gray-600 disabled:from-gray-600 disabled:to-gray-600 transition-all hover:shadow-lg hover:shadow-copper/20"
 						>
 							<Send className="w-4 h-4" />
 						</button>

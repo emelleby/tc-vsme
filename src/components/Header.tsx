@@ -1,6 +1,6 @@
 'use client'
 
-import { OrganizationSwitcher } from '@clerk/tanstack-react-start'
+import { OrganizationSwitcher, SignedIn } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { Menu } from 'lucide-react'
 import { useState } from 'react'
@@ -27,7 +27,7 @@ export default function Header() {
 							<Button
 								variant="ghost"
 								size="sm"
-								className="xl:hidden"
+								className="md:hidden"
 								aria-label="Open navigation menu"
 							>
 								<Menu className="size-5" />
@@ -75,10 +75,20 @@ export default function Header() {
 						</SheetContent>
 					</Sheet>
 
-					{/* Logo/Brand - Desktop Only */}
+					{/* Logo/Brand */}
 					<Link
 						to="/"
-						className="hidden xl:flex items-center gap-2 hover:opacity-80 transition-opacity"
+						className="flex md:hidden items-center gap-2 hover:opacity-80 transition-opacity"
+					>
+						<img
+							src="/tanstack-word-logo-white.svg"
+							alt="TanStack Logo"
+							className="h-8"
+						/>
+					</Link>
+					<Link
+						to="/"
+						className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity"
 					>
 						<img
 							src="/tanstack-word-logo-white.svg"
@@ -90,8 +100,8 @@ export default function Header() {
 						</span>
 					</Link>
 
-					{/* Navigation Links - Desktop Only */}
-					<nav className="hidden xl:flex items-center gap-6">
+					{/* Navigation Links - md and up */}
+					<nav className="hidden md:flex items-center gap-6">
 						<Link
 							to="/demo"
 							className="text-sm font-medium text-foreground hover:text-accent transition-colors"
@@ -112,16 +122,18 @@ export default function Header() {
 						</Link>
 					</nav>
 
-					{/* Right Side Controls - Always Visible */}
-					<div className="flex items-center gap-2 xl:gap-4">
-						<OrganizationSwitcher
-							hidePersonal
-							skipInvitationScreen
-							afterSelectOrganizationUrl="/app"
-							appearance={{
-								baseTheme: undefined,
-							}}
-						/>
+					{/* Right Side Controls */}
+					<div className="flex items-center gap-2 md:gap-4">
+						<SignedIn>
+							<OrganizationSwitcher
+								hidePersonal
+								skipInvitationScreen
+								afterSelectOrganizationUrl="/app"
+								appearance={{
+									baseTheme: undefined,
+								}}
+							/>
+						</SignedIn>
 						<HeaderButtons />
 					</div>
 				</div>
