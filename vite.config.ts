@@ -5,7 +5,6 @@ import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
-import { nitro } from 'nitro/vite'
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
@@ -14,12 +13,6 @@ const config = defineConfig({
 	resolve: {
 		alias: {
 			'@': fileURLToPath(new URL('./src', import.meta.url)),
-			// TanStack devtools depend on solid-js internally. In SSR/worker environments
-			// Vite resolves solid-js/web to its server.js stub (via `node`/`worker` export
-			// conditions), which omits client-only exports like `use` and `setStyleProperty`.
-			// Since solid-js is only used by client-side devtools (never executed in SSR),
-			// we bypass the conditional exports and always use the full browser bundle.
-			// 'solid-js/web': 'solid-js/web/dist/web.js',
 		},
 	},
 	plugins: [
@@ -31,7 +24,7 @@ const config = defineConfig({
 		}),
 		contentCollections(),
 		// cloudflare({ viteEnvironment: { name: 'ssr' } }),
-		// this is the plugin that enables path aliases
+		// this is the plugin that enables path aliases, I guess
 		viteTsConfigPaths({
 			projects: ['./tsconfig.json'],
 		}),
