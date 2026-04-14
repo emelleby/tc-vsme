@@ -1,8 +1,9 @@
-import { cloudflare } from '@cloudflare/vite-plugin'
+// import { cloudflare } from '@cloudflare/vite-plugin'
 import contentCollections from '@content-collections/vite'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
+import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'url'
@@ -31,6 +32,7 @@ const config = defineConfig({
 		tailwindcss(),
 		tanstackStart(),
 		// tanstackStart({ preset: 'cloudflare-workers' }),
+		nitroV2Plugin({ preset: 'cloudflare-workers' }),
 		viteReact({
 			babel: {
 				plugins: ['babel-plugin-react-compiler'],
