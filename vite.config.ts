@@ -40,6 +40,20 @@ const config = defineConfig({
 			},
 		}),
 	],
+	ssr: {
+		resolve: {
+			conditions: ['browser', 'default'],
+			externalConditions: ['browser', 'default'],
+		},
+		optimizeDeps: {
+			exclude: [
+				'@tanstack/react-router-devtools',
+				'@tanstack/devtools-utils',
+				'@tanstack/ai-devtools-core',
+				'@tanstack/react-ai-devtools',
+			],
+		},
+	},
 })
 
 export default config
