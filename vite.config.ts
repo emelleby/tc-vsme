@@ -24,15 +24,16 @@ const config = defineConfig({
 			strategy: ['url'],
 		}),
 		contentCollections(),
-		nitro(),
+
 		cloudflare({ viteEnvironment: { name: 'ssr' } }),
 		// this is the plugin that enables path aliases
 		viteTsConfigPaths({
 			projects: ['./tsconfig.json'],
 		}),
 		tailwindcss(),
-		tanstackStart({ preset: 'node-ws' }),
-		// tanstackStart({ preset: 'cloudflare-pages' }),
+		// tanstackStart({ preset: 'node-ws' }),
+		// tanstackStart({ preset: 'cloudflare-workers' }),
+		tanstackStart({}),
 		viteReact({
 			babel: {
 				plugins: ['babel-plugin-react-compiler'],

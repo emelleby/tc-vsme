@@ -361,9 +361,9 @@ export interface FileRoutesByFullPath {
   '/demo/i18n': typeof DemoI18nRoute
   '/speakers/$slug': typeof SpeakersSlugRoute
   '/talks/$slug': typeof TalksSlugRoute
-  '/schedule': typeof ScheduleIndexRoute
-  '/speakers': typeof SpeakersIndexRoute
-  '/talks': typeof TalksIndexRoute
+  '/schedule/': typeof ScheduleIndexRoute
+  '/speakers/': typeof SpeakersIndexRoute
+  '/talks/': typeof TalksIndexRoute
   '/app/emissions': typeof AppLayoutAppEmissionsRoute
   '/app/order': typeof AppLayoutAppOrderRoute
   '/demo/ai-chat': typeof DemoLayoutDemoAiChatRoute
@@ -375,8 +375,8 @@ export interface FileRoutesByFullPath {
   '/demo/storybook': typeof DemoLayoutDemoStorybookRoute
   '/demo/table': typeof DemoLayoutDemoTableRoute
   '/demo/tanstack-query': typeof DemoLayoutDemoTanstackQueryRoute
-  '/app': typeof AppLayoutAppIndexRoute
-  '/demo': typeof DemoLayoutDemoIndexRoute
+  '/app/': typeof AppLayoutAppIndexRoute
+  '/demo/': typeof DemoLayoutDemoIndexRoute
   '/demo/api/names': typeof DemoLayoutDemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoLayoutDemoApiTqTodosRoute
   '/demo/form/address': typeof DemoLayoutDemoFormAddressRoute
@@ -386,13 +386,13 @@ export interface FileRoutesByFullPath {
   '/demo/sentry/testing': typeof DemoLayoutDemoSentryTestingRoute
   '/demo/start/api-request': typeof DemoLayoutDemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoLayoutDemoStartServerFuncsRoute
-  '/app/environmental': typeof AppLayoutAppEnvironmentalIndexRoute
-  '/app/general': typeof AppLayoutAppGeneralIndexRoute
-  '/app/governance': typeof AppLayoutAppGovernanceIndexRoute
-  '/app/settings': typeof AppLayoutAppSettingsIndexRoute
-  '/app/social': typeof AppLayoutAppSocialIndexRoute
-  '/app/targets': typeof AppLayoutAppTargetsIndexRoute
-  '/demo/guitars': typeof DemoLayoutDemoGuitarsIndexRoute
+  '/app/environmental/': typeof AppLayoutAppEnvironmentalIndexRoute
+  '/app/general/': typeof AppLayoutAppGeneralIndexRoute
+  '/app/governance/': typeof AppLayoutAppGovernanceIndexRoute
+  '/app/settings/': typeof AppLayoutAppSettingsIndexRoute
+  '/app/social/': typeof AppLayoutAppSocialIndexRoute
+  '/app/targets/': typeof AppLayoutAppTargetsIndexRoute
+  '/demo/guitars/': typeof DemoLayoutDemoGuitarsIndexRoute
   '/demo/api/ai/chat': typeof DemoLayoutDemoApiAiChatRoute
   '/demo/api/ai/image': typeof DemoLayoutDemoApiAiImageRoute
   '/demo/api/ai/structured': typeof DemoLayoutDemoApiAiStructuredRoute
@@ -401,7 +401,7 @@ export interface FileRoutesByFullPath {
   '/demo/start/ssr/data-only': typeof DemoLayoutDemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoLayoutDemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoLayoutDemoStartSsrSpaModeRoute
-  '/demo/start/ssr': typeof DemoLayoutDemoStartSsrIndexRoute
+  '/demo/start/ssr/': typeof DemoLayoutDemoStartSsrIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -525,9 +525,9 @@ export interface FileRouteTypes {
     | '/demo/i18n'
     | '/speakers/$slug'
     | '/talks/$slug'
-    | '/schedule'
-    | '/speakers'
-    | '/talks'
+    | '/schedule/'
+    | '/speakers/'
+    | '/talks/'
     | '/app/emissions'
     | '/app/order'
     | '/demo/ai-chat'
@@ -539,8 +539,8 @@ export interface FileRouteTypes {
     | '/demo/storybook'
     | '/demo/table'
     | '/demo/tanstack-query'
-    | '/app'
-    | '/demo'
+    | '/app/'
+    | '/demo/'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -550,13 +550,13 @@ export interface FileRouteTypes {
     | '/demo/sentry/testing'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
-    | '/app/environmental'
-    | '/app/general'
-    | '/app/governance'
-    | '/app/settings'
-    | '/app/social'
-    | '/app/targets'
-    | '/demo/guitars'
+    | '/app/environmental/'
+    | '/app/general/'
+    | '/app/governance/'
+    | '/app/settings/'
+    | '/app/social/'
+    | '/app/targets/'
+    | '/demo/guitars/'
     | '/demo/api/ai/chat'
     | '/demo/api/ai/image'
     | '/demo/api/ai/structured'
@@ -565,7 +565,7 @@ export interface FileRouteTypes {
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
-    | '/demo/start/ssr'
+    | '/demo/start/ssr/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -726,14 +726,14 @@ declare module '@tanstack/react-router' {
     '/_demoLayout': {
       id: '/_demoLayout'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof DemoLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_appLayout': {
       id: '/_appLayout'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AppLayoutRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -747,21 +747,21 @@ declare module '@tanstack/react-router' {
     '/talks/': {
       id: '/talks/'
       path: '/talks'
-      fullPath: '/talks'
+      fullPath: '/talks/'
       preLoaderRoute: typeof TalksIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/speakers/': {
       id: '/speakers/'
       path: '/speakers'
-      fullPath: '/speakers'
+      fullPath: '/speakers/'
       preLoaderRoute: typeof SpeakersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/schedule/': {
       id: '/schedule/'
       path: '/schedule'
-      fullPath: '/schedule'
+      fullPath: '/schedule/'
       preLoaderRoute: typeof ScheduleIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -803,14 +803,14 @@ declare module '@tanstack/react-router' {
     '/_demoLayout/demo/': {
       id: '/_demoLayout/demo/'
       path: '/demo'
-      fullPath: '/demo'
+      fullPath: '/demo/'
       preLoaderRoute: typeof DemoLayoutDemoIndexRouteImport
       parentRoute: typeof DemoLayoutRouteRoute
     }
     '/_appLayout/app/': {
       id: '/_appLayout/app/'
       path: '/app'
-      fullPath: '/app'
+      fullPath: '/app/'
       preLoaderRoute: typeof AppLayoutAppIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
@@ -894,49 +894,49 @@ declare module '@tanstack/react-router' {
     '/_demoLayout/demo/guitars/': {
       id: '/_demoLayout/demo/guitars/'
       path: '/demo/guitars'
-      fullPath: '/demo/guitars'
+      fullPath: '/demo/guitars/'
       preLoaderRoute: typeof DemoLayoutDemoGuitarsIndexRouteImport
       parentRoute: typeof DemoLayoutRouteRoute
     }
     '/_appLayout/app/targets/': {
       id: '/_appLayout/app/targets/'
       path: '/app/targets'
-      fullPath: '/app/targets'
+      fullPath: '/app/targets/'
       preLoaderRoute: typeof AppLayoutAppTargetsIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
     '/_appLayout/app/social/': {
       id: '/_appLayout/app/social/'
       path: '/app/social'
-      fullPath: '/app/social'
+      fullPath: '/app/social/'
       preLoaderRoute: typeof AppLayoutAppSocialIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
     '/_appLayout/app/settings/': {
       id: '/_appLayout/app/settings/'
       path: '/app/settings'
-      fullPath: '/app/settings'
+      fullPath: '/app/settings/'
       preLoaderRoute: typeof AppLayoutAppSettingsIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
     '/_appLayout/app/governance/': {
       id: '/_appLayout/app/governance/'
       path: '/app/governance'
-      fullPath: '/app/governance'
+      fullPath: '/app/governance/'
       preLoaderRoute: typeof AppLayoutAppGovernanceIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
     '/_appLayout/app/general/': {
       id: '/_appLayout/app/general/'
       path: '/app/general'
-      fullPath: '/app/general'
+      fullPath: '/app/general/'
       preLoaderRoute: typeof AppLayoutAppGeneralIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
     '/_appLayout/app/environmental/': {
       id: '/_appLayout/app/environmental/'
       path: '/app/environmental'
-      fullPath: '/app/environmental'
+      fullPath: '/app/environmental/'
       preLoaderRoute: typeof AppLayoutAppEnvironmentalIndexRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
@@ -1006,7 +1006,7 @@ declare module '@tanstack/react-router' {
     '/_demoLayout/demo/start/ssr/': {
       id: '/_demoLayout/demo/start/ssr/'
       path: '/demo/start/ssr'
-      fullPath: '/demo/start/ssr'
+      fullPath: '/demo/start/ssr/'
       preLoaderRoute: typeof DemoLayoutDemoStartSsrIndexRouteImport
       parentRoute: typeof DemoLayoutRouteRoute
     }
