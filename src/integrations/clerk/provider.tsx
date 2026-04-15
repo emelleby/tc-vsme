@@ -41,8 +41,8 @@ export default function AppClerkProvider({
 				cssLayerName: 'clerk',
 				theme: isDark ? dark : undefined,
 				variables: {
-					colorPrimary: isDark 
-						? 'oklch(0.6002 0.1038 184.7)' 
+					colorPrimary: isDark
+						? 'oklch(0.6002 0.1038 184.7)'
 						: 'oklch(0.6085 0.1058 182.4)', // --primary
 					colorBackground: isDark
 						? 'oklch(0.13 0.01 60)'

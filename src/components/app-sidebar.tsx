@@ -194,8 +194,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					afterSelectOrganizationUrl="/app"
 					appearance={{
 						elements: {
-							rootBox: 'flex w-full items-center border-b border-sidebar-border pb-2',
-							organizationSwitcherTrigger: 'flex w-full justify-start items-center hover:bg-sidebar-accent hover:text-sidebar-accent-foreground p-2 rounded-md transition-colors',
+							rootBox:
+								'flex w-full items-center border-b border-sidebar-border pb-2',
+							organizationSwitcherTrigger:
+								'flex w-full justify-start items-center hover:bg-sidebar-accent hover:text-sidebar-accent-foreground p-2 rounded-md transition-colors',
 							organizationSwitcherTriggerIcon: 'ml-auto shrink-0 w-5 h-5',
 						},
 					}}
