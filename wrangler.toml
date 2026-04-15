@@ -17,7 +17,7 @@ CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
 
 [env.staging]
 name = "tc-vsme-staging"
-routes = [{ pattern = "staging.tc-vsme.com", custom_domain = true }]
+routes = [{ pattern = "staging.emelleby.workers.dev", }]
 
 [env.staging.vars]
 VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
@@ -28,7 +28,7 @@ CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
 
 
 [env.production]
-name = "tc-vsme-production"
+name = "321-vsme-production"
 routes = [{ pattern = "tc-vsme.com", custom_domain = true }]
 
 [env.production.vars]
