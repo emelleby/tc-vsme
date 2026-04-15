@@ -1,0 +1,40 @@
+name = "tc-vsme"
+assets = { directory = ".output/public" }
+compatibility_date = "2026-04-15"
+compatibility_flags = ["nodejs_compat"]
+main = "src/server.ts"
+
+[observability]
+enabled = true
+
+[vars]
+VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
+CONVEX_JWT_AUDIENCE = "convex-tc-vsme"
+VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
+VITE_CONVEX_SITE_URL = "https://fine-echidna-604.convex.site"
+CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
+
+
+[env.staging]
+name = "tc-vsme-staging"
+routes = [{ pattern = "staging.tc-vsme.com", custom_domain = true }]
+
+[env.staging.vars]
+VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
+CONVEX_JWT_AUDIENCE = "convex-tc-vsme"
+VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
+VITE_CONVEX_SITE_URL = "https://fine-echidna-604.convex.site"
+CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
+
+
+[env.production]
+name = "tc-vsme-production"
+routes = [{ pattern = "tc-vsme.com", custom_domain = true }]
+
+[env.production.vars]
+VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
+CONVEX_JWT_AUDIENCE = "convex-tc-vsme"
+VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
+VITE_CONVEX_SITE_URL = "https://fine-echidna-604.convex.site"
+CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
+
