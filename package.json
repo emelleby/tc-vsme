@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.49.0",
-    "@clerk/tanstack-react-start": "^0.27.14",
+    "@clerk/tanstack-react-start": "^1.1.0",
     "@clerk/themes": "^2.4.48",
     "@convex-dev/react-query": "^0.1.0",
     "@faker-js/faker": "^10.0.0",
