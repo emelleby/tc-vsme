@@ -1,5 +1,5 @@
 'use client'
-import { OrganizationSwitcher } from "@clerk/react"
+import { OrganizationSwitcher } from '@clerk/react'
 import { Link } from '@tanstack/react-router'
 
 import {
@@ -186,45 +186,32 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
-        <Sidebar collapsible="icon" {...props}>
-            <SidebarHeader>
+		<Sidebar collapsible="icon" {...props}>
+			<SidebarHeader>
 				<OrganizationSwitcher
 					hidePersonal
 					skipInvitationScreen
 					afterSelectOrganizationUrl="/app"
 					appearance={{
-						theme: undefined,
 						elements: {
-							rootBox: {
-								width: '100%',
-								borderBottom: '1px solid #eee',
-								paddingBottom: '4px',
-							},
-							organizationSwitcherTrigger: {
-								width: '100%',
-								justifyContent: 'flex-start',
-							},
-							organizationSwitcherTriggerIcon: {
-								flexShrink: '0',
-								width: '1.3rem',
-								height: '1.3rem',
-								marginLeft: 'auto',
-							},
+							rootBox: 'flex w-full items-center border-b border-sidebar-border pb-2',
+							organizationSwitcherTrigger: 'flex w-full justify-start items-center hover:bg-sidebar-accent hover:text-sidebar-accent-foreground p-2 rounded-md transition-colors',
+							organizationSwitcherTriggerIcon: 'ml-auto shrink-0 w-5 h-5',
 						},
 					}}
 				/>
 
 				<YearSelector />
 			</SidebarHeader>
-            <SidebarContent>
+			<SidebarContent>
 				<NavMain items={data.navMain} />
 				{/* <NavProjects projects={data.projects} /> */}
 			</SidebarContent>
-            <SidebarFooter>
+			<SidebarFooter>
 				<Link to="/demo">Demo</Link>
 				<NavUser />
 			</SidebarFooter>
-            <SidebarRail />
-        </Sidebar>
-    );
+			<SidebarRail />
+		</Sidebar>
+	)
 }
