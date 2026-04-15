@@ -7,17 +7,10 @@ main = "src/server.ts"
 [observability]
 enabled = true
 
-[vars]
-VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
-CONVEX_JWT_AUDIENCE = "convex-tc-vsme"
-VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
-VITE_CONVEX_SITE_URL = "https://fine-echidna-604.convex.site"
-CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
-
 
 [env.staging]
-name = "tc-vsme-staging"
-routes = [{ pattern = "staging.emelleby.workers.dev", }]
+name = "tc-vsme"
+routes = [{ pattern = "staging.emelleby.workers.dev", custom_domain = false }]
 
 [env.staging.vars]
 VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
