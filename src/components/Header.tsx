@@ -1,6 +1,6 @@
 'use client'
 
-import { OrganizationSwitcher, SignedIn } from '@clerk/tanstack-react-start'
+import { OrganizationSwitcher, Show } from '@clerk/tanstack-react-start'
 import { Link } from '@tanstack/react-router'
 import { Menu } from 'lucide-react'
 import { useState } from 'react'
@@ -18,8 +18,8 @@ export default function Header() {
 	const [isOpen, setIsOpen] = useState(false)
 
 	return (
-		<header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 shadow-md">
-			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 shadow-md">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex items-center justify-between h-16">
 					{/* Mobile Menu Trigger */}
 					<Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -124,20 +124,20 @@ export default function Header() {
 
 					{/* Right Side Controls */}
 					<div className="flex items-center gap-2 md:gap-4">
-						<SignedIn>
+						<Show when="signed-in">
 							<OrganizationSwitcher
 								hidePersonal
 								skipInvitationScreen
 								afterSelectOrganizationUrl="/app"
 								appearance={{
-									baseTheme: undefined,
+									theme: undefined,
 								}}
 							/>
-						</SignedIn>
+						</Show>
 						<HeaderButtons />
 					</div>
 				</div>
 			</div>
-		</header>
-	)
+        </header>
+    );
 }

@@ -15,7 +15,7 @@ export default defineConfig({
 	test: {
 		globals: true,
 		setupFiles: [],
-		exclude: ['node_modules', '.output', 'dist'],
+		exclude: ['node_modules', '.output', 'dist', '.kilo', '.kilocode'],
 		projects: [
 			{
 				name: 'edge-runtime',

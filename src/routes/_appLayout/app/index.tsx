@@ -1,4 +1,4 @@
-import { useOrganization, useUser } from '@clerk/clerk-react'
+import { useOrganization, useUser } from "@clerk/react"
 import { createFileRoute } from '@tanstack/react-router'
 import { useConvexAuth, useQuery } from 'convex/react'
 import {

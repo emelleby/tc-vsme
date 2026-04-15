@@ -106,8 +106,12 @@ export const setupOrganization = createServerFn({ method: 'POST' })
 				if (token) {
 					convex.setAuth(token)
 				}
-			} catch (err) {
-				console.warn('Failed to set auth token for Convex:', err)
+			} catch (err: any) {
+				if (err?.name === 'ClerkOfflineError' || err?.message?.includes('clerk_runtime_not_browser')) {
+					console.warn('Failed to set auth token for Convex:', err.name || 'Runtime not browser')
+				} else {
+					console.warn('Failed to set auth token for Convex:', err)
+				}
 			}
 
 			// Step 1: Upsert organization in Convex (create or update with correct data)

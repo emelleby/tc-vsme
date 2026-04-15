@@ -1,4 +1,4 @@
-import { useOrganizationList, useUser } from '@clerk/clerk-react'
+import { useOrganizationList, useUser } from '@clerk/react'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
@@ -130,7 +130,8 @@ function CreateOrganizationPage() {
 					naceCode: selectedOrg.naeringskode1?.kode,
 					industry: selectedOrg.naeringskode1?.beskrivelse,
 					numberEmployees: selectedOrg.antallAnsatte,
-					businessModel: selectedOrg.aktivitet?.join(' '),
+					// businessModel: selectedOrg.aktivitet?.join(' '),
+					// TODO: productsAndServices
 				},
 			})
 

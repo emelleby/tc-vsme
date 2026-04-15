@@ -1,5 +1,5 @@
-import { ClerkProvider } from '@clerk/clerk-react'
-import { dark } from '@clerk/themes'
+import { ClerkProvider } from "@clerk/react"
+import { dark } from "@clerk/ui/themes"
 import { useEffect, useState } from 'react'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -34,28 +34,28 @@ export default function AppClerkProvider({
 	}, [])
 
 	return (
-		<ClerkProvider
+        <ClerkProvider
 			publishableKey={PUBLISHABLE_KEY}
 			afterSignOutUrl="/"
 			appearance={{
-				baseTheme: isDark ? dark : undefined,
+				theme: isDark ? dark : undefined,
 				variables: {
 					colorPrimary: 'oklch(0.65 0.14 55)', // --primary
 					colorBackground: isDark
 						? 'oklch(0.13 0.01 60)'
 						: 'oklch(0.98 0.01 85)', // --background
-					colorText: isDark ? 'oklch(0.93 0.02 85)' : 'oklch(0.13 0.01 60)', // --foreground
-					colorInputBackground: isDark
+					colorForeground: isDark ? 'oklch(0.93 0.02 85)' : 'oklch(0.13 0.01 60)', // --foreground
+					colorInput: isDark
 						? 'oklch(0.22 0.02 55)'
 						: 'oklch(0.95 0.01 85)', // --input
-					colorInputText: isDark
+					colorInputForeground: isDark
 						? 'oklch(0.93 0.02 85)'
 						: 'oklch(0.13 0.01 60)', // --foreground
 					borderRadius: '0.625rem', // --radius
 				},
 			}}
 		>
-			{children}
-		</ClerkProvider>
-	)
+            {children}
+        </ClerkProvider>
+    );
 }

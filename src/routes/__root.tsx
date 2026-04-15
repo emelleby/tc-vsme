@@ -73,43 +73,43 @@ function ThemeInitializer() {
 
 function RootComponent() {
 	return (
-		<ClerkProvider>
-			<ConvexProviderWithClerk>
-				<ThemeInitializer />
-				<RootDocument>
-					<Outlet />
-				</RootDocument>
-			</ConvexProviderWithClerk>
-		</ClerkProvider>
-	)
+                <RootDocument>
+                        <Outlet />
+                </RootDocument>
+        )
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-	return (
-		<html lang={getLocale()}>
-			<head>
-				<HeadContent />
-			</head>
-			<body>
-				{children}
-				<TanStackDevtools
-					config={{
-						position: 'bottom-right',
-					}}
-					plugins={[
-						{
-							name: 'Tanstack Router',
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-						FormDevtools,
-						AiDevtools,
-						StoreDevtools,
-						TanStackQueryDevtools,
-					]}
-				/>
-				<Toaster />
-				<Scripts />
-			</body>
-		</html>
-	)
+        return (
+                <html lang={getLocale()}>
+                        <head>
+                                <HeadContent />
+                        </head>
+                        <body>
+                                <ClerkProvider>
+                                        <ConvexProviderWithClerk>
+                                                <ThemeInitializer />
+                                                {children}
+                                                <Toaster />
+                                        </ConvexProviderWithClerk>
+                                </ClerkProvider>
+                                <TanStackDevtools
+                                        config={{
+                                                position: 'bottom-right',
+                                        }}
+                                        plugins={[
+                                                {
+                                                        name: 'Tanstack Router',
+                                                        render: <TanStackRouterDevtoolsPanel />,
+                                                },
+                                                FormDevtools,
+                                                AiDevtools,
+                                                StoreDevtools,
+                                                TanStackQueryDevtools,
+                                        ]}
+                                />
+                                <Scripts />
+                        </body>
+                </html>
+        )
 }

@@ -17,9 +17,9 @@
     "check": "biome check"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.61.3",
+    "@clerk/react": "6",
     "@clerk/tanstack-react-start": "^1.1.0",
-    "@clerk/themes": "^2.4.48",
+    "@clerk/ui": "^1.6.0",
     "@convex-dev/react-query": "^0.1.0",
     "@faker-js/faker": "^10.0.0",
     "@googlemaps/js-api-loader": "^2.0.2",
@@ -79,7 +79,6 @@
     "lucide-react": "^0.570.0",
     "marked": "^15.0.8",
     "mongodb": "^7.0.0",
-
     "nitro": "npm:nitro-nightly@latest",
     "radix-ui": "^1.4.3",
     "react": "^19.2.0",

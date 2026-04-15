@@ -1,4 +1,4 @@
-import { useOrganization } from '@clerk/clerk-react'
+import { useOrganization } from "@clerk/react"
 import { useConvexAuth } from 'convex/react'
 
 /**

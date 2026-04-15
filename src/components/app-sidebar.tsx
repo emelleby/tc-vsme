@@ -1,5 +1,5 @@
 'use client'
-import { OrganizationSwitcher } from '@clerk/clerk-react'
+import { OrganizationSwitcher } from "@clerk/react"
 import { Link } from '@tanstack/react-router'
 
 import {
@@ -186,14 +186,14 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	return (
-		<Sidebar collapsible="icon" {...props}>
-			<SidebarHeader>
+        <Sidebar collapsible="icon" {...props}>
+            <SidebarHeader>
 				<OrganizationSwitcher
 					hidePersonal
 					skipInvitationScreen
 					afterSelectOrganizationUrl="/app"
 					appearance={{
-						baseTheme: undefined,
+						theme: undefined,
 						elements: {
 							rootBox: {
 								width: '100%',
@@ -216,15 +216,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 				<YearSelector />
 			</SidebarHeader>
-			<SidebarContent>
+            <SidebarContent>
 				<NavMain items={data.navMain} />
 				{/* <NavProjects projects={data.projects} /> */}
 			</SidebarContent>
-			<SidebarFooter>
+            <SidebarFooter>
 				<Link to="/demo">Demo</Link>
 				<NavUser />
 			</SidebarFooter>
-			<SidebarRail />
-		</Sidebar>
-	)
+            <SidebarRail />
+        </Sidebar>
+    );
 }

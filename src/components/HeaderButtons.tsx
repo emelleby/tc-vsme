@@ -15,8 +15,7 @@
 'use client'
 
 import {
-	SignedIn,
-	SignedOut,
+	Show,
 	SignInButton,
 	SignUpButton,
 	UserButton,
@@ -42,7 +41,7 @@ export function HeaderButtons() {
 	return (
 		<div className="flex items-center gap-4">
 			{/* Public Access: Show Sign Up and Sign In buttons */}
-			<SignedOut>
+			<Show when="signed-out">
 				<div className="flex items-center gap-2">
 					<SignUpButton mode="modal" fallbackRedirectUrl="/app">
 						<Button variant="outline">Sign up</Button>
@@ -54,10 +53,10 @@ export function HeaderButtons() {
 						</Button>
 					</SignInButton>
 				</div>
-			</SignedOut>
+			</Show>
 
 			{/* Authenticated Access: Logged-in specific controls */}
-			<SignedIn>
+			<Show when="signed-in">
 				<SignedInButtons />
 				<LanguageSwitcher
 					languages={languages}
@@ -68,7 +67,7 @@ export function HeaderButtons() {
 				/>
 				<ThemeSwitcher />
 				<UserButton />
-			</SignedIn>
+			</Show>
 		</div>
 	)
 }
