@@ -38,6 +38,7 @@ describe('getAuthContext', () => {
 
 	beforeEach(async () => {
 		vi.clearAllMocks()
+		vi.resetModules()
 
 		// Setup mock Convex query function
 		mockConvexQuery = vi.fn()

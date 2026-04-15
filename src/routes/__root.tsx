@@ -73,43 +73,43 @@ function ThemeInitializer() {
 
 function RootComponent() {
 	return (
-                <RootDocument>
-                        <Outlet />
-                </RootDocument>
-        )
+		<RootDocument>
+			<Outlet />
+		</RootDocument>
+	)
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-        return (
-                <html lang={getLocale()}>
-                        <head>
-                                <HeadContent />
-                        </head>
-                        <body>
-                                <ClerkProvider>
-                                        <ConvexProviderWithClerk>
-                                                <ThemeInitializer />
-                                                {children}
-                                                <Toaster />
-                                        </ConvexProviderWithClerk>
-                                </ClerkProvider>
-                                <TanStackDevtools
-                                        config={{
-                                                position: 'bottom-right',
-                                        }}
-                                        plugins={[
-                                                {
-                                                        name: 'Tanstack Router',
-                                                        render: <TanStackRouterDevtoolsPanel />,
-                                                },
-                                                FormDevtools,
-                                                AiDevtools,
-                                                StoreDevtools,
-                                                TanStackQueryDevtools,
-                                        ]}
-                                />
-                                <Scripts />
-                        </body>
-                </html>
-        )
+	return (
+		<html lang={getLocale()}>
+			<head>
+				<HeadContent />
+			</head>
+			<body>
+				<ClerkProvider>
+					<ConvexProviderWithClerk>
+						<ThemeInitializer />
+						{children}
+						<Toaster />
+					</ConvexProviderWithClerk>
+				</ClerkProvider>
+				<TanStackDevtools
+					config={{
+						position: 'bottom-right',
+					}}
+					plugins={[
+						{
+							name: 'Tanstack Router',
+							render: <TanStackRouterDevtoolsPanel />,
+						},
+						FormDevtools,
+						AiDevtools,
+						StoreDevtools,
+						TanStackQueryDevtools,
+					]}
+				/>
+				<Scripts />
+			</body>
+		</html>
+	)
 }
