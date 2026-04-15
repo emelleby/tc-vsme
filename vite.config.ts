@@ -31,8 +31,8 @@ const config = defineConfig({
 		}),
 		tailwindcss(),
 		tanstackStart(),
-		// tanstackStart({ preset: 'cloudflare-workers' }),
-		nitroV2Plugin({ preset: 'cloudflare-workers' }),
+		// tanstackStart({ preset: 'cloudflare_module', compatibilityDate: '2026-04-15' }),
+		nitroV2Plugin({ preset: 'cloudflare_module', compatibilityDate: '2026-04-15' }),
 		viteReact({
 			babel: {
 				plugins: ['babel-plugin-react-compiler'],
