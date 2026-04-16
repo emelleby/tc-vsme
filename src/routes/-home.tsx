@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/accordion'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import {
 	CardContent,
 	CardDescription,
@@ -201,11 +202,10 @@ export default function Home() {
 					<div className="flex flex-wrap justify-center items-center gap-10 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
 						{/* Placeholder Logos - In production use real SVGs */}
 						{[
-							'Acme Corp',
-							'Nordic Green',
-							'EcoSolutions',
-							'FutureTech',
-							'SustainAB',
+							'Dot Duozink',
+							'Solberg Industrier',
+							'Fjell Technology Group',
+							'NOT Process',
 						].map((name) => (
 							<div
 								key={name}
@@ -397,7 +397,7 @@ export default function Home() {
 							</CardHeader>
 							<CardContent>
 								<div className="text-4xl font-bold mb-6">
-									Kr 1.990{' '}
+									Kr 399{' '}
 									<span className="text-base font-normal text-muted-foreground">
 										/mnd
 									</span>
@@ -423,9 +423,8 @@ export default function Home() {
 						{/* Growth (Highlighted) */}
 						<GlowingCard
 							glowColor="teal"
-							className="relative border-(--teal) shadow-2xl scale-105 z-10"
+							className="relative border-(--teal) border-t-6 shadow-2xl scale-105 z-10"
 						>
-							<div className="absolute top-0 inset-x-0 h-1 bg-(--teal)" />
 							<CardHeader>
 								<div className="text-(--teal) font-bold text-sm uppercase tracking-wide mb-2">
 									Anbefalt
@@ -435,7 +434,7 @@ export default function Home() {
 							</CardHeader>
 							<CardContent>
 								<div className="text-4xl font-bold mb-6">
-									Kr 3.990{' '}
+									Kr 999{' '}
 									<span className="text-base font-normal text-muted-foreground">
 										/mnd
 									</span>
@@ -446,7 +445,7 @@ export default function Home() {
 										'Utvidet rapportering',
 										'Klimaregnskap (Scope 1-3)',
 										'Prioritert support',
-										'API tilgang',
+										'5000 transaksjoner',
 									].map((feat, i) => (
 										<li key={i} className="flex items-center gap-2">
 											<Check className="h-4 w-4 text-(--teal)" />
@@ -470,21 +469,23 @@ export default function Home() {
 								<div className="text-4xl font-bold mb-6">Ta kontakt</div>
 								<ul className="text-left space-y-3 mb-6">
 									{[
-										'Ubegrenset brukere',
+										'5 brukere',
 										'Skreddersydd oppsett',
 										'Dedikert rådgiver',
-										'SSO & Sikkerhet',
-										'Custom integrasjoner',
+										'2 årlige workshops',
+										'Klimaregnskap og VSME',
 									].map((feat, i) => (
 										<li key={i} className="flex items-center gap-2">
 											<Check className="h-4 w-4 text-(--copper)" /> {feat}
 										</li>
 									))}
 								</ul>
+							</CardContent>
+							<CardFooter>
 								<Button className="w-full" variant="outline">
 									Kontakt salg
 								</Button>
-							</CardContent>
+							</CardFooter>
 						</GlowingCard>
 					</div>
 				</div>

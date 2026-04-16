@@ -43,17 +43,17 @@ export function ContactForm() {
 	return (
 		<div>
 			<contactForm.AppForm>
-				<contactForm.Form>
+				<contactForm.Form className="space-y-6">
 					<h2 className="text-2xl font-bold">
 						Klar til å forenkle din EU-standardiserte bærekraftsrapportering med
-						VSME Guru?
+						Scope321?
 					</h2>
 					<FieldDescription>
 						Bli med andre fremtidsrettede SMBer som har forvandlet
 						bærekraftsrapportering fra en byrde til en strategisk fordel.
 					</FieldDescription>
 
-					<div className="flex items-center justify-between flex-wrap sm:flex-nowrap w-full gap-2">
+					<div className="grid grid-cols-2 items-center justify-between flex-wrap sm:flex-nowrap w-full gap-4">
 						<contactForm.AppField name={'name'}>
 							{(field) => (
 								<field.FieldSet className="w-full">
