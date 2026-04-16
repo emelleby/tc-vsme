@@ -7,7 +7,7 @@
     "build": "bun run --bun vite build",
     "preview": "bun run --bun vite preview",
     "test": "bun run --bun vitest run",
-    "deploy:staging": "CONVEX_DEPLOY_KEY=$CONVEX_STAGING_DEPLOY_KEY bunx convex deploy && bun run --bun build && wrangler deploy --env staging",
+    "deploy:staging": "CONVEX_DEPLOY_KEY=$CONVEX_DEPLOY_KEY_STAGING bunx convex deploy && bun run --bun build && wrangler deploy --env staging",
     "deploy:prod": "CONVEX_DEPLOY_KEY=$CONVEX_DEPLOY_KEY_PROD bunx convex deploy && bun run --bun build && wrangler deploy --env production",
     "cf-typegen": "wrangler types",
     "storybook": "storybook dev -p 6006",

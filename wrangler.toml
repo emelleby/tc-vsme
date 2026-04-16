@@ -7,10 +7,9 @@ main = "src/server.ts"
 [observability]
 enabled = true
 
-
 [env.staging]
-name = "tc-vsme"
-routes = [{ pattern = "staging.emelleby.workers.dev", custom_domain = false }]
+name = "tc-vsme-staging"
+routes = [{ pattern = "staging.tc-vsme.com", custom_domain = true }]
 
 [env.staging.vars]
 VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
