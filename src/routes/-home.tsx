@@ -79,11 +79,14 @@ export default function Home() {
 
 								<div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
 									<Button
+										asChild
 										size="lg"
 										className="bg-linear-to-r from-(--teal) to-(--sky) hover:opacity-90 text-white border-0 shadow-lg shadow-(--teal)/20 transition-transform hover:scale-105"
 									>
-										Start din reise
-										<ArrowRight className="ml-2 h-5 w-5" />
+										<Link to="/" hash="contact">
+											Start din reise
+											<ArrowRight className="ml-2 h-5 w-5" />
+										</Link>
 									</Button>
 									<Button
 										size="lg"
@@ -488,7 +491,7 @@ export default function Home() {
 			</section>
 
 			{/* Contact / CTA Section */}
-			<section className="py-24 bg-muted/50">
+			<section id="contact" className="py-24 bg-muted/50">
 				<div className="container px-4 text-center max-w-4xl mx-auto">
 					<h2 className="text-3xl md:text-5xl font-bold mb-8">
 						Klar for å komme i gang?
@@ -515,7 +518,7 @@ export default function Home() {
 
 					<div className="mt-16 text-left max-w-2xl mx-auto bg-card p-8 rounded-2xl border shadow-sm">
 						<h3 className="text-2xl font-bold mb-6 text-center">
-							Eller send oss en melding
+							Send oss en melding
 						</h3>
 						<ContactForm />
 					</div>
