@@ -1,5 +1,5 @@
 'use client'
-import { OrganizationSwitcher } from '@clerk/clerk-react'
+import { OrganizationSwitcher } from '@clerk/react'
 import { Link } from '@tanstack/react-router'
 
 import {
@@ -193,23 +193,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					skipInvitationScreen
 					afterSelectOrganizationUrl="/app"
 					appearance={{
-						baseTheme: undefined,
 						elements: {
-							rootBox: {
-								width: '100%',
-								borderBottom: '1px solid #eee',
-								paddingBottom: '4px',
-							},
-							organizationSwitcherTrigger: {
-								width: '100%',
-								justifyContent: 'flex-start',
-							},
-							organizationSwitcherTriggerIcon: {
-								flexShrink: '0',
-								width: '1.3rem',
-								height: '1.3rem',
-								marginLeft: 'auto',
-							},
+							rootBox:
+								'flex w-full items-center border-b border-sidebar-border pb-2',
+							organizationSwitcherTrigger:
+								'flex w-full justify-start items-center hover:bg-sidebar-accent hover:text-sidebar-accent-foreground p-2 rounded-md transition-colors',
+							organizationSwitcherTriggerIcon: 'ml-auto shrink-0 w-5 h-5',
 						},
 					}}
 				/>

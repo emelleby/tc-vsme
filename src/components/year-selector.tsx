@@ -34,7 +34,7 @@ export function YearSelector() {
 							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
 							<div className="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-								<Calendar className="size-4 text-sky-600" />
+								<Calendar className="size-6 text-sky-600" />
 							</div>
 							{!isCollapsed && (
 								<div className="grid flex-1 text-left text-sm leading-tight">

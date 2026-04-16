@@ -1,4 +1,4 @@
-import { SignUp } from '@clerk/clerk-react'
+import { SignUp } from "@clerk/react"
 import { createFileRoute } from '@tanstack/react-router'
 import Header from '@/components/Header'
 

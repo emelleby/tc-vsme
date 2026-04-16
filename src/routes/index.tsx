@@ -1,10 +1,4 @@
-import {
-	SignedIn,
-	SignedOut,
-	useAuth,
-	useOrganization,
-	useUser,
-} from '@clerk/tanstack-react-start'
+import { Show, useAuth, useOrganization, useUser } from '@clerk/tanstack-react-start';
 import { createFileRoute } from '@tanstack/react-router'
 import { useConvexAuth, useQuery } from 'convex/react'
 import Header from '@/components/Header'
@@ -47,27 +41,27 @@ function AuthStatus() {
 			clerkVsmeDb !== convexOrgFlags.exists)
 
 	return (
-		<div className="w-full bg-muted/80 border-b text-xs font-mono px-4 py-1.5 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-muted-foreground z-40">
-			<span>
+        <div className="w-full bg-muted/80 border-b text-xs font-mono px-4 py-1.5 flex flex-wrap items-center justify-center gap-x-6 gap-y-1 text-muted-foreground z-40">
+            <span>
 				<span className="font-semibold text-foreground">Auth:</span>{' '}
 				{loaded ? (
 					<>
-						<SignedIn>
+						<Show when="signed-in">
 							<span className="text-green-600">Signed In</span>
 							{' · '}
 							{user?.fullName ??
 								user?.primaryEmailAddress?.emailAddress ??
 								'User'}
-						</SignedIn>
-						<SignedOut>
+						</Show>
+						<Show when="signed-out">
 							<span className="text-yellow-600">Signed Out</span>
-						</SignedOut>
+						</Show>
 					</>
 				) : (
 					<span className="animate-pulse">Loading...</span>
 				)}
 			</span>
-			<SignedIn>
+            <Show when="signed-in">
 				<span>
 					<span className="font-semibold text-foreground">Clerk:</span>{' '}
 					{clerkHasVsme ? 'user✓' : 'user✗'}
@@ -115,9 +109,9 @@ function AuthStatus() {
 								? 'Full Access'
 								: 'Unknown'}
 				</span>
-			</SignedIn>
-		</div>
-	)
+			</Show>
+        </div>
+    );
 }
 
 function RouteComponent() {

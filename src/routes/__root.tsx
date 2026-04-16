@@ -73,14 +73,9 @@ function ThemeInitializer() {
 
 function RootComponent() {
 	return (
-		<ClerkProvider>
-			<ConvexProviderWithClerk>
-				<ThemeInitializer />
-				<RootDocument>
-					<Outlet />
-				</RootDocument>
-			</ConvexProviderWithClerk>
-		</ClerkProvider>
+		<RootDocument>
+			<Outlet />
+		</RootDocument>
 	)
 }
 
@@ -91,7 +86,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
-				{children}
+				<ClerkProvider>
+					<ConvexProviderWithClerk>
+						<ThemeInitializer />
+						{children}
+						<Toaster />
+					</ConvexProviderWithClerk>
+				</ClerkProvider>
 				<TanStackDevtools
 					config={{
 						position: 'bottom-right',
@@ -107,7 +108,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 						TanStackQueryDevtools,
 					]}
 				/>
-				<Toaster />
 				<Scripts />
 			</body>
 		</html>

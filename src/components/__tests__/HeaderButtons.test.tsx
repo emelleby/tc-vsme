@@ -16,30 +16,33 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { HeaderButtons } from '../HeaderButtons'
 
 // Mock Clerk hooks
-vi.mock('@clerk/clerk-react', () => ({
-	useUser: vi.fn(),
-	useOrganization: vi.fn(),
-	SignedIn: ({ children }: { children: React.ReactNode }) => (
-		<div data-testid="signed-in">{children}</div>
-	),
-	SignedOut: ({ children }: { children: React.ReactNode }) => (
-		<div data-testid="signed-out">{children}</div>
-	),
-	SignUpButton: ({ children }: { children: React.ReactNode }) => (
-		<button type="button" data-testid="sign-up-button">
-			{children}
-		</button>
-	),
-	SignInButton: ({ children }: { children: React.ReactNode }) => (
-		<button type="button" data-testid="sign-in-button">
-			{children}
-		</button>
-	),
-	UserButton: () => <div data-testid="user-button">UserButton</div>,
-	OrganizationSwitcher: () => (
-		<div data-testid="org-switcher">OrganizationSwitcher</div>
-	),
+vi.mock('@clerk/react', () => ({
+        useUser: vi.fn(),
+        useOrganization: vi.fn(),
+        SignUpButton: ({ children }: { children: React.ReactNode }) => (
+                <button type="button" data-testid="sign-up-button">
+                        {children}
+                </button>
+        ),
+        SignInButton: ({ children }: { children: React.ReactNode }) => (
+                <button type="button" data-testid="sign-in-button">
+                        {children}
+                </button>
+        ),
+        UserButton: () => <div data-testid="user-button">UserButton</div>,
+        OrganizationSwitcher: () => (
+                <div data-testid="org-switcher">OrganizationSwitcher</div>
+        ),
 }))
+
+vi.mock('@clerk/tanstack-react-start', () => ({
+        useAuth: vi.fn(),
+        Show: ({ when, children }: { when: string | { [key: string]: string }; children: React.ReactNode }) => {
+                if (typeof when === 'string') {
+                        return <div data-testid={when}>{children}</div>
+                }
+                return <div>{children}</div>
+        }
 
 // Mock TanStack Router
 vi.mock('@tanstack/react-router', () => ({

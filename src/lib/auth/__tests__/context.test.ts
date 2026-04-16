@@ -38,6 +38,7 @@ describe('getAuthContext', () => {
 
 	beforeEach(async () => {
 		vi.clearAllMocks()
+		vi.resetModules()
 
 		// Setup mock Convex query function
 		mockConvexQuery = vi.fn()
@@ -60,10 +61,10 @@ describe('getAuthContext', () => {
 		vi.mocked(convexModule.ConvexHttpClient).mockImplementation(
 			mockConvexHttpClient,
 		)
-	})
 
-	describe('Unauthenticated User', () => {
-		it('returns null when user is not authenticated', async () => {
+                // Clear cache before each test
+                const { authContextCache } = await import('../context')
+                authContextCache.clear()
 			mockAuth.mockResolvedValue({ userId: null, orgId: null })
 
 			const { getAuthContext } = await import('../context')
@@ -79,7 +80,7 @@ describe('getAuthContext', () => {
 	describe('Authenticated User - Permission Flags', () => {
 		it('returns hasVsme flag from Convex user query', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -98,7 +99,7 @@ describe('getAuthContext', () => {
 
 		it('returns false for hasVsme when Convex returns false', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -112,7 +113,7 @@ describe('getAuthContext', () => {
 
 		it('returns orgHasVsme and vsmeDb flags from Convex org query', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -133,7 +134,7 @@ describe('getAuthContext', () => {
 
 		it('returns false for org flags when no org selected', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -151,7 +152,7 @@ describe('getAuthContext', () => {
 
 		it('handles org not existing in Convex (exists: false)', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -170,7 +171,7 @@ describe('getAuthContext', () => {
 	describe('Computed Properties', () => {
 		it('computes canAccessDashboard correctly when user has full access', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -186,7 +187,7 @@ describe('getAuthContext', () => {
 
 		it('computes canAccessDashboard as false when vsmeDb is missing', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -202,7 +203,7 @@ describe('getAuthContext', () => {
 
 		it('computes needsOrgSetup as true when user has hasVsme but no org', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -216,7 +217,7 @@ describe('getAuthContext', () => {
 
 		it('computes needsOrgSetup as true when user has org but no vsmeDb', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -232,7 +233,7 @@ describe('getAuthContext', () => {
 
 		it('computes needsOrgSetup as false when user has full access', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -250,7 +251,7 @@ describe('getAuthContext', () => {
 	describe('Permission Matrix - User State Scenarios', () => {
 		it('Visitor: no hasVsme, no orgHasVsme, no vsmeDb', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -268,7 +269,7 @@ describe('getAuthContext', () => {
 
 		it('New User: hasVsme=true, no org, no vsmeDb', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -286,7 +287,7 @@ describe('getAuthContext', () => {
 
 		it('Org Created: hasVsme=true, orgHasVsme=true, vsmeDb=false', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -306,7 +307,7 @@ describe('getAuthContext', () => {
 
 		it('Full Access: hasVsme=true, orgHasVsme=true, vsmeDb=true', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: 'org_456',
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -328,7 +329,7 @@ describe('getAuthContext', () => {
 	describe('Error Handling and Edge Cases', () => {
 		it('handles missing getToken gracefully', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				// No getToken function
 			})
@@ -344,7 +345,7 @@ describe('getAuthContext', () => {
 
 		it('handles Convex query failure gracefully', async () => {
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: vi.fn().mockResolvedValue('mock-token'),
 			})
@@ -359,7 +360,7 @@ describe('getAuthContext', () => {
 		it('sets auth token on ConvexHttpClient when available', async () => {
 			const mockGetToken = vi.fn().mockResolvedValue('test-token-123')
 			mockAuth.mockResolvedValue({
-				userId: 'user_123',
+				userId: 'user_token_123',
 				orgId: null,
 				getToken: mockGetToken,
 			})

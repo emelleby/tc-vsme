@@ -1,5 +1,7 @@
-import { useOrganizationList, useUser } from '@clerk/clerk-react'
+import { useOrganizationList, useUser } from '@clerk/react'
+import { auth, clerkClient } from '@clerk/tanstack-react-start/server'
 import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { BrregSearch, type BrregUnit } from '@/components/BrregSearch'
@@ -19,6 +21,21 @@ import { getAuthContext, invalidateAuthContext } from '@/lib/auth'
 import { setupOrganization } from '@/lib/convex/setup-organization'
 
 /**
+ * Server function to check Clerk directly for hasVsme permission.
+ * We use this as a fallback when Convex doesn't know about the user yet
+ * (e.g. right after an admin granted them access in Clerk).
+ */
+const checkClerkHasVsme = createServerFn({ method: 'GET' }).handler(
+	async () => {
+		const { userId } = await auth()
+		if (!userId) return false
+		const client = await clerkClient()
+		const user = await client.users.getUser(userId)
+		return Boolean(user.publicMetadata?.hasVsme)
+	},
+)
+
+/**
  * Route configuration with permission checks
  */
 export const Route = createFileRoute('/create-organization')({
@@ -26,28 +43,43 @@ export const Route = createFileRoute('/create-organization')({
 	beforeLoad: async () => {
 		// Fetch full authentication context
 		const authContext = await getAuthContext()
+		console.log('Auth context:', authContext)
 
 		// Check 1: User must be authenticated
 		if (!authContext) {
 			throw redirect({ to: '/sign-in' })
 		}
 
-		// Check 2: User must have hasVsme permission
+		// Fallback check: if Convex doesn't know about user's hasVsme permission yet,
+		// directly check Clerk exactly once for this route to avoid rate limits elsewhere.
+		if (!authContext.hasVsme && !authContext.orgHasVsme) {
+			const clerkHasVsme = await checkClerkHasVsme()
+			if (clerkHasVsme) {
+				authContext.hasVsme = true
+				// We also flag needsOrgSetup because they have the permission but no DB
+				authContext.needsOrgSetup = true
+			}
+		}
+
+		// Check 2: User hasVsme permission ->
 		if (authContext.hasVsme) {
+			console.log('User has VSME permission')
+
 			return { authContext }
 		}
-		// Check 2: User must have hasVsme permission
+		// Check 3: User must have hasVsme permission
 		// if (authContext.orgHasVsme && !authContext.vsmeDb) {
 		if (authContext.needsOrgSetup) {
 			return { authContext }
 		}
 
-		// Check 2: User must have hasVsme permission
+		// Check 4: User must have hasVsme permission
 		if (!authContext.hasVsme && !authContext.orgHasVsme) {
+			console.log('User does not have VSME permission')
 			throw redirect({ to: '/' })
 		}
 
-		// Check 3: Redirect if user already has full access
+		// Check 5: Redirect if user already has full access
 		if (authContext.canAccessDashboard) {
 			throw redirect({ to: '/app' })
 		}
@@ -130,7 +162,8 @@ function CreateOrganizationPage() {
 					naceCode: selectedOrg.naeringskode1?.kode,
 					industry: selectedOrg.naeringskode1?.beskrivelse,
 					numberEmployees: selectedOrg.antallAnsatte,
-					businessModel: selectedOrg.aktivitet?.join(' '),
+					// businessModel: selectedOrg.aktivitet?.join(' '),
+					// TODO: productsAndServices
 				},
 			})
 
