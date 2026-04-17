@@ -1,0 +1,36 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches:
+      - staging # Only runs when you push to the staging branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Deploy Convex
+        # Maps the staging secret to the generic CONVEX_DEPLOY_KEY that the CLI expects
+        run: bunx convex deploy
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY_STAGING }}
+
+      - name: Build TanStack App
+        run: bun run --bun build
+
+      - name: Build & Deploy Worker (Cloudflare)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_STAGING }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_STAGING }}
+          # Tell the action to use your staging environment
+          command: deploy --env staging
