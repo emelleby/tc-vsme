@@ -45,7 +45,26 @@ export default {
 
 			// Pass the request through the Paraglide middleware
 			console.log('🔥🔥🔥🔥🔥')
-			return await paraglideMiddleware(req, () => handler.fetch(req))
+			const response = await paraglideMiddleware(req, () => handler.fetch(req))
+
+			if (response.status >= 500) {
+				console.error('⚠️ Caught 500 Response! ⚠️')
+				try {
+					const cloned = response.clone()
+					const text = await cloned.text()
+					console.error('Response Body HTML/Text:', text.substring(0, 1000))
+
+					// Let's also see if headers give us a clue
+					console.error(
+						'Headers:',
+						Object.fromEntries(response.headers.entries()),
+					)
+				} catch (e) {
+					console.error('Could not read error response body')
+				}
+			}
+
+			return response
 		} catch (error: any) {
 			console.error('🔥 FATAL SERVER ERROR IN CLOUDFLARE WORKER:')
 			console.error('Error Message:', error?.message)
