@@ -34,3 +34,10 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_STAGING }}
           # Tell the action to use your environment with the '--env' flag
           command: deploy
+          environment: production
+          secrets: |
+            SECRET1
+            SECRET2
+        env:
+          SECRET1: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
+          SECRET2: ${{ secrets.VITE_CONVEX_URL_DEV }}
