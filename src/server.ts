@@ -3,6 +3,12 @@ import { paraglideMiddleware } from './paraglide/server.js'
 
 export default {
 	async fetch(req: Request, env: any, ctx: any): Promise<Response> {
+		// Cloudflare Workers pass runtime variables in the `env` argument.
+		// During Server-Side Rendering (SSR), `import.meta.env` is missing these.
+		// We inject `env` into globalThis so Providers can read them during SSR.
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		;(globalThis as any).__ENV__ = env
+
 		try {
 			// CHECK CLERK KEYS
 			console.log('--- Environment Check ---')

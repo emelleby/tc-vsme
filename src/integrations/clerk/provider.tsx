@@ -2,7 +2,12 @@ import { ClerkProvider } from '@clerk/react'
 import { dark } from '@clerk/ui/themes'
 import { useEffect, useState } from 'react'
 
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+// Read from injected runtime env (SSR on Cloudflare) or static build env (Client)
+const PUBLISHABLE_KEY =
+	(typeof globalThis !== 'undefined' &&
+		(globalThis as any).__ENV__?.VITE_CLERK_PUBLISHABLE_KEY) ||
+	import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
 if (!PUBLISHABLE_KEY) {
 	throw new Error('Add your Clerk Publishable Key to the .env.local file')
 }
