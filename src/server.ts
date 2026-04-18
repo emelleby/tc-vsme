@@ -22,7 +22,7 @@ export default {
 				)
 			}
 			console.log('--- Env Traceing ---')
-			console.log('Worker env PK:', !!env.CLERK_PUBLISHABLE_KEY)
+			console.log('Worker env PK:', !!env.VITE_CLERK_PUBLISHABLE_KEY)
 			console.log(
 				'Import Meta PK:',
 				!!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
