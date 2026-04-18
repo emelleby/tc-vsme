@@ -4,7 +4,8 @@ import { paraglideMiddleware } from './paraglide/server.js'
 export default {
 	async fetch(req: Request, env: any, ctx: any): Promise<Response> {
 		try {
-			// Pass env and ctx down in case the Nitro handler expects Cloudflare bindings
+			// Pass the request through the Paraglide middleware
+			console.log('🔥🔥🔥🔥🔥')
 			return await paraglideMiddleware(req, () => handler.fetch(req))
 		} catch (error: any) {
 			console.error('🔥 FATAL SERVER ERROR IN CLOUDFLARE WORKER:')
