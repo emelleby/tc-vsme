@@ -9,6 +9,14 @@ export default {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		;(globalThis as any).__ENV__ = env
 
+		// Mock process.env for Node-compatible packages (like Clerk SDK)
+		// that expect environment variables on `process.env`.
+		if (typeof process === 'undefined') {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			;(globalThis as any).process = { env: {} }
+		}
+		Object.assign(process.env, env)
+
 		try {
 			// CHECK CLERK KEYS
 			console.log('--- Environment Check ---')

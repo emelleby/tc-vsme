@@ -13,8 +13,21 @@ import { createStart } from '@tanstack/react-start'
  * @see https://clerk.com/docs/tanstack-react-start/getting-started/quickstart#server-side
  */
 export const startInstance = createStart(() => {
+	// Read from process.env (Node limit/Cloudflare mock) or fallback
+	const publishableKey =
+		process.env.VITE_CLERK_PUBLISHABLE_KEY ||
+		process.env.CLERK_PUBLISHABLE_KEY ||
+		(import.meta as any).env?.VITE_CLERK_PUBLISHABLE_KEY
+
+	const secretKey = process.env.CLERK_SECRET_KEY
+
 	return {
-		requestMiddleware: [clerkMiddleware()],
+		requestMiddleware: [
+			clerkMiddleware({
+				publishableKey,
+				secretKey,
+			}),
+		],
 	}
 })
 
