@@ -25,7 +25,11 @@ jobs:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY_STAGING }}
 
       - name: Build TanStack App
-        run: bun run --bun build
+        run: |
+          echo "VITE_CLERK_PUBLISHABLE_KEY=pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk" >> .env
+          echo "VITE_CONVEX_URL=https://fine-echidna-604.convex.cloud" >> .env
+          echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY_DEV }}" >> .env
+          bun run --bun build
 
       - name: Build & Deploy Worker (Cloudflare)
         uses: cloudflare/wrangler-action@v3
