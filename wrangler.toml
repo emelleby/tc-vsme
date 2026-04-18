@@ -14,6 +14,9 @@ VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
 VITE_CONVEX_SITE_URL = "https://fine-echidna-604.convex.site"
 CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
 
+[env.staging]
+# Point to the built files for staging deployment
+main = ".output/server/index.mjs"
 
 [env.staging.vars]
 VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
@@ -25,6 +28,8 @@ CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
 
 [env.production]
 name = "vsme-prod"
+# Point to the built files for production deployment
+main = ".output/server/index.mjs"
 
 [env.production.vars]
 VITE_CLERK_PUBLISHABLE_KEY = "pk_test_cnVsaW5nLXNlcnZhbC0zNi5jbGVyay5hY2NvdW50cy5kZXYk"
