@@ -2,7 +2,7 @@ name = "vsme"
 assets = { directory = ".output/public" }
 compatibility_date = "2026-04-15"
 compatibility_flags = ["nodejs_compat"]
-main = "src/server.ts"
+main = ".output/server/index.mjs"
 
 [observability]
 enabled = true
