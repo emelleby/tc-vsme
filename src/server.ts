@@ -21,6 +21,12 @@ export default {
 					env.VITE_CLERK_PUBLISHABLE_KEY.substring(0, 12),
 				)
 			}
+			console.log('--- Env Trace ---')
+			console.log('Worker env PK:', !!env.CLERK_PUBLISHABLE_KEY)
+			console.log(
+				'Import Meta PK:',
+				!!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
+			)
 			console.log('--- End Environment Check ---')
 
 			// Pass the request through the Paraglide middleware
