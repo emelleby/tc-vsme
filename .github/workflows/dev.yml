@@ -36,8 +36,8 @@ jobs:
           command: deploy
           environment: production
           secrets: |
-            SECRET1
-            SECRET2
+            VITE_CLERK_PUBLISHABLE_KEY
+            VITE_CONVEX_URL
         env:
-          SECRET1: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
-          SECRET2: ${{ secrets.VITE_CONVEX_URL_DEV }}
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
+          VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL_DEV }}
