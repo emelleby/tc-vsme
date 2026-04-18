@@ -9,6 +9,9 @@ export default {
 			console.log('CLERK_PUBLISHABLE_KEY exists:', !!env.CLERK_PUBLISHABLE_KEY)
 			console.log('CLERK_SECRET_KEY exists:', !!env.CLERK_SECRET_KEY)
 			// Optional: log first few chars if you need to be sure it's the right one
+			if (env.CLERK_SECRET_KEY) {
+				console.log('SK prefix:', env.CLERK_SECRET_KEY.substring(0, 7))
+			}
 			if (env.CLERK_PUBLISHABLE_KEY) {
 				console.log('PK prefix:', env.CLERK_PUBLISHABLE_KEY.substring(0, 7))
 			}
