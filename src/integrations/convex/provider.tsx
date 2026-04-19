@@ -2,11 +2,7 @@ import { useAuth } from '@clerk/tanstack-react-start'
 import { ConvexQueryClient } from '@convex-dev/react-query'
 import { ConvexProviderWithClerk } from 'convex/react-clerk'
 
-// Read from injected runtime env (SSR on Cloudflare) or static build env (Client)
-const CONVEX_URL =
-	(typeof globalThis !== 'undefined' &&
-		(globalThis as any).__ENV__?.VITE_CONVEX_URL) ||
-	(import.meta as any).env.VITE_CONVEX_URL
+const CONVEX_URL = import.meta.env.VITE_CONVEX_URL
 
 if (!CONVEX_URL) {
 	console.error('missing envar CONVEX_URL')

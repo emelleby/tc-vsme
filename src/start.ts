@@ -48,12 +48,7 @@ const errorLoggingMiddleware = createMiddleware({ type: 'request' }).server(
 )
 
 export const startInstance = createStart(() => {
-	// Read from process.env (Node limit/Cloudflare mock) or fallback
-	const publishableKey =
-		process.env.VITE_CLERK_PUBLISHABLE_KEY ||
-		process.env.CLERK_PUBLISHABLE_KEY ||
-		(import.meta as any).env?.VITE_CLERK_PUBLISHABLE_KEY
-
+	const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 	const secretKey = process.env.CLERK_SECRET_KEY
 
 	return {
