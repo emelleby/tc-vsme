@@ -1,9 +1,9 @@
-name: Deploy Staging
+name: Deploy Development
 
 on:
   push:
     branches:
-      - staging # Only runs when you push to the staging branch
+      - dev # Only runs when you push to the dev branch
 
 jobs:
   deploy:
@@ -26,14 +26,19 @@ jobs:
 
       - name: Build TanStack App
         run: bun run --bun build
+          # |
+          # echo "VITE_CONVEX_URL=${{ secrets.VITE_CONVEX_URL_DEV }}" >> .env
+          # echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}"" >> .env
+          
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
           VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL_DEV }}
+          
 
       - name: Build & Deploy Worker (Cloudflare)
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_STAGING }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_STAGING }}
-          # Tell the action to use your staging environment
-          command: deploy --env staging
+          # Tell the action to use your environment with the '--env' flag
+          command: deploy --env=""
