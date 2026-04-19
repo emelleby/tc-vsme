@@ -36,4 +36,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_STAGING }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_STAGING }}
           # Tell the action to use your staging environment
-          command: deploy --env="staging"
+          command: deploy
+          environment: staging
