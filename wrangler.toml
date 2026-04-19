@@ -9,6 +9,7 @@ main = "src/server.ts"
 enabled = true
 
 [vars]
+ENVIRONMENT = "dev"
 VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
 CONVEX_JWT_AUDIENCE = "convex-tc-vsme"
 VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
@@ -17,22 +18,26 @@ CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
 
 [env.staging]
 name = "vsme-staging"    # ← This is what makes it a separate worker
+workers_dev = true
 
-[env.staging.vars]
-VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
-CONVEX_JWT_AUDIENCE = "convex-tc-vsme"
-VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
-VITE_CONVEX_SITE_URL = "https://fine-echidna-604.convex.site"
-CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
+
+  [env.staging.vars]
+  ENVIRONMENT = "staging"
+  VITE_CLERK_PUBLISHABLE_KEY = "pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk"
+  CONVEX_JWT_AUDIENCE = "convex-tc-vsme"
+  VITE_CONVEX_URL = "https://fine-echidna-604.convex.cloud"
+  VITE_CONVEX_SITE_URL = "https://fine-echidna-604.convex.site"
+  CLERK_ISSUER_URL = "https://clerk.gentle.cod-4.lcl.dev"
 
 
 [env.production]
 name = "vsme-prod"
 
-[env.production.vars]
-VITE_CLERK_PUBLISHABLE_KEY = "pk_test_cnVsaW5nLXNlcnZhbC0zNi5jbGVyay5hY2NvdW50cy5kZXYk"
-CONVEX_JWT_AUDIENCE = "convex-321-vsme"
-VITE_CONVEX_URL = "https://kindred-rhinoceros-359.eu-west-1.convex.cloud"
-VITE_CONVEX_SITE_URL = "https://kindred-rhinoceros-359.eu-west-1.convex.site"
-CLERK_ISSUER_URL = "https://ruling-serval-36.clerk.accounts.dev"
+  [env.production.vars]
+  ENVIRONMENT = "production"
+  VITE_CLERK_PUBLISHABLE_KEY = "pk_test_cnVsaW5nLXNlcnZhbC0zNi5jbGVyay5hY2NvdW50cy5kZXYk"
+  CONVEX_JWT_AUDIENCE = "convex-321-vsme"
+  VITE_CONVEX_URL = "https://kindred-rhinoceros-359.eu-west-1.convex.cloud"
+  VITE_CONVEX_SITE_URL = "https://kindred-rhinoceros-359.eu-west-1.convex.site"
+  CLERK_ISSUER_URL = "https://ruling-serval-36.clerk.accounts.dev"
 
