@@ -26,6 +26,9 @@ jobs:
 
       - name: Build TanStack App
         run: bun run --bun build
+        env:
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
+          VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL_DEV }}
 
       - name: Build & Deploy Worker (Cloudflare)
         uses: cloudflare/wrangler-action@v3
