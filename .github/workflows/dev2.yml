@@ -26,9 +26,9 @@ jobs:
 
       - name: Build TanStack App
         # echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY_DEV }}" >> .env
+        # echo "VITE_CONVEX_URL=https://fine-echidna-604.convex.cloud" >> .env
         run: |
           echo "VITE_CLERK_PUBLISHABLE_KEY=pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk" >> .env
-          echo "VITE_CONVEX_URL=https://fine-echidna-604.convex.cloud" >> .env
           
           bun run --bun build
           
