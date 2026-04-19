@@ -25,13 +25,10 @@ jobs:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY_STAGING }}
 
       - name: Build TanStack App
-        # echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY_DEV }}" >> .env
-        # 
-        # 
         run: bun run --bun build
           # |
-          # echo "VITE_CONVEX_URL=https://fine-echidna-604.convex.cloud" >> .env
-          # echo "VITE_CLERK_PUBLISHABLE_KEY=pk_test_Y2xlcmsuZ2VudGxlLmNvZC00LmxjbC5kZXYk" >> .env
+          # echo "VITE_CONVEX_URL=${{ secrets.VITE_CONVEX_URL_DEV }}" >> .env
+          # echo "VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}"" >> .env
           
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
@@ -45,9 +42,3 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID_STAGING }}
           # Tell the action to use your environment with the '--env' flag
           command: deploy --env=""
-        #   secrets: |
-        #     VITE_CLERK_PUBLISHABLE_KEY
-        #     VITE_CONVEX_URL
-        # env:
-        #   VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
-        #   VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL_DEV }}
