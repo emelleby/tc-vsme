@@ -33,6 +33,7 @@ jobs:
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY_DEV }}
           VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL_DEV }}
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
           
 
       - name: Build & Deploy Worker (Cloudflare)
