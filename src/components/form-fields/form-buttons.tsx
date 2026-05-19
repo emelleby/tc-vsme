@@ -57,7 +57,7 @@ export function StepButton({
 }
 
 interface FormButtonsProps {
-	status: 'draft' | 'submitted'
+	status: 'not_started' | 'draft' | 'submitted'
 	isSaving: boolean
 	onSaveDraft: () => void
 	onSubmit: () => void

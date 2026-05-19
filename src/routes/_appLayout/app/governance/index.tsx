@@ -61,7 +61,7 @@ function GovernancePage() {
 				title="Fines and Penalties"
 				updatedDate={formatDate(finesPenalties?.lastModifiedAt)}
 				toolTip="Report fines or penalties related to violations of anti-corruption or anti-bribery laws."
-				status={finesPenalties?.status ?? 'draft'}
+				status={finesPenalties?.status ?? 'not_started'}
 				contributor={finesPenalties?.contributor || { name: 'Unknown' }}
 				code="B11"
 				module="Basic Module"
@@ -79,7 +79,7 @@ function GovernancePage() {
 				title="Sector Involvement"
 				updatedDate={formatDate(sectorInvolvement?.lastModifiedAt)}
 				toolTip="Report revenue from specific sectors like controversial weapons, fossil fuels, and agricultural chemicals."
-				status={sectorInvolvement?.status ?? 'draft'}
+				status={sectorInvolvement?.status ?? 'not_started'}
 				contributor={sectorInvolvement?.contributor || { name: 'Unknown' }}
 				code="C8"
 				module="Comprehensive Module"
@@ -97,7 +97,7 @@ function GovernancePage() {
 				title="Board Composition"
 				updatedDate={formatDate(boardComposition?.lastModifiedAt)}
 				toolTip="Report the gender balance and total composition of the board."
-				status={boardComposition?.status ?? 'draft'}
+				status={boardComposition?.status ?? 'not_started'}
 				contributor={boardComposition?.contributor || { name: 'Unknown' }}
 				code="C9"
 				module="Comprehensive Module"

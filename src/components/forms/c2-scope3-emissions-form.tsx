@@ -320,7 +320,7 @@ export function C2Scope3EmissionsForm() {
 				</fieldset>
 
 				<FormButtons
-					status={status as 'draft' | 'submitted'}
+					status={status as 'not_started' | 'draft' | 'submitted'}
 					isSaving={isSaving}
 					onSaveDraft={saveDraft}
 					onSubmit={submit}
