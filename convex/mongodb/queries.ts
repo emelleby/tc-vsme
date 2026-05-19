@@ -26,7 +26,7 @@ export async function fetchCompanyEmissions(
   year?: number
 ) {
   const client = await getMongoClient();
-  const db = client.db("co2-intensities-dev");
+  const db = client.db("co2-intensities");
   const collection = db.collection("companies");
 
   const company = await collection.findOne(
