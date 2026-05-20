@@ -64,7 +64,7 @@ function GeneralPage() {
 			<FormCard
 				title="Company information"
 				updatedDate={formatDate(companyInfo?.lastModifiedAt)}
-				status={companyInfo?.status ?? 'draft'}
+				status={companyInfo?.status ?? 'not_started'}
 				toolTip="Click to learn more"
 				contributor={companyInfo?.contributor || { name: 'Unknown' }}
 				code="B1"
@@ -81,7 +81,7 @@ function GeneralPage() {
 				title="Sustainability initiatives"
 				updatedDate={formatDate(sustainability?.lastModifiedAt)}
 				toolTip="Do you have existing sustainability practices/ policies/ future initiatives that address sustainability issues?"
-				status={sustainability?.status ?? 'draft'}
+				status={sustainability?.status ?? 'not_started'}
 				contributor={sustainability?.contributor || { name: 'Unknown' }}
 				code="B2"
 				buttonText="Hjelp"
@@ -110,7 +110,7 @@ function GeneralPage() {
 				title="Business model"
 				updatedDate={formatDate(businessModel?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={businessModel?.status ?? 'draft'}
+				status={businessModel?.status ?? 'not_started'}
 				contributor={businessModel?.contributor || { name: 'Unknown' }}
 				code="C1"
 				module="Comprehensive Module"

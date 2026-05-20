@@ -17,9 +17,11 @@ import {
 import { useExpandable } from '@/hooks/use-expandable'
 import { cn } from '@/lib/utils'
 
+export type FormStatus = 'not_started' | 'draft' | 'submitted'
+
 interface FormCardProps {
 	title: string
-	status: string
+	status: FormStatus
 	updatedDate: string
 	contributor: { name: string; image?: string }
 	onClick?: () => void
@@ -29,6 +31,24 @@ interface FormCardProps {
 	module?: 'Basic Module' | 'Comprehensive Module'
 	code: string
 	version?: number
+}
+
+const STATUS_CONFIG: Record<FormStatus, { label: string; className: string }> = {
+	not_started: {
+		label: 'Not Started',
+		className:
+			'bg-gray-100 border-gray-400 text-gray-500 dark:bg-gray-800 dark:text-gray-400',
+	},
+	draft: {
+		label: 'In Progress',
+		className:
+			'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300',
+	},
+	submitted: {
+		label: 'Completed',
+		className:
+			'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300',
+	},
 }
 
 export function FormCard({
@@ -130,13 +150,9 @@ export function FormCard({
 						<div className="flex gap-2">
 							<Badge
 								variant="secondary"
-								className={
-									status === 'submitted'
-										? 'bg-emerald-100 border-emerald-600 text-emerald-600 dark:bg-emerald-800 dark:text-emerald-300'
-										: 'bg-amber-100 border-amber-600 text-amber-600 dark:bg-amber-800 dark:text-amber-300'
-								}
+								className={STATUS_CONFIG[status].className}
 							>
-								{status === 'submitted' ? 'Completed' : 'In Progress'}
+								{STATUS_CONFIG[status].label}
 							</Badge>
 							{module && (
 								<Badge
@@ -154,7 +170,7 @@ export function FormCard({
 
 						<div className="text-sm text-muted-foreground text-right min-h-10">
 							<div>
-								Status: <span className="font-medium capitalize">{status}</span>
+								Status: <span className="font-medium">{STATUS_CONFIG[status].label}</span>
 							</div>
 							{version !== undefined && <div>Version: {version}</div>}
 						</div>

@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
+import { Info } from 'lucide-react'
 import { useEffect } from 'react'
 import { EmissionsChart } from '@/components/emissions-chart'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { itemVariants } from './-animations'
@@ -39,7 +41,11 @@ export function MainTab({
 	const { AppForm, AppField } = form
 
 	useEffect(() => {
-		if (selectedBaseYear && selectedBaseYear.toString().length === 4 && baseYearEmissionsData) {
+		if (
+			selectedBaseYear &&
+			selectedBaseYear.toString().length === 4 &&
+			baseYearEmissionsData
+		) {
 			const total = calculateTotalEmissions(baseYearEmissionsData)
 			const currentTotal = form.getFieldValue('baseYearEmissions')
 			if (currentTotal !== total) {
@@ -105,6 +111,14 @@ export function MainTab({
 										/>
 									)}
 								</AppField>
+								<Alert variant="info">
+									<Info />
+									<AlertTitle>Base year data</AlertTitle>
+									<AlertDescription>
+										Energy and emissions forms needs to be submitted for the
+										year to show here.
+									</AlertDescription>
+								</Alert>
 							</div>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -189,7 +203,8 @@ export function MainTab({
 						<CardTitle>Emissions Reduction Trajectory (Chart)</CardTitle>
 					</CardHeader>
 					<CardContent>
-						{existingTargets?.projections && existingTargets.projections.length > 0 ? (
+						{existingTargets?.projections &&
+						existingTargets.projections.length > 0 ? (
 							<EmissionsChart projections={existingTargets.projections} />
 						) : (
 							<div className="flex h-[400px] items-center justify-center text-muted-foreground border rounded-md bg-muted/20">
@@ -207,7 +222,8 @@ export function MainTab({
 						<CardTitle>Emission Reduction Trajectory (Table)</CardTitle>
 					</CardHeader>
 					<CardContent>
-						{existingTargets?.projections && existingTargets.projections.length > 0 ? (
+						{existingTargets?.projections &&
+						existingTargets.projections.length > 0 ? (
 							<EmissionsTable data={existingTargets.projections} />
 						) : (
 							<div className="flex p-8 items-center justify-center text-muted-foreground border rounded-md bg-muted/20">

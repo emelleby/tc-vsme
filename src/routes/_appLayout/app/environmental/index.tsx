@@ -84,7 +84,7 @@ function EnvironmentalPage() {
 				title="Energy and climate emissions"
 				updatedDate={formatDate(energyEmissions?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={energyEmissions?.status ?? 'draft'}
+				status={energyEmissions?.status ?? 'not_started'}
 				contributor={energyEmissions?.contributor || { name: 'Unknown' }}
 				code="B3"
 				buttonText="Hjelp"
@@ -103,7 +103,7 @@ function EnvironmentalPage() {
 				title="Air, Water and Soil Pollution"
 				updatedDate={formatDate(pollution?.lastModifiedAt)}
 				toolTip="Document your organization's emissions to air, water, and soil, including types and quantities of pollutants."
-				status={pollution?.status ?? 'draft'}
+				status={pollution?.status ?? 'not_started'}
 				contributor={pollution?.contributor || { name: 'Unknown' }}
 				code="B4"
 				buttonText="Hjelp"
@@ -121,7 +121,7 @@ function EnvironmentalPage() {
 				title="Biodiversity"
 				updatedDate={formatDate(biodiversity?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={biodiversity?.status ?? 'draft'}
+				status={biodiversity?.status ?? 'not_started'}
 				contributor={biodiversity?.contributor || { name: 'Unknown' }}
 				code="B5"
 				module="Basic Module"
@@ -140,7 +140,7 @@ function EnvironmentalPage() {
 				title="Water Management"
 				updatedDate={formatDate(waterManagement?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={waterManagement?.status ?? 'draft'}
+				status={waterManagement?.status ?? 'not_started'}
 				contributor={waterManagement?.contributor || { name: 'Unknown' }}
 				code="B6"
 				module="Basic Module"
@@ -160,7 +160,7 @@ function EnvironmentalPage() {
 				title="Resource Use and Circular Economy"
 				updatedDate={formatDate(resourceUseCircularEconomy?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={resourceUseCircularEconomy?.status ?? 'draft'}
+				status={resourceUseCircularEconomy?.status ?? 'not_started'}
 				contributor={
 					resourceUseCircularEconomy?.contributor || { name: 'Unknown' }
 				}
@@ -228,7 +228,7 @@ function EnvironmentalPage() {
 				title="Scope 3 Emissions"
 				updatedDate={formatDate(scope3Emissions?.lastModifiedAt)}
 				toolTip="Click to expand"
-				status={scope3Emissions?.status ?? 'draft'}
+				status={scope3Emissions?.status ?? 'not_started'}
 				contributor={scope3Emissions?.contributor || { name: 'Unknown' }}
 				code="C2"
 				module="Comprehensive Module"
@@ -246,7 +246,7 @@ function EnvironmentalPage() {
 				title="Emission reduction targets"
 				updatedDate={formatDate(targetsData?.lastModifiedAt)}
 				toolTip="View and manage your organization's emission reduction targets."
-				status={targetsData ? 'submitted' : 'not set'}
+				status={targetsData ? 'submitted' : 'not_started'}
 				contributor={targetsData?.contributor || { name: 'Unknown' }}
 				code="C3"
 				module="Comprehensive Module"
@@ -261,7 +261,7 @@ function EnvironmentalPage() {
 				title="Climate Risk Analysis"
 				updatedDate={formatDate(climateRiskAnalysis?.lastModifiedAt)}
 				toolTip="Describe climate-related risks that may affect the business."
-				status={climateRiskAnalysis?.status ?? 'draft'}
+				status={climateRiskAnalysis?.status ?? 'not_started'}
 				contributor={climateRiskAnalysis?.contributor || { name: 'Unknown' }}
 				code="C4"
 				module="Comprehensive Module"

@@ -82,7 +82,7 @@ function TargetsPage() {
 	}
 
 	return (
-		<div className="p-6 space-y-8 max-w-4xl mx-auto">
+		<div className="p-6 space-y-8 max-w-6xl w-full mx-auto">
 			<div>
 				<h1 className="text-3xl font-bold mb-2">
 					Climate emissions targets for {companyName}

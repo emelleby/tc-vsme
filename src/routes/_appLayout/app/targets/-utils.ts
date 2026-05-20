@@ -11,7 +11,7 @@ export function calculateTotalEmissions(
 	const scope1 = data.scope1Emissions ?? 0
 	const scope2 = data.scope2EmissionsMarketBased ?? 0
 	const scope3 = data.totalScope3Emissions ?? 0
-	return scope1 + scope2 + scope3
+	return Number((scope1 + scope2 + scope3).toFixed(2))
 }
 
 /**

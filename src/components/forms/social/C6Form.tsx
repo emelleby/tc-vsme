@@ -228,7 +228,7 @@ export function C6HumanRightsPoliciesForm() {
 				</Card>
 
 				<FormButtons
-					status={status as 'draft' | 'submitted'}
+					status={status as 'not_started' | 'draft' | 'submitted'}
 					isSaving={isSaving}
 					onSaveDraft={saveDraft}
 					onSubmit={submit}

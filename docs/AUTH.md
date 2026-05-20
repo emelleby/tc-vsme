@@ -1,6 +1,6 @@
 # TC-VSME Authentication Documentation
 
-**Last Updated**: 2026-02-19 (After Auth Optimization Plan completion)
+**Last Updated**: 2026-05-19
 
 This document describes the complete authentication implementation for TC-VSME using TanStack Start, Clerk, and Convex.
 
@@ -522,6 +522,30 @@ await invalidateAuthContext() // Clear cache
 navigate({ to: '/app' }) // Fresh data fetched, access granted
 ```
 
+### 6. Calling Convex Actions Inside TanStack Query Without Auth Gate
+
+**Problem**: `useQuery` fires immediately on mount, before `ConvexProviderWithClerk` has set the auth token on the Convex client. The action goes out unauthenticated.
+
+```typescript
+// ❌ WRONG - fires before Convex client has auth token
+const { data } = useQuery({
+  queryKey: ['emissions'],
+  queryFn: () => getEmissions({ orgId }),
+})
+
+// ✅ CORRECT - wait until Convex client is authenticated
+import { useConvexAuth } from 'convex/react'
+
+const { isAuthenticated } = useConvexAuth()
+const { data } = useQuery({
+  queryKey: ['emissions'],
+  queryFn: () => getEmissions({ orgId }),
+  enabled: isAuthenticated,
+})
+```
+
+**Why `useConvexAuth` and not `useAuth` from Clerk?** `useConvexAuth().isAuthenticated` reflects when the Convex client itself has a token set — which is what matters. Clerk's `isSignedIn` can be `false` during SSR hydration even when the user is signed in.
+
 ### 5. Dual-Write Inconsistency
 
 **Problem**: Permission flags written to Convex but not Clerk metadata (or vice versa).
@@ -695,10 +719,12 @@ navigate({ to: '/app' })
 
 ### Error: "Unauthorized: User must be authenticated"
 
-1. **Check await:** Make sure you're `await`ing auth functions
-2. **Check login status:** Verify user is actually signed in with Clerk
-3. **Check Convex logs:** Look for JWT verification errors
-4. **Check JWT template:** Ensure `convex` template exists in Clerk Dashboard
+1. **Check `bun convex dev` is running:** Dev deployments are paused without it — actions silently fail or return no data. Always keep `convex dev` running during local development.
+2. **Check auth gate in TanStack Query:** If calling a Convex action inside `useQuery`, add `enabled: isAuthenticated` (from `useConvexAuth()`). See pitfall #6 above.
+3. **Check await:** Make sure you're `await`ing auth functions
+4. **Check login status:** Verify user is actually signed in with Clerk
+5. **Check Convex logs:** Look for JWT verification errors
+6. **Check JWT template:** Ensure `convex` template exists in Clerk Dashboard with `aud` matching `CONVEX_JWT_AUDIENCE`
 
 ### Error: "Unauthorized: Organization must be selected"
 

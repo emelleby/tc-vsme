@@ -155,7 +155,7 @@ export function useFormSubmission<TData>({
 	}, [existingData?.draftData, existingData?.data, form])
 
 	const isLoading = existingData === undefined
-	const status = existingData?.status || 'draft'
+	const status = existingData?.status || 'not_started'
 
 	return {
 		form,
