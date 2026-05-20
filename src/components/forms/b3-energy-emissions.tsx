@@ -27,12 +27,19 @@ import {
 	CardHeader,
 	CardTitle,
 } from '../ui/card'
-import { FieldSet } from '../ui/field'
 
 type MongoEmissionsData = {
 	renewable?: number
 	'non-renewable'?: number
 	co2Intensity?: number
+	stationaryCombustion?: number
+	mobileCombustion?: number
+	otherEnergy?: number
+	selfGeneratedEnergy?: number
+	totalEnergy?: number
+	Scope1?: number
+	locationBased?: number
+	marketBased?: number
 	[key: string]: unknown
 }
 
@@ -69,6 +76,14 @@ export function B3EnergyEmissionsForm() {
 						renewableElectricity: emissionsData.renewable || 0,
 						nonRenewableElectricity: emissionsData['non-renewable'] || 0,
 						emissionsIntensity: emissionsData.co2Intensity || 0,
+						stationaryCombustion: emissionsData.stationaryCombustion || 0,
+						mobileCombustion: emissionsData.mobileCombustion || 0,
+						otherEnergySources: emissionsData.otherEnergy || 0,
+						selfGeneratedEnergy: emissionsData.selfGeneratedEnergy || 0,
+						totalEnergyConsumption: emissionsData.totalEnergy || 0,
+						scope1Emissions: emissionsData.Scope1 || 0,
+						scope2EmissionsLocationBased: emissionsData.locationBased || 0,
+						scope2EmissionsMarketBased: emissionsData.marketBased || 0,
 					})
 				}
 			} catch (error) {
@@ -101,14 +116,17 @@ export function B3EnergyEmissionsForm() {
 			reportingYear: reportingYear.toString(),
 			renewableElectricity: mongoDefaults.renewableElectricity || 0,
 			nonRenewableElectricity: mongoDefaults.nonRenewableElectricity || 0,
-			stationaryCombustion: 0,
-			mobileCombustion: 0,
+			stationaryCombustion: mongoDefaults.stationaryCombustion || 0,
+			mobileCombustion: mongoDefaults.mobileCombustion || 0,
 			renewableFuels: 0,
-			otherEnergySources: 0,
+			otherEnergySources: mongoDefaults.otherEnergySources || 0,
+			selfGeneratedEnergy: mongoDefaults.selfGeneratedEnergy || 0,
+			totalEnergyConsumption: mongoDefaults.totalEnergyConsumption || 0,
 			emissionsIntensity: mongoDefaults.emissionsIntensity || 0,
-			scope1Emissions: 0,
-			scope2EmissionsLocationBased: 0,
-			scope2EmissionsMarketBased: 0,
+			scope1Emissions: mongoDefaults.scope1Emissions || 0,
+			scope2EmissionsLocationBased:
+				mongoDefaults.scope2EmissionsLocationBased || 0,
+			scope2EmissionsMarketBased: mongoDefaults.scope2EmissionsMarketBased || 0,
 			climateDataCollectionMethod: '',
 			dataUncertainty: '',
 		} as B3EnergyEmissionsFormValues,
@@ -118,26 +136,79 @@ export function B3EnergyEmissionsForm() {
 	useEffect(() => {
 		if (mongoFetched && !existingData?.data && !existingData?.draftData) {
 			// Only set defaults if form hasn't been saved yet
-			if (mongoDefaults.renewableElectricity !== undefined) {
+			if (mongoDefaults.renewableElectricity !== undefined)
 				form.setFieldValue(
 					'renewableElectricity',
 					mongoDefaults.renewableElectricity,
 				)
-			}
-			if (mongoDefaults.nonRenewableElectricity !== undefined) {
+			if (mongoDefaults.nonRenewableElectricity !== undefined)
 				form.setFieldValue(
 					'nonRenewableElectricity',
 					mongoDefaults.nonRenewableElectricity,
 				)
-			}
-			if (mongoDefaults.emissionsIntensity !== undefined) {
+			if (mongoDefaults.emissionsIntensity !== undefined)
 				form.setFieldValue(
 					'emissionsIntensity',
 					mongoDefaults.emissionsIntensity,
 				)
-			}
+			if (mongoDefaults.stationaryCombustion !== undefined)
+				form.setFieldValue(
+					'stationaryCombustion',
+					mongoDefaults.stationaryCombustion,
+				)
+			if (mongoDefaults.mobileCombustion !== undefined)
+				form.setFieldValue('mobileCombustion', mongoDefaults.mobileCombustion)
+			if (mongoDefaults.otherEnergySources !== undefined)
+				form.setFieldValue(
+					'otherEnergySources',
+					mongoDefaults.otherEnergySources,
+				)
+			if (mongoDefaults.selfGeneratedEnergy !== undefined)
+				form.setFieldValue(
+					'selfGeneratedEnergy',
+					mongoDefaults.selfGeneratedEnergy,
+				)
+			if (mongoDefaults.totalEnergyConsumption !== undefined)
+				form.setFieldValue(
+					'totalEnergyConsumption',
+					mongoDefaults.totalEnergyConsumption,
+				)
+			if (mongoDefaults.scope1Emissions !== undefined)
+				form.setFieldValue('scope1Emissions', mongoDefaults.scope1Emissions)
+			if (mongoDefaults.scope2EmissionsLocationBased !== undefined)
+				form.setFieldValue(
+					'scope2EmissionsLocationBased',
+					mongoDefaults.scope2EmissionsLocationBased,
+				)
+			if (mongoDefaults.scope2EmissionsMarketBased !== undefined)
+				form.setFieldValue(
+					'scope2EmissionsMarketBased',
+					mongoDefaults.scope2EmissionsMarketBased,
+				)
 		}
 	}, [mongoFetched, mongoDefaults, existingData, form])
+
+	// Handle missing fields for legacy submissions
+	useEffect(() => {
+		if (existingData?.data || existingData?.draftData) {
+			const data = existingData.draftData || existingData.data
+			if (data) {
+				const typedData = data as Record<string, unknown>
+				if (typedData.selfGeneratedEnergy === undefined) {
+					form.setFieldValue(
+						'selfGeneratedEnergy',
+						mongoDefaults.selfGeneratedEnergy ?? 0,
+					)
+				}
+				if (typedData.totalEnergyConsumption === undefined) {
+					form.setFieldValue(
+						'totalEnergyConsumption',
+						mongoDefaults.totalEnergyConsumption ?? 0,
+					)
+				}
+			}
+		}
+	}, [existingData, mongoDefaults, form])
 
 	if (isLoading || isFetchingMongo) {
 		return (
@@ -157,7 +228,7 @@ export function B3EnergyEmissionsForm() {
 						form.handleSubmit()
 					}}
 				>
-					<FieldSet disabled={status === 'submitted'} className="">
+					<fieldset disabled={status === 'submitted'} className="space-y-6">
 						<Card>
 							<CardHeader>
 								<CardTitle>Energy Consumption</CardTitle>
@@ -348,7 +419,7 @@ export function B3EnergyEmissionsForm() {
 								</div>
 							</CardContent>
 						</Card>
-					</FieldSet>
+					</fieldset>
 
 					<FormButtons
 						status={status as 'not_started' | 'draft' | 'submitted'}

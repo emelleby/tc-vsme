@@ -122,6 +122,8 @@ const energyEmissionsDataValidator = v.object({
   scope1Emissions: v.number(),
   scope2EmissionsLocationBased: v.number(),
   scope2EmissionsMarketBased: v.number(),
+  selfGeneratedEnergy: v.number(),
+  totalEnergyConsumption: v.number(),
   climateDataCollectionMethod: v.string(),
   dataUncertainty: v.string(),
 })
