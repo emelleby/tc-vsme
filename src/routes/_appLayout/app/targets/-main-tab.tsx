@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
+import { Info } from 'lucide-react'
 import { useEffect } from 'react'
 import { EmissionsChart } from '@/components/emissions-chart'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Info } from 'lucide-react'
 import { itemVariants } from './-animations'
 import type { useTargetsForm } from './-hooks'
 import type { BaseYearEmissionsData, EmissionRow } from './-schemas'
@@ -111,13 +111,14 @@ export function MainTab({
 										/>
 									)}
 								</AppField>
-															<Alert variant="info">
-								<Info />
-								<AlertTitle>Base year data</AlertTitle>
-								<AlertDescription>
-									Energy and emissions forms needs to be submitted for the year to show here.
-								</AlertDescription>
-							</Alert>
+								<Alert variant="info">
+									<Info />
+									<AlertTitle>Base year data</AlertTitle>
+									<AlertDescription>
+										Energy and emissions forms needs to be submitted for the
+										year to show here.
+									</AlertDescription>
+								</Alert>
 							</div>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
